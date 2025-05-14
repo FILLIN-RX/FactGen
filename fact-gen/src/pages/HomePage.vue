@@ -96,7 +96,7 @@
             </div>
 
             <ClientForm @client-ajoute="ajouterClient" />
-            <ProduitForm @produit-ajoute="ajouterProduit" />
+           
     
             <div v-if="facture?.client?.nom">
 
