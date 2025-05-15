@@ -3,7 +3,7 @@
         <div class="bg-blue-200 p-5 flex justify-between lg:px-60 fixed z-90 w-full">
 
         
-        <div class=" logo text-blue-800 text-2xl flex">
+        <div class=" font-mono logo text-blue-800 text-2xl flex">
             FACTGEN
         </div>
         <div v-if="mobile" class="icon flex h-full justify-center">

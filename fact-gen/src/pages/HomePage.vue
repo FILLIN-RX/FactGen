@@ -1,8 +1,8 @@
 <template>
-    <div class="bg-gradient-to-br from-blue-400 px-10 lg:px-60 to-purple-400 pt-30">
+    <div class="pt-30  bg-blue-100">
 
     
-        <div class="grid lg:grid-cols-2 gap-5 rounded">
+        <div class="grid space-y-5 mb-6 lg:grid-cols-2 lg:px-60 gap-5 rounded">
             <div class="">
                 <div class="text-5xl font-bold">
                 Générateur de facture professionelle en ligne
@@ -14,45 +14,64 @@
         
             </div>
             <div class="image flex justify-center items-center">
-                <img class="w-70" src="../assets/still-life-rendering-jackets-display.jpg" alt="">
+                <img class="w-100" src="../assets/laptop_phone_invoice_fr-adaa258f801e92da219a492188c8b14983c39eb6983220b455e7efa2b9e9271f.webp" alt="">
             </div>
             
         </div>
+        
+        <div class="space-y-5 w-3/3 center  lg:px-60">
+            <h1 class="font-bold">Qu’est-ce qu’une facture ?</h1>
+            <p>Une facture est un document détaillé de comptabilité générale prouvant un achat ou une vente. Émis par une structure juridique reconnue (auto-entrepreneur, société, etc.), la facture constate les conditions de l’achat et de la vente de biens ou prestations (nature, quantité, prix unitaire, conditions de paiement, échéances, etc).</p>
+            <p>Ce document a plusieurs utilités, à la fois juridique (constate le droit de créance du vendeur), commerciale (détaille le montant à régler), comptable (sert de justificatif comptable), et fiscale (support au contrôle des impôts et à l’exercice des droits sur la TVA).</p>
+        </div>
         <div class="flex justify-center items-center ">
 
-    
-            <div class=" center lg:w-2/5 space-y-15 text-center justify-center align-middle">
-                <h1 class="text-4xl">
-                    Comment créer une facture ?
-                </h1>
-                <span>
-                    Une facture doit comporter un certain nombre de mentions obligatoires pour être valide. Si vous oubliez de les mentionner, votre client peut refuser de vous payer et vous risquez de payer une amende. 
-                </span><br><br>
-                <span>
+            
+        <div class="lg:px-60 center lg:w-5/5 space-y-15 text-center justify-center align-middle">
+            <h1 class="text-4xl">
+                Comment créer une facture ?
+            </h1>
+            <div class="lg:flex">
+                <span class="lg:w-1/2">
                     Notre générateur de facture gratuit vous permet de créer des factures conformes à la loi rapidement. Si vous souhaitez facturer encore plus rapidement et simplement, utilisez notre logiciel de facturation avec lequel vous pouvez sauvegarder les données de vos clients et produits et ainsi créer de nouvelles factures valides en seulement quelques secondes tout en évitant de faire des erreurs.
                 </span>
-            </div>
-        </div>
-        <div class=" lg:grid lg:grid-cols-3 lg:grid-rows-2 gap-1  grid grid-cols-2 grid-rows-2">
-            <div class="rounded text-4xl lg:row-span-2">
-               <img class="w-full h-full" src="../assets/still-life-rendering-jackets-display.jpg" alt="">
-            </div>
-            <div class="bg-teal-100  rounded lg:row-span-1 ">
-                 <img class=" h-full w-full" src="../assets/image (13).jpeg" alt="">
-            </div>
-            <div class="rounded ">
-               <h1 class="text-5xl">Numérotation des factures</h1>
-                <p>Tous les documents de facturation doivent comporter leur propre numéro. Les numéros de factures doivent être uniques, chronologiques, continus et sans interruption. Il est important de numéroter ses factures correctement puisque l’administration doit être en mesure d’examiner les factures d’une société de manière exhaustive afin d’éviter les fraudes.</p>
-            </div>
-            <div class="  rounded lg:row-span-1">
+                <span class="lg:w-1/2">
+                Une facture doit comporter un certain nombre de mentions obligatoires pour être valide. Si vous oubliez de les mentionner, votre client peut refuser de vous payer et vous risquez de payer une amende. 
+                </span>
                 
             </div>
-            <div class="rounded">
-                <img class="w-full h-full" src="../assets/still-life-rendering-jackets-display.jpg" alt="">
-            </div>
+            
         </div>
+        </div>
+        
+        <div class=" lg:px-60 mt-4 p-5 bg-blue-200 shadow rounded-xl">
+
+             <FactureTemp />
+             <ClientForm @client-ajoute="ajouterClient" />
+        </div>
+        <div class="lg:px-60 text-center flex justify-center items-center centered">
+            <div class="rounded text-4xl">
+               <img class="h-150" src="../assets/phone_tilted_invoice_fr-a091cfaa3c5f700e0e9ce75a2ceeab02d2e347740c20f32d92fb26e19882fbbb.webp" alt="">
+            </div>
+            
+            
+        </div>
+        <div class="lg:px-60 w-4/5 space-y-5 space-x-5 ">
+            <h1 class="text-2xl">Que doit contenir une facture ?</h1>
+            <ul class="space-y-3">
+                <li>La date et le numéro de la facture</li>
+                <li>La date de la vente du service ou du bien</li>
+                <li>Des éléments permettant d’identifier l'émetteur (dénomination sociale, adresse du siège social et de facturation, SIREN, forme juridique et capital social). L’identité du client (dénomination sociale, adresses de facturation et de livraison)</li>
+                <li>L’identité du client (dénomination sociale, adresses de facturation et de livraison)</li>
+                <li>La date et l’échéance du règlement</li>
+                <li>Le taux de pénalité de retard</li>
+                <li>La mention “autoliquidation de la TVA” dans les cas applicables (facture intracommunautaire, etc)</li>
+                
+            </ul>
+        </div>
+
             <!--FAQ-->
-            <div class="py-32 text-gray-400">
+            <div class="py-32 bg-blue-400 lg:px-60  text-gray-400">
                 <div class="container mx-auto px-10 lg:px-0">
                   <h2 class="text-3xl  text-black text-center font-bold mb-12">
                         Frequently Asked Questions
@@ -95,22 +114,15 @@
                 </div>
             </div>
 
-            <ClientForm @client-ajoute="ajouterClient" />
-           
-    
-            <div v-if="facture?.client?.nom">
+            
 
-             <FacTure :facture="facture" />
-             </div>
-            <FactureTemp />
-
-            <div>
-                <h1>
+            <div class="p-3 space-y-5">
+                <h1 class="text-4xl " >
                     Choisir le mode de paiement de la facture
                 </h1>
                 <p>Une facture peut être réglée de diverses manières :</p>
-                <ul>
-                    <li>Par carte bancaire</li>
+                <ul class="list">
+                    <li>.Par carte bancaire</li>
                     <li>Par virement bancaire</li>
                     <li>Par chèque</li>
                     <li>En espèces</li>

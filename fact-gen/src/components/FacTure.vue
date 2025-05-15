@@ -17,7 +17,7 @@
   
   <script>
   import Facture from '../models/facture';
-  
+  import Client from '../models/client';
   export default {
     props: ['facture'],
   };
