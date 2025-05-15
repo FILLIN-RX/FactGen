@@ -129,6 +129,7 @@
                 </ul>
             </div>
     </div>
+   
 </template>
 
 <script>
@@ -139,12 +140,15 @@ import Client from '../models/client';
 import FactureTemp from '../components/FactureTemp.vue'
 import Produit from '../models/produit';
 import FactureModel from '../models/facture';
+import factureSauve from './FactureSauve.vue';
+
 export default{
     components:{
         ClientForm,
         ProduitForm,
         FacTure,
         FactureTemp,
+        factureSauve
     },
   data() {
     return {

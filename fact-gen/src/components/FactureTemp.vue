@@ -65,6 +65,10 @@
       <div>
         <input type="text" v-model="suplement" class="w-full outline-2 outline-offset outline-orange-200  p-3 rounded h-20" placeholder="Information supplementaire">
       </div>
+      <button @click="sauvegarderFacture" class="mt-6 bg-blue-500 text-white p-3 rounded hover:bg-blue-600">
+      Sauvegarder la facture
+    </button>
+
     </div>
 
     <!-- Aperçu facture -->
@@ -118,6 +122,9 @@
 </template>
 
 <script>
+// Dans <script> de ton composant
+import Facture from '../models/facture';
+
 export default {
   data() {
     return {
@@ -125,34 +132,45 @@ export default {
       produits: [{ nom: '', prix: 0, quantite: 1 }],
       utiliseReduction: 'non',
       reduction: { type: 'pourcentage', valeur: 0 },
-      suplement:''
+      suplement: ''
     };
   },
   computed: {
+    factureInstance() {
+      const reductionActive = this.utiliseReduction === 'oui' ? this.reduction : null;
+      return new Facture(this.client, this.produits, reductionActive);
+    },
     totalHT() {
-      return this.produits.reduce((total, p) => total + p.prix * p.quantite, 0);
+      return this.factureInstance.getTotalHT();
     },
     montantReduction() {
-      if (this.utiliseReduction !== 'oui') return 0;
-      if (this.reduction.type === 'montant') {
-        return this.reduction.valeur;
-      } else {
-        return this.totalHT * (this.reduction.valeur / 100);
-      }
+      return this.factureInstance.getMontantReduction();
     },
     totalTTC() {
-      return this.totalHT - this.montantReduction;
+      return this.factureInstance.getTotalTTC();
     }
   },
   methods: {
     ajouterProduit() {
       this.produits.push({ nom: '', prix: 0, quantite: 1 });
     },
-    supprimerLigne(index){
-      this.produits.splice(index ,1)
-    }
+    supprimerLigne(index) {
+      this.produits.splice(index, 1);
+    },
+    sauvegarderFacture() {
+  const f = new Facture(
+    this.client,
+    this.produits,
+    this.reduction,
+    this.utiliseReduction,
+    this.suplement
+  );
+  f.sauvegarder();
+}
+
   }
 };
+
 </script>
 
 <style scoped>

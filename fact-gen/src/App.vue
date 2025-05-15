@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <NavBar />
-    <HomePage />
-    
-    
+    <div>
+    <router-view></router-view>
+  </div>
     
   
   </div>
