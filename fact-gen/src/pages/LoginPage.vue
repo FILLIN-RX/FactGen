@@ -3,6 +3,7 @@
       <h2 class="text-2xl font-bold mb-4">Connexion</h2>
       
       <div class="space-y-4">
+        
         <input v-model="email" type="email" placeholder="Email" class="w-full border p-2 rounded" />
         <input v-model="password" type="password" placeholder="Mot de passe" class="w-full border p-2 rounded" />
         

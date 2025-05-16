@@ -37,9 +37,14 @@
           <button class="p-3 bg-blue-200 rounded hover:bg-blue-300" @click="telechargerFacturePDF(facture, index)">
             Télécharger en PDF
         </button>
-        <button class="p-3 bg-red-200 rounded hover:bg-red-300" @click="supprimerFacture(index)">
-          Supprimer
+        <button popovertarget="suprimer" class="p-3 bg-red-200 rounded hover:bg-red-300" @click="supprimerFacture(index)">
+          supprimer
         </button>
+        <div popover id="my-popover" class="opacity-0 starting:open:opacity-0 ...">
+            suprimer avec succès 
+        </div>
+
+
 
         </div>
         

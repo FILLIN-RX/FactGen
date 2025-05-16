@@ -24,8 +24,19 @@
             <p>Une facture est un document détaillé de comptabilité générale prouvant un achat ou une vente. Émis par une structure juridique reconnue (auto-entrepreneur, société, etc.), la facture constate les conditions de l’achat et de la vente de biens ou prestations (nature, quantité, prix unitaire, conditions de paiement, échéances, etc).</p>
             <p>Ce document a plusieurs utilités, à la fois juridique (constate le droit de créance du vendeur), commerciale (détaille le montant à régler), comptable (sert de justificatif comptable), et fiscale (support au contrôle des impôts et à l’exercice des droits sur la TVA).</p>
         </div>
+        <div class="lg:grid lg:grid-cols-3  px-10 space-y-10 lg:gap-5  lg:px-60">
+            <div>
+                <img class="lg:h-140 w-full rounded-xl" src="/home/fillin/FactGen/fact-gen/src/assets/9305906.jpg" alt="facture">
+            </div>
+            <div>
+                <img class="lg:h-140 w-full rounded-xl" src="/home/fillin/FactGen/fact-gen/src/assets/8414110.jpg" alt="facture">
+            </div>
+            <div>
+                <img class="lg:h-140 w-full rounded-xl" src="/home/fillin/FactGen/fact-gen/src/assets/8056759.jpg" alt="facture">
+            </div>
+        </div>
         <div class="flex justify-center items-center ">
-
+        
             
         <div class="lg:px-60 center lg:w-5/5 space-y-15 text-center justify-center align-middle">
             <h1 class="text-4xl">
@@ -62,7 +73,7 @@
         <div class="bg-blue-100 text-center space-y-6">
             <h4 class="text-4xl font-bold">mes document au meme endroid et <span class="text-blue-400">securiser</span></h4>
 
-                <div class="p1 lg:flex lg:space-x-7 lg:justify-center text-center">
+                <div class="p-6 lg:flex space-y-10 lg:space-x-7 lg:justify-center text-center">
                     <div class="p-3 bg-white rounded-xl shadow">
                         <div class="flex justify-center items-center">
                             <img class="w-30" src="/home/fillin/FactGen/fact-gen/src/assets/simplicite.png" alt="">
@@ -159,34 +170,42 @@
 
                     </div>
                 </div>
-                <div class="lg:grid grid-cols-2 centered space-y-5 text-start lg:w-4/5 align-center">
-                    <div class="space-x-5">
-                        <div class="img">
+                <div class="grid place-items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-start lg:w-4/5 p-6">
+                    
+                    <!-- Bloc 1 -->
+                    <div class="flex space-x-5 items-center">
+                    <div class="img">
+                        <!-- Image vide ou icône -->
+                    </div>
+                    <div class="text">
+                        <div class="font-bold text-lg">
+                        Aucune revente de données
+                        </div>
+                        <div class="text-gray-600">
+                        Factgen ne revend pas vos données afin de garantir la confidentialité et la sécurité de vos informations commerciales.
+                        </div>
+                    </div>
+                    </div>
 
+                    <!-- Bloc 2 -->
+                    <div class="flex space-x-5 items-center">
+                    <div class="img">
+                        <img class="w-20 rounded" src="../assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg" alt="">
+                    </div>
+                    <div class="text">
+                        <div class="font-bold text-lg">
+                        Aucune publicité ciblée
                         </div>
-                        <div class="text">
-                            <div class="font-bold">
-                                    Aucune revente de données
-                             </div>
-                             <div class="space-y-1">
-                                Factgen ne revend pas vos données afin de garantir la confidentialité et la sécurité de vos informations commerciales.
-                            </div>
+                        <div class="text-gray-600">
+                        Factgen ne diffuse pas vos données à des fins commerciales.
                         </div>
                     </div>
-                    <div class="space-x-5 flex">
-                        <div class="img">
-                                <img class="w-20" src="/home/fillin/FactGen/fact-gen/src/assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg" alt="">
-                        </div>
-                        <div class="text">
-                            <div class="font-bold">
-                                    Aucune publiciter cibler
-                            </div>
-                            <div class="space-y-1">
-                                Factgen ne diffuse pas vos donnee a des fin   commerciales.
-                            </div>
-                        </div>
                     </div>
+
                 </div>
+                </div>
+
 
         </div>
         <div class=" lg:px-60 mt-4 p-5 bg-blue-200 shadow rounded-xl">
@@ -266,7 +285,7 @@
                     Choisir le mode de paiement de la facture
                 </h1>
                 <p>Une facture peut être réglée de diverses manières :</p>
-                <ul class="list">
+                <ul role="list" class="list-disc marker:text-sky-400">
                     <li>.Par carte bancaire</li>
                     <li>Par virement bancaire</li>
                     <li>Par chèque</li>
