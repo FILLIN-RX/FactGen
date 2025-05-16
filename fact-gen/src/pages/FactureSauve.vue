@@ -46,19 +46,34 @@
 
 
 
+
         </div>
+        
         
       </div>
      
     </div>
+    <div class="p-4 border rounded max-w-md mx-auto mt-10">
+    <button @click="isOpen = !isOpen" class="bg-blue-500 text-white px-4 py-2 rounded">
+      {{ isOpen ? 'Masquer' : 'Afficher' }} la description
+    </button>
+      
+    <div v-show="isOpen" class="mt-4 p-3 bg-gray-100 rounded transition-all duration-300">
+      Voici le contenu que tu peux afficher ou masquer !
+    </div>
+  </div>
     
   </div>
 </template>
 
 <script>
+  import { ref } from 'vue'
   import {jsPDF} from 'jspdf';
 export default {
-  
+  setup() {
+    const isOpen = ref(false);
+    return { isOpen };
+  },
   name: 'ListeFactures',
   data() {
     return {
