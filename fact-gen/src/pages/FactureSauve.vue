@@ -1,8 +1,8 @@
 <template>
-  <div class="p-6 pt-50 max-w-4xl mx-auto bg-white shadow rounded">
+  <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded ">
     <h1 class="text-2xl font-bold mb-4">📄 Liste des factures sauvegardées</h1>
 
-    <div v-if="factures.length === 0" class="text-gray-600">
+    <div v-if="factures.length === 0" class="text-gray-600 flex ">
       Aucune facture sauvegardée pour le moment.
     </div>
 

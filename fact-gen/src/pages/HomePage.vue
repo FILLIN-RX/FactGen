@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-30  bg-blue-100">
+    <div class="bg-blue-100 space-y-20">
 
     
         <div class="grid space-y-5 mb-6 lg:grid-cols-2 lg:px-60 gap-5 rounded">
@@ -43,7 +43,152 @@
             
         </div>
         </div>
-        
+        <div class="p-3">
+            <div class="lg:grid lg:grid-cols-3 lg:gap-3 space-y-8">
+                <div class="space-y-5 p-4">
+                    <h class="font-bold-text-xl">Gagnez du temps</h>
+                    <p>Profitez d’un outil gratuit de facturation en ligne qui fait également office de CRM. Retrouvez vos clients et vos factures au même endroit.</p>
+                </div>
+                <div class="space-y-5 p-4">
+                    <h class="font-bold-text-xl">Sécurisez vos paiements</h>
+                    <p>Gérez gratuitement vos devis et vos factures pour vous assurer que tout est bien traité à temps et recevez vos paiements en ligne.</p>
+                </div>
+                <div class="space-y-5 p-4">
+                    <h class="font-bold-text-xl">Boostez votre CA</h>
+                    <p>Ne passez plus à côté d'opportunités professionnelles. Visualisez dans la partie CRM l'activité et le potentiel d'un client en quelques clics.</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-blue-100 text-center space-y-6">
+            <h4 class="text-4xl font-bold">mes document au meme endroid et <span class="text-blue-400">securiser</span></h4>
+
+                <div class="p1 lg:flex lg:space-x-7 lg:justify-center text-center">
+                    <div class="p-3 bg-white rounded-xl shadow">
+                        <div class="flex justify-center items-center">
+                            <img class="w-30" src="/home/fillin/FactGen/fact-gen/src/assets/simplicite.png" alt="">
+                        </div>
+                        <div class="flex justify-center items-center">
+                            simpliciter
+                        </div>
+                        <div class="text-center">
+                            Factgen est un logiciel de facturation le plus simple du marche
+                            <div class="grid grid-cols-2 gap-5 ">
+                                <div class="bg-blue-100 rounded-xl p-2">
+                                    <div class="flex justify-center items-center">
+                                         img
+                                    </div>
+                                    <p>simple a utiliser</p>
+                                </div>
+                                <div class="bg-blue-100 rounded-xl p-2">
+                                    <div class="flex justify-center items-center">
+                                         img
+                                    </div>
+                                    <p>creer vos facture</p>
+                                    <p>vos client</p>
+                                    <p>et vous produit</p>
+                                    <p>Tout simplement</p>
+                                </div>
+                                
+                            </div>
+                                
+                        </div>
+
+                    </div>
+                    <div class="p-3 bg-white rounded-xl shadow">
+                        <div class="flex justify-center items-center">
+                            <img class="w-30" src="../assets/logo-cyberdefense-coche-confiance-pour-votre-entreprise-numerique.png" alt="">
+                        </div>
+                        <div class="flex justify-center items-center">
+                            simpliciter
+                        </div>
+                        <div class="text-center">
+                            Factgen est un logiciel de facturation le plus simple du marche
+                            <div class="grid grid-cols-2 gap-5 ">
+                                <div class="bg-blue-100 rounded-xl p-2">
+                                    <div class="flex justify-center items-center">
+                                        
+                                    </div>
+                                    <p>simple a utiliser</p>
+                                </div>
+                                <div class="bg-blue-100 rounded-xl p-2">
+                                    <div class="flex justify-center items-center">
+                                         img
+                                    </div>
+                                    <p>creer vos facture</p>
+                                    <p>vos client</p>
+                                    <p>et vous produit</p>
+                                    <p>Tout simplement</p>
+                                </div>
+                                
+                            </div>
+                                
+                        </div>
+
+                    </div>
+                        
+                    
+                    <div class="p-3 bg-white rounded-xl shadow">
+                        <div class="flex justify-center items-center">
+                            <img class="w-30" src="../assets/5850.jpg" alt="">
+                        </div>
+                        <div class="flex justify-center items-center">
+                            simpliciter
+                        </div>
+                        <div class="text-center">
+                            Factgen est un logiciel de facturation le plus simple du marche
+                            <div class="grid grid-cols-2 gap-5 ">
+                                <div class="bg-blue-100 rounded-xl p-2">
+                                    <div class="flex justify-center items-center">
+                                         img
+                                    </div>
+                                    <p>simple a utiliser</p>
+                                </div>
+                                <div class="bg-blue-100 rounded-xl p-2">
+                                    <div class="flex justify-center items-center">
+                                         img
+                                    </div>
+                                    <p>creer vos facture</p>
+                                    <p>vos client</p>
+                                    <p>et vous produit</p>
+                                    <p>Tout simplement</p>
+                                </div>
+                                
+                            </div>
+                                
+                        </div>
+
+                    </div>
+                </div>
+                <div class="lg:grid grid-cols-2 centered space-y-5 text-start lg:w-4/5 align-center">
+                    <div class="space-x-5">
+                        <div class="img">
+
+                        </div>
+                        <div class="text">
+                            <div class="font-bold">
+                                    Aucune revente de données
+                             </div>
+                             <div class="space-y-1">
+                                Factgen ne revend pas vos données afin de garantir la confidentialité et la sécurité de vos informations commerciales.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-x-5 flex">
+                        <div class="img">
+                                <img class="w-20" src="/home/fillin/FactGen/fact-gen/src/assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg" alt="">
+                        </div>
+                        <div class="text">
+                            <div class="font-bold">
+                                    Aucune publiciter cibler
+                            </div>
+                            <div class="space-y-1">
+                                Factgen ne diffuse pas vos donnee a des fin   commerciales.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
         <div class=" lg:px-60 mt-4 p-5 bg-blue-200 shadow rounded-xl">
 
              <FactureTemp />

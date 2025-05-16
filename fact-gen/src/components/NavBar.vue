@@ -1,6 +1,6 @@
 <template>
     <nav :class="{'scrolled-nav':scrollNav}"  >
-        <div class="bg-blue-200 p-5 flex justify-between lg:px-60 fixed z-90 w-full">
+        <div class="bg-blue-200 p-5 top-0 left-0 h-16 flex justify-between lg:px-60 fixed z-90 w-full shadow">
 
         
         <div class=" font-mono logo text-blue-800 text-2xl flex">
@@ -14,7 +14,8 @@
             <ul v-if="!mobile" class="flex h-full justify-center space-x-3 items-center text-center ">
                 <li class="hover:underline" ><router-link to="/FacTure">Facture</router-link></li>
                 <li class="hover:underline">customize</li>
-                <button class=" transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-4xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900">rout login/Registered</button>
+                <button class=" transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-4xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"><router-link to="/clientFact">client</router-link></button>
+                <button class=" transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-4xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"><router-link to="/login">login</router-link></button>
                 <button class="transition duration-500 text-blue-600 p-3 border-green-100 bg-green-400 p-2 border- rounded-4xl hover:text-black hover:border-transparent hover:bg-green-500 active:bg-green-900">login/Registered</button>
             </ul>
         </div>

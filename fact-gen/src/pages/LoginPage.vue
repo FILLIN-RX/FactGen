@@ -38,7 +38,7 @@
   
         if (user) {
           localStorage.setItem("utilisateurConnecte", JSON.stringify(user));
-          this.$router.push("/factures");
+          this.$router.push("/facture");
         } else {
           this.erreur = "Identifiants incorrects.";
         }
