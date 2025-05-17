@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
-import { Icon } from "@iconify/vue/dist/iconify.js";
+import { Icon } from "@iconify/vue";
+
 import App from './App.vue'
 import router from './router';
 

@@ -1,5 +1,5 @@
 <template>
-    <div class=" space-y-20">
+    <div class=" bg-white space-y-20">
 
     
     <!-- Hero Section -->

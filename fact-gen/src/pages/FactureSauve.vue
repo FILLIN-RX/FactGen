@@ -1,4 +1,4 @@
-<template>
+<template >
   <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded ">
     <h1 class="text-2xl font-bold mb-4">📄 Liste des factures sauvegardées</h1>
 
