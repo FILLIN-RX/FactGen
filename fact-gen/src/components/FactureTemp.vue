@@ -132,7 +132,7 @@
         <div class="text-center">Quantité</div>
         <div class="text-center">Prix unitaire</div>
         <div class="text-right">Prix total</div>
-</div>
+    </div>
   <div v-for="(p, i) in produits" :key="i" class="grid grid-cols-4 p-3 border-b text-sm text-gray-800">
     <div class="whitespace-normal sm:whitespace-nowrap sm:truncate sm:overflow-hidden">{{ p.nom }}</div>
 

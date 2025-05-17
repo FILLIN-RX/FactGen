@@ -42,6 +42,7 @@ export default {
 </script>
 
 <style>
+@plugin "daisyui";
 /* Styles généraux */
 
 </style>

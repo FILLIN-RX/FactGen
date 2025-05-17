@@ -15,10 +15,6 @@
           <label class="text-green-800 font-bold block" for="email">Email:</label>
           <input class="border border-gray-300 shadow rounded-lg" type="email" v-model="client.email" id="email" required />
         </div>
-        
-  
-        
-  
         <button class="bg-blue-500 p-5 rounded w-1/2 flex justify-center  " type="submit">Ajouter Client</button>
       </form>
     </div>

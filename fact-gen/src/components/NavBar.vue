@@ -23,7 +23,8 @@
             <ul v-if="mobileNav" class=" h-full space-x-3 items-center text-center ">
                 <li class="hover:underline" ><router-link to="/FacTure">Facture</router-link></li>
                 <li class="hover:underline">customize</li>
-                <button class="text-purple-300 border-purple-100 bg-blue-400 p-2 border- rounded hover:text-white hover:border-transparent hover:bg-purple-600 active:bg-purple-700">login/Registered</button>
+                <li class="hover:underline"><router-link to="/clientFact">client</router-link></li>
+                <li class="">login/Registered</li>
             </ul>
         </transition>
     </div>

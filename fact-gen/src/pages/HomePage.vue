@@ -23,7 +23,7 @@
     <div class="flex justify-center">
       <img
         class="w-full max-w-md"
-        src="../assets/Facture moderne de Factgen (1).png"
+        src="../assets/Facture_moderne_de_Factgen__1_-removebg-preview.png"
         alt="Aperçu de facture"
       />
     </div>

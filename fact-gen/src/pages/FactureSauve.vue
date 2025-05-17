@@ -7,37 +7,62 @@
     </div>
 
     <div v-else class="space-y-6">
-      <div v-for="(facture, index) in factures" :key="index" class="border p-5 h-200 space-y-5 rounded shadow">
+      <div v-for="(facture, index) in factures" :key="index" class="bg-white p-6 mt-6 rounded-xl shadow-lg  mx-auto font-sans">
         <p class="text-lg font-semibold mb-2">Facture {{ index + 1 }}</p>
-          <div class="entete flex justify-between"> 
-             <div class="bg-black rounded-full h-20 w-20 text-center text-white justify-center"> logo</div>
-             <div class="bg-black"></div>
-          </div>
-          <div  v-if="facture.societer" class="justify-start bg-blue-200 rounded-xl p-5 w-1/2 space-y-5">
-            <p class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
-              {{  facture.societer.nom }}
-            </p>
-            <p class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
-              {{ facture.societer.email }}
-            </p>
-            <p class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
-              {{ facture.societer?.adresse }}
-            </p>
-            
-          </div>
-        <p><strong>Client :</strong> {{ facture.client?.nom || 'Inconnu' }} – {{ facture.client?.email || 'Non fourni' }}</p>
-        <p><strong>Adresse :</strong> {{ facture.client?.adresse || 'Non fournie' }}</p>
-        <p><strong>Date :</strong> {{ formatDate(facture.date) }}</p>
+        <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center space-x-4">
+        <div class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow">
+          <img v-if="logoDataUrl" :src="logoDataUrl" alt="Logo" class="h-full w-full object-cover" />
+        </div>
+        <div v-if="facture.societer">
+          <h3 class="text-xl font-semibold"> {{  facture.societer.nom }}</h3>
+          <p class="text-sm text-gray-600">{{ facture.societer.email }}</p>
+          <p class="text-sm text-gray-600">{{ facture.societer?.adresse }}</p>
+        </div>
+      </div>
 
-        <ul class="mt-2 pl-4 list-disc text-sm">
-          <li v-for="(p, i) in facture.produits || []" :key="i">
-            {{ p.nom }} – {{ p.quantite }} × {{ formatPrix(p.prix) }} € = {{ formatPrix(p.quantite * p.prix) }} €
-          </li>
-        </ul>
-
+          </div>
+          <div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <h4 class="font-semibold mb-2 text-gray-800">Client :</h4>
+      <p><strong>Nom :</strong> {{ facture.client?.nom  }}</p>
+      <p><strong>Email :</strong>{{ facture.client?.email }}</p>
+      <p><strong>Adresse :</strong> {{ facture.client?.adresse }}</p>
+      <p><strong>Date :</strong> {{ formatDate(facture.date) }}</p>
+      
+    </div>
+    
+    
+    <div class="mb-8">
+      <div class="grid grid-cols-4 gap-2 bg-gray-100 font-semibold text-gray-700 p-3 text-sm border-b border-gray-300">
+        <div class="truncate">Description</div>
+        <div class="text-center">Quantité</div>
+        <div class="text-center">Prix unitaire</div>
+        <div class="text-right">Prix total</div>
+    </div>
+      <div v-for="(p, i) in facture.produits || []" :key="i" class="grid grid-cols-4 p-3 border-b text-sm text-gray-800">
+        <div class="truncate">{{ p.nom }}</div>
+        <div class="text-center">{{ p.quantite }}</div>
+        <div class="text-center">{{ p.prix }} €</div>
+        <div class="text-right">{{ formatPrix(p.quantite * p.prix) }} €</div>
+    </div>
+      </div>
+    
+      <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
         <p class="mt-2">
           <strong>Total HT :</strong> {{ formatPrix(facture.totalHT) }} €
         </p>
+
+        <p v-if="isNumber(facture.montantReduction) && facture.montantReduction > 0">
+          <strong>Réduction :</strong> -{{ formatPrix(facture.montantReduction) }} €
+        </p>
+      <p class="font-bold text-lg">
+          Total TTC : {{ formatPrix(facture.totalTTC || facture.totalHT) }} €
+        </p>
+    </div>
+
+        
+
+        
 
         <p v-if="isNumber(facture.montantReduction) && facture.montantReduction > 0">
           <strong>Réduction :</strong> -{{ formatPrix(facture.montantReduction) }} €
@@ -159,9 +184,13 @@ export default {
     // Titre
     doc.setFontSize(16);
     doc.text(`Facture #${index + 1}`, 10, 10);
-
-    // Client
+    //societter
     doc.setFontSize(12);
+    doc.text(`entreprise: ${facture.societer.nom }`,10,20);
+    doc.text(`email: ${facture.societer.email }`,10,20);
+    doc.text(`entreprise: ${facture.societer?.adresse }`,10,20)
+    // Client
+    doc.setFontSize(8);
     doc.text(`Client : ${facture.client.nom}`, 10, 20);
     doc.text(`Email : ${facture.client.email}`, 10, 27);
     doc.text(`Adresse : ${facture.client.adresse}`, 10, 34);
@@ -180,13 +209,13 @@ export default {
 
     // Totaux
     y += 5;
-    doc.text(`Total HT : ${facture.totalHT.toFixed(2)} €`, 10, y);
+    doc.text(`Total HT : ${facture.totalHT} €`, 10, y);
     y += 7;
     if (facture.montantReduction > 0) {
       doc.text(`Réduction : -${facture.montantReduction.toFixed(2)} €`, 10, y);
       y += 7;
     }
-    doc.text(`Total TTC : ${facture.totalTTC.toFixed(2)} €`, 10, y);
+    doc.text(`Total TTC : ${facture.totalTTC} €`, 10, y);
     y += 10;
 
     // Supplément
