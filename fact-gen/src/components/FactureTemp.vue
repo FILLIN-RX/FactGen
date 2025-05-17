@@ -1,8 +1,8 @@
 <template>
-  <div class="lg:flex ">
+  <div class="lg:flex  inset-shadow-sm inset-shadow-indigo-500/50 p-5 ">
 
   
-  <div class="p-3 space-y-6 bg-white max-w-2xl mx-auto rounded shadow">
+  <div class="p-3 space-y-6 bg-white max-w-2xl mx-auto rounded shadow h-full">
     <!-- Client -->
     <h2 class="font-bold text-lg mb-2">Informations client</h2>
     <div class="grid lg:grid-cols-3 grid-rows-1">
@@ -74,7 +74,7 @@
     <!-- Aperçu facture -->
     
   </div>
-  <div class="bg-gray-100 p-4 mt-3 rounded shadow lg:w-1/2">
+  <div class="bg-gray-100 p-4 mt-3 rounded shadow lg:w-1/2 ">
       <h2 class="font-bold text-lg mb-2">Aperçu de la facture</h2>
       <div class="py-10 pl-5">
 

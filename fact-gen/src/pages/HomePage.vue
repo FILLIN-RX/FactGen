@@ -1,14 +1,14 @@
 <template>
-    <div class="bg-white space-y-20">
+    <div class="bg-blue-100 space-y-20">
 
     
     <!-- Hero Section -->
-<section class="bg-gradient-to-br from-blue-50 to-white py-20">
-  <div class="container mx-auto px-6 lg:px-60 grid lg:grid-cols-2 gap-12 items-center">
+<section class="bg-white py-20">
+  <div class=" mx-auto lg:px-60 grid lg:grid-cols-2 gap-12 items-center">
     
     <!-- Left Text -->
     <div class="space-y-6">
-      <h1 class="text-4xl lg:text-5xl font-bold text-blue-900 leading-tight">
+      <h1 class="text-4xl capitalize lg:text-5xl font-bold text-blue-900 leading-tight">
         Générateur de facture professionnelle en ligne
       </h1>
       <p class="text-gray-700 text-lg">
@@ -23,7 +23,7 @@
     <div class="flex justify-center">
       <img
         class="w-full max-w-md"
-        src="../assets/laptop_phone_invoice_fr-adaa258f801e92da219a492188c8b14983c39eb6983220b455e7efa2b9e9271f.webp"
+        src="../assets/Facture moderne de Factgen (1).png"
         alt="Aperçu de facture"
       />
     </div>
@@ -31,7 +31,10 @@
   </div>
 </section>
     <!-- Description Section -->
-    <div class="space-y-4 px-6 lg:px-60">
+    <div class="space-y-4 space-x-8 px-6 lg:px-60">
+      <div class="bg-linear-to-r from-cyan-500 p-10 rounded-xl to-blue-500">
+
+      
       <h2 class="text-2xl font-bold">Qu’est-ce qu’une facture ?</h2>
       <p>
         Une facture est un document détaillé de comptabilité générale prouvant un achat ou une vente. Émis par une structure juridique reconnue (auto-entrepreneur, société, etc.), la facture constate les conditions de l’achat et de la vente de biens ou prestations (nature, quantité, prix unitaire, conditions de paiement, échéances, etc).
@@ -40,6 +43,7 @@
         Ce document a plusieurs utilités, à la fois juridique (constate le droit de créance du vendeur), commerciale (détaille le montant à régler), comptable (sert de justificatif comptable), et fiscale (support au contrôle des impôts et à l’exercice des droits sur la TVA).
       </p>
     </div>
+  </div>
 
     <!-- Image Gallery -->
     <div class="grid lg:grid-cols-3 gap-5 px-6 lg:px-60">
@@ -49,13 +53,14 @@
     </div>
 
     <!-- CRM Section -->
-    <div class="px-6 lg:px-60 space-y-4 text-gray-800">
-      <h2 class="text-2xl font-bold">Gestion avancée des clients</h2>
+    <div class="px-6 lg:px-60  space-y-4 text-gray-800">
+      <div class="bg-linear-to-r from-cyan-100 to-blue-200 rounded-xl p-10 space-y-10">
+        <h2 class="text-2xl font-bold">Gestion avancée des clients</h2>
       <p>
-        Factgen vous permettra bientôt de centraliser et gérer l’ensemble de vos clients. Grâce à une intégration CRM légère, vous pourrez suivre les historiques de factures, ajouter des notes et organiser vos relations commerciales. Une solution simple, intégrée et efficace pour mieux piloter votre activité.
+        Factgen vous permet  de centraliser et gérer l’ensemble de vos clients. Grâce à une intégration CRM légère, vous pouvez suivre les historiques de factures, ajouter des notes et organiser vos relations commerciales. Une solution simple, intégrée et efficace pour mieux piloter votre activité.
       </p>
       <p>
-        Très prochainement, une solution CRM professionnelle sera intégrée à la plateforme. Vous pourrez créer des fiches clients détaillées incluant :
+         une solution CRM professionnelle est  intégrée à la plateforme. Vous pouvez créer des fiches clients détaillées incluant :
       </p>
       <ul class="list-disc list-inside space-y-1">
         <li>Coordonnées complètes</li>
@@ -66,44 +71,77 @@
       <p>
         Gérez efficacement votre relation client et gagnez du temps sur chaque interaction commerciale.
       </p>
+      </div>
+      
     </div>
 
-        <div class="flex justify-center items-center ">
+        <div class="flex justify-center items-center lg:px-60 ">
         
             
-        <div class="lg:px-60 center lg:w-5/5 space-y-15 text-center justify-center align-middle">
+        <div class=" center lg:w-5/5 space-y-15 bg-linear-to-t from-sky-300 to-indigo-200 p-10 rounded-xl text-center justify-center align-middle">
             <h1 class="text-4xl">
                 Comment créer une facture ?
             </h1>
-            <div class="lg:flex">
-                <span class="lg:w-1/2">
+            <div class="lg:flex space-x-5">
+                <span class="lg:w-1/2 lg:p-5 rounded-xl shadow text-blue-900 text-xl ">
                     Notre générateur de facture gratuit vous permet de créer des factures conformes à la loi rapidement. Si vous souhaitez facturer encore plus rapidement et simplement, utilisez notre logiciel de facturation avec lequel vous pouvez sauvegarder les données de vos clients et produits et ainsi créer de nouvelles factures valides en seulement quelques secondes tout en évitant de faire des erreurs.
                 </span>
-                <span class="lg:w-1/2">
-                Une facture doit comporter un certain nombre de mentions obligatoires pour être valide. Si vous oubliez de les mentionner, votre client peut refuser de vous payer et vous risquez de payer une amende. 
+                <span class="lg:w-1/2 lg:p-5 rounded-xl shadow text-blue-900 text-xl">
+                    <h1 class="text-2xl font-bold">Mentions obligatoires</h1>
+                    <p class="text-gray-600">
+                        Pour être valide, une facture doit comporter un certain nombre de mentions obligatoires. Si vous oubliez de les mentionner, votre client peut refuser de vous payer et vous risquez de payer une amende.
+                    </p>
                 </span>
+                    
                 
             </div>
             
         </div>
         </div>
-        <div class="p-3">
+        <div class="p-3 lg:px-60">
             <div class="lg:grid lg:grid-cols-3 lg:gap-3 space-y-8">
-                <div class="space-y-5 p-4">
-                    <h class="font-bold-text-xl">Gagnez du temps</h>
-                    <p>Profitez d’un outil gratuit de facturation en ligne qui fait également office de CRM. Retrouvez vos clients et vos factures au même endroit.</p>
-                </div>
-                <div class="space-y-5 p-4">
-                    <h class="font-bold-text-xl">Sécurisez vos paiements</h>
-                    <p>Gérez gratuitement vos devis et vos factures pour vous assurer que tout est bien traité à temps et recevez vos paiements en ligne.</p>
-                </div>
-                <div class="space-y-5 p-4">
-                    <h class="font-bold-text-xl">Boostez votre CA</h>
-                    <p>Ne passez plus à côté d'opportunités professionnelles. Visualisez dans la partie CRM l'activité et le potentiel d'un client en quelques clics.</p>
-                </div>
+              <div class="flex space-x-5 items-center">
+                    <div class="img">
+                        <img class="w-50 rounded" src="../assets/temps.png" alt="">
+                    </div>
+                    <div class="text">
+                        <div class="font-bold text-lg">
+                          Gagnez du temps
+                        </div>
+                        <div class="text-gray-600">
+                          Profitez d’un outil gratuit de facturation en ligne qui fait également office de CRM. Retrouvez vos clients et vos factures au même endroit.
+                        </div>
+                    </div>
+              </div>
+              <div class="flex space-x-5 items-center">
+                    <div class="img">
+                        <img class="w-50 rounded" src="../assets/trust_8596259.png" alt="">
+                    </div>
+                    <div class="text">
+                        <div class="font-bold text-lg">
+                          Sécurisez vos paiements
+                        </div>
+                        <div class="text-gray-600">
+                          Gérez gratuitement vos devis et vos factures pour vous assurer que tout est bien traité à temps et recevez vos paiements en ligne.
+                        </div>
+                    </div>
+              </div>
+              <div class="flex space-x-5 items-center">
+                    <div class="img">
+                        <img class="w-70 rounded" src="../assets/money-management.png" alt="">
+                    </div>
+                    <div class="text">
+                        <div class="font-bold text-lg">
+                          SBoostez votre CA
+                        </div>
+                        <div class="text-gray-600">
+                          Ne passez plus à côté d'opportunités professionnelles. Visualisez dans la partie CRM l'activité et le potentiel d'un client en quelques clics.
+                        </div>
+                    </div>
+              </div>
             </div>
         </div>
-        <div class="bg-blue-100 text-center space-y-6">
+        <div class="bg-blue-100 text-center lg:px-60 space-y-6">
             <h4 class="text-4xl font-bold">mes document au meme endroid et <span class="text-blue-400">securiser</span></h4>
 
                 <div class="p-6  space-y-10 lg:grid grid-cols-3 grid-rows-1 lg:space-x-7 lg:justify-center text-center">
@@ -155,7 +193,7 @@
                     <!-- Bloc 1 -->
                     <div class="flex space-x-5 items-center">
                     <div class="img">
-                        <!-- Image vide ou icône -->
+                          <img class="w-20 rounded text-blue"  src="../assets/icons8-pas-de-frais-cachés-80.png" alt="">
                     </div>
                     <div class="text">
                         <div class="font-bold text-lg">
@@ -187,18 +225,12 @@
 
 
         </div>
-        <div class=" lg:px-60 mt-4 p-5 bg-blue-200 shadow rounded-xl">
+        <div class=" lg:px-60 mt-4 p-5  shadow rounded-xl">
 
              <FactureTemp />
-             <ClientForm @client-ajoute="ajouterClient" />
+          
         </div>
-        <div class="lg:px-60 text-center flex justify-center items-center centered">
-            <div class="rounded text-4xl">
-               <img class="h-150" src="../assets/phone_tilted_invoice_fr-a091cfaa3c5f700e0e9ce75a2ceeab02d2e347740c20f32d92fb26e19882fbbb.webp" alt="">
-            </div>
-            
-            
-        </div>
+        
         <div class="lg:px-60 w-4/5 space-y-5 space-x-5 ">
             <h1 class="text-2xl">Que doit contenir une facture ?</h1>
             <ul class="space-y-3">
@@ -212,10 +244,22 @@
                 
             </ul>
         </div>
+        <div class="p-3 lg:px-60 flex justify-center flex-col space-y-5">
+                <h1 class="text-4xl " >
+                    Choisir le mode de paiement de la facture
+                </h1>
+                <p>Une facture peut être réglée de diverses manières :</p>
+                <ul role="list" class="list-inside list-disc">
+                    <li>.Par carte bancaire</li>
+                    <li>Par virement bancaire</li>
+                    <li>Par chèque</li>
+                    <li>En espèces</li>
+                </ul>
+            </div>
 
             <!--FAQ-->
-            <div class="py-32 lg:px-20 justify-center">
-                <div class=" lg:w-2/3 mt-10  space-y-4">
+            <div class="lg:px-60 justify-center content-center  flex object-center">
+                <div class=" lg:w-full  space-y-4">
                 <div
                 v-for="(item, index) in sections"
                 :key="index"
@@ -223,7 +267,7 @@
                 >
                 <button
                     @click="toggle(index)"
-                    class="bg-white text-black px-3 py-1 flex justify-between  font-bold rounded w-full"
+                    class="p-5 bg-black/10 text-black px-3  flex justify-between  font-bold rounded w-full"
                 > 
                 <div class="div">
                     {{ item.title }}
@@ -250,24 +294,13 @@
 
             
 
-            <div class="p-3 space-y-5">
-                <h1 class="text-4xl " >
-                    Choisir le mode de paiement de la facture
-                </h1>
-                <p>Une facture peut être réglée de diverses manières :</p>
-                <ul role="list" class="list-disc marker:text-sky-400">
-                    <li>.Par carte bancaire</li>
-                    <li>Par virement bancaire</li>
-                    <li>Par chèque</li>
-                    <li>En espèces</li>
-                </ul>
-            </div>
+            
     </div>
    
 </template>
 
 <script>
-import ClientForm from '../components/ClientForm.vue';
+
 import ProduitForm from '../components/ProduitForm.vue';
 import FacTure from '../components/FacTure.vue';
 import Client from '../models/client';
@@ -279,7 +312,7 @@ import { ref } from 'vue'
 export default{
 
     components:{
-        ClientForm,
+        
         ProduitForm,
         FacTure,
         FactureTemp,
