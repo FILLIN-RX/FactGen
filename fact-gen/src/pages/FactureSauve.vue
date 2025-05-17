@@ -7,9 +7,24 @@
     </div>
 
     <div v-else class="space-y-6">
-      <div v-for="(facture, index) in factures" :key="index" class="border p-4 rounded shadow">
-        <p class="text-lg font-semibold mb-2">Facture #{{ index + 1 }}</p>
-
+      <div v-for="(facture, index) in factures" :key="index" class="border p-5 h-200 space-y-5 rounded shadow">
+        <p class="text-lg font-semibold mb-2">Facture {{ index + 1 }}</p>
+          <div class="entete flex justify-between"> 
+             <div class="bg-black rounded-full h-20 w-20 text-center text-white justify-center"> logo</div>
+             <div class="bg-black"></div>
+          </div>
+          <div  v-if="facture.societer" class="justify-start bg-blue-200 rounded-xl p-5 w-1/2 space-y-5">
+            <p class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
+              {{  facture.societer.nom }}
+            </p>
+            <p class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
+              {{ facture.societer.email }}
+            </p>
+            <p class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
+              {{ facture.societer?.adresse }}
+            </p>
+            
+          </div>
         <p><strong>Client :</strong> {{ facture.client?.nom || 'Inconnu' }} – {{ facture.client?.email || 'Non fourni' }}</p>
         <p><strong>Adresse :</strong> {{ facture.client?.adresse || 'Non fournie' }}</p>
         <p><strong>Date :</strong> {{ formatDate(facture.date) }}</p>
@@ -69,23 +84,63 @@
 <script>
   import { ref } from 'vue'
   import {jsPDF} from 'jspdf';
+  import Facture from '../models/facture';
+  import societer from '../models/societer';
 export default {
   setup() {
     const isOpen = ref(false);
     return { isOpen };
+    
   },
   name: 'ListeFactures',
   data() {
     return {
-      factures: []
+      factures: [],
+      
     };
   },
   created() {
-    const data = localStorage.getItem('factures');
-    if (data) {
-      this.factures = JSON.parse(data);
-    }
-  },
+  const data = localStorage.getItem('factures')
+  if (data) {
+    const facturesBrutes = JSON.parse(data)
+
+    this.factures = facturesBrutes.map(factureData => {
+      // Sécuriser l'accès à societer
+      const socData = factureData.societer || {
+        
+      }
+
+      const soc = new societer(
+        socData.nom,
+        socData.adresse,
+        socData.email,
+        socData.telephone
+      )
+
+      const client = factureData.client || { nom: '', email: '', adresse: '' }
+      const produits = factureData.produits || []
+      const reduction = factureData.reduction || null
+
+      const facture = new Facture(
+        soc,
+        client,
+        produits,
+        reduction
+      )
+
+      if (factureData.date) {
+        facture.date = factureData.date
+      }
+
+      if (factureData.suplement) {
+        facture.suplement = factureData.suplement
+      }
+
+      return facture
+    })
+  }
+}
+,
   methods: {
   formatDate(dateStr) {
     const d = new Date(dateStr);

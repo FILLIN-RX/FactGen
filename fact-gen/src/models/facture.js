@@ -1,14 +1,14 @@
-// src/models/Facture.js
 export default class Facture {
-  constructor(client, produits, reduction = null) {
+  constructor(societer, client, produits, reduction = null,suplement = null) {
     this.client = client;
-    this.produits = produits;
+    this.societer = societer;
+    this.produits = produits || {}; // objet produit
     this.reduction = reduction;
-    this.suplement = null;
+    this.suplement = suplement;
   }
 
   getTotalHT() {
-    return this.produits.reduce((total, p) => total + p.prix * p.quantite, 0);
+    return Object.values(this.produits).reduce((total, p) => total + p.prix * p.quantite, 0);
   }
 
   getMontantReduction() {
@@ -27,6 +27,7 @@ export default class Facture {
 
   toJSON() {
     return {
+      societer:this.societer,
       client: this.client,
       produits: this.produits,
       reduction: this.reduction,
@@ -35,11 +36,12 @@ export default class Facture {
       totalTTC: this.getTotalTTC()
     };
   }
+
   sauvegarder() {
     const factureData = {
+      societer:this.societer,
       client: this.client,
       produits: this.produits,
-      utiliseReduction: this.utiliseReduction,
       reduction: this.reduction,
       suplement: this.suplement,
       totalHT: this.getTotalHT(),
@@ -53,5 +55,6 @@ export default class Facture {
     localStorage.setItem('factures', JSON.stringify(factures));
 
     alert("✅ Facture sauvegardée avec succès !");
+  }
 }
-}
+
