@@ -1,10 +1,10 @@
 <template>
-    <div class="bg-blue-100 space-y-20">
+    <div class=" space-y-20">
 
     
     <!-- Hero Section -->
 <section class="bg-white py-20">
-  <div class=" mx-auto lg:px-60 grid lg:grid-cols-2 gap-12 items-center">
+  <div class=" mx-auto lg:px-40 grid lg:grid-cols-2 gap-12 items-center">
     
     <!-- Left Text -->
     <div class="space-y-6">
@@ -31,266 +31,251 @@
   </div>
 </section>
     <!-- Description Section -->
-    <div class="space-y-4 space-x-8 px-6 lg:px-60">
-      <div class="bg-linear-to-r from-cyan-500 p-10 rounded-xl to-blue-500">
+    <!-- Comment créer une facture -->
 
-      
-      <h2 class="text-2xl font-bold">Qu’est-ce qu’une facture ?</h2>
+
+<!-- Section : Galerie + CRM + Création facture -->
+<section class="px-6 lg:px-40 py-16 space-y-20 bg-white">
+
+<!-- Galerie d'images -->
+<div class="grid lg:grid-cols-3  gap-6">
+  <img class="rounded-2xl w-full h-150 object-cover shadow-md" src="../assets/9305906.jpg" alt="Exemple de facture 1" />
+  <img class="rounded-2xl w-full h-150  object-cover shadow-md" src="../assets/8414110.jpg" alt="Exemple de facture 2" />
+  <img class="rounded-2xl w-full  h-150 object-cover shadow-md" src="../assets/8056759.jpg" alt="Exemple de facture 3" />
+</div>
+
+<!-- CRM Section -->
+<div class="bg-gradient-to-r from-cyan-100 to-blue-200 rounded-2xl p-10 shadow space-y-6 text-gray-800">
+  <h2 class="text-3xl font-bold text-blue-900">Gestion avancée des clients</h2>
+  <p>
+    Centralisez et gérez tous vos clients avec Factgen. Grâce à notre CRM intégré, suivez vos factures, ajoutez des notes et organisez vos relations commerciales sans effort.
+  </p>
+  <p>
+    La plateforme inclut une solution CRM professionnelle qui permet la création de fiches clients complètes :
+  </p>
+  <ul class="list-disc list-inside text-lg space-y-1 text-blue-900">
+    <li>Coordonnées complètes</li>
+    <li>Historique des factures</li>
+    <li>Notes internes</li>
+    <li>Suivi personnalisé par client</li>
+  </ul>
+  <p>
+    Gagnez du temps et améliorez la qualité de vos échanges commerciaux grâce à une gestion centralisée.
+  </p>
+</div>
+
+<!-- Comment créer une facture -->
+<div class="bg-gradient-to-t from-sky-100 to-indigo-100 rounded-2xl p-10 shadow space-y-10 text-center">
+  <h2 class="text-4xl font-bold text-blue-900">Comment créer une facture ?</h2>
+
+  <div class="lg:flex lg:space-x-10 space-y-6 lg:space-y-0 text-left">
+    
+    <!-- Bloc création -->
+    <div class="bg-white p-6 rounded-xl shadow flex-1 space-y-4 text-blue-900 text-lg">
       <p>
-        Une facture est un document détaillé de comptabilité générale prouvant un achat ou une vente. Émis par une structure juridique reconnue (auto-entrepreneur, société, etc.), la facture constate les conditions de l’achat et de la vente de biens ou prestations (nature, quantité, prix unitaire, conditions de paiement, échéances, etc).
-      </p>
-      <p>
-        Ce document a plusieurs utilités, à la fois juridique (constate le droit de créance du vendeur), commerciale (détaille le montant à régler), comptable (sert de justificatif comptable), et fiscale (support au contrôle des impôts et à l’exercice des droits sur la TVA).
+        Utilisez notre générateur de factures gratuit pour créer des documents conformes rapidement. Notre logiciel vous permet de sauvegarder vos données client/produit et de générer une facture en quelques secondes, sans erreur.
       </p>
     </div>
+
+    <!-- Bloc mentions -->
+    <div class="bg-white p-6 rounded-xl shadow flex-1 space-y-4 text-blue-900 text-lg">
+      <h3 class="text-2xl font-bold">Mentions obligatoires</h3>
+      <p class="text-gray-700">
+        Une facture légale doit comporter certaines mentions obligatoires. L'oubli de celles-ci peut entraîner un refus de paiement ou des sanctions.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+</section>
+
+        <!-- Avantages principaux -->
+<section class="px-6 lg:px-40 py-16 bg-white space-y-12">
+  <div class="text-center">
+    <h2 class="text-4xl font-bold text-blue-900">Pourquoi choisir Factgen ?</h2>
   </div>
 
-    <!-- Image Gallery -->
-    <div class="grid lg:grid-cols-3 gap-5 px-6 lg:px-60">
-      <img class="rounded-xl w-full h-auto object-cover" src="../assets/9305906.jpg" alt="facture 1" />
-      <img class="rounded-xl w-full h-auto object-cover" src="../assets/8414110.jpg" alt="facture 2" />
-      <img class="rounded-xl w-full h-auto object-cover" src="../assets/8056759.jpg" alt="facture 3" />
+  <div class="grid lg:grid-cols-3 gap-10">
+    
+    <!-- Bloc 1 -->
+    <div class="flex flex-col items-center bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <img class="w-24 h-24 object-contain mb-4" src="../assets/temps.png" alt="Gagner du temps" />
+      <h3 class="font-bold text-xl text-blue-900 mb-2">Gagnez du temps</h3>
+      <p class="text-gray-700 text-center">
+        Profitez d’un outil gratuit de facturation en ligne et CRM intégré. Regroupez clients et factures au même endroit.
+      </p>
     </div>
 
-    <!-- CRM Section -->
-    <div class="px-6 lg:px-60  space-y-4 text-gray-800">
-      <div class="bg-linear-to-r from-cyan-100 to-blue-200 rounded-xl p-10 space-y-10">
-        <h2 class="text-2xl font-bold">Gestion avancée des clients</h2>
-      <p>
-        Factgen vous permet  de centraliser et gérer l’ensemble de vos clients. Grâce à une intégration CRM légère, vous pouvez suivre les historiques de factures, ajouter des notes et organiser vos relations commerciales. Une solution simple, intégrée et efficace pour mieux piloter votre activité.
+    <!-- Bloc 2 -->
+    <div class="flex flex-col items-center bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <img class="w-24 h-24 object-contain mb-4" src="../assets/trust_8596259.png" alt="Sécurité des paiements" />
+      <h3 class="font-bold text-xl text-blue-900 mb-2">Sécurisez vos paiements</h3>
+      <p class="text-gray-700 text-center">
+        Gérez vos devis et factures efficacement pour garantir un traitement rapide et des paiements sécurisés.
       </p>
-      <p>
-         une solution CRM professionnelle est  intégrée à la plateforme. Vous pouvez créer des fiches clients détaillées incluant :
+    </div>
+
+    <!-- Bloc 3 -->
+    <div class="flex flex-col items-center bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <img class="w-24 h-24 object-contain mb-4" src="../assets/money-management.png" alt="Booster son CA" />
+      <h3 class="font-bold text-xl text-blue-900 mb-2">Boostez votre chiffre d'affaires</h3>
+      <p class="text-gray-700 text-center">
+        Ne ratez plus d’opportunités : suivez l’activité de vos clients grâce à notre module CRM simple et visuel.
       </p>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Coordonnées complètes</li>
-        <li>Historique des factures</li>
-        <li>Notes internes</li>
-        <li>Suivi personnalisé par client</li>
-      </ul>
-      <p>
-        Gérez efficacement votre relation client et gagnez du temps sur chaque interaction commerciale.
+    </div>
+
+  </div>
+</section>
+
+        <!-- Section : Mes documents au même endroit -->
+<section class="bg-blue-50 py-16 px-6 lg:px-40 space-y-16">
+  <div class="text-center">
+    <h2 class="text-4xl font-bold text-blue-900">
+      Mes documents au même endroit et <span class="text-blue-500">sécurisés</span>
+    </h2>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-10">
+    
+    <!-- Simplicité -->
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition h-full flex flex-col items-center text-center">
+      <img class="w-20 h-20 object-contain mb-4" src="../assets/simplicite.png" alt="Simplicité" />
+      <h3 class="text-xl font-bold text-blue-900 mb-2">Simplicité</h3>
+      <p class="text-gray-700">
+        Facile à utiliser, aucun apprentissage nécessaire. Avec Factgen, créez vos factures en quelques clics via une interface intuitive.
       </p>
+    </div>
+
+    <!-- Sécurité -->
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition h-full flex flex-col items-center text-center">
+      <img class="w-20 h-20 object-contain mb-4" src="../assets/logo-cyberdefense-coche-confiance-pour-votre-entreprise-numerique.png" alt="Sécurité" />
+      <h3 class="text-xl font-bold text-blue-900 mb-2">Sécurité</h3>
+      <p class="text-gray-700">
+        Vos données sont protégées par des normes de sécurité strictes. Aucun partage, aucune revente.
+      </p>
+    </div>
+
+    <!-- Archivage -->
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition h-full flex flex-col items-center text-center">
+      <img class="w-20 h-20 object-contain mb-4" src="../assets/5850.jpg" alt="Archivage" />
+      <h3 class="text-xl font-bold text-blue-900 mb-2">Archivage</h3>
+      <p class="text-gray-700">
+        Stockage automatique et accès rapide à tout moment à vos factures. Plus besoin de chercher : tout est archivé.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- Section : Engagements de confidentialité -->
+<section class="px-6 lg:px-40 py-16 bg-white space-y-12">
+  <div class="text-center">
+    <h2 class="text-3xl lg:text-4xl font-bold text-blue-900">
+      Vos données sont <span class="text-blue-500">protégées</span>
+    </h2>
+    <p class="mt-2 text-gray-600 text-lg">Chez Factgen, la confidentialité et la transparence sont au cœur de notre engagement.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- Bloc 1 : Aucune revente -->
+    <div class="flex items-start space-x-5 bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <img class="w-16 h-16 object-contain" src="../assets/icons8-pas-de-frais-cachés-80.png" alt="Pas de revente" />
+      <div>
+        <h3 class="text-xl font-bold text-blue-900 mb-1">Aucune revente de données</h3>
+        <p class="text-gray-700">
+          Factgen garantit la confidentialité complète de vos informations commerciales. Nous ne revendons jamais vos données.
+        </p>
       </div>
-      
     </div>
 
-        <div class="flex justify-center items-center lg:px-60 ">
-        
-            
-        <div class=" center lg:w-5/5 space-y-15 bg-linear-to-t from-sky-300 to-indigo-200 p-10 rounded-xl text-center justify-center align-middle">
-            <h1 class="text-4xl">
-                Comment créer une facture ?
-            </h1>
-            <div class="lg:flex space-x-5">
-                <span class="lg:w-1/2 lg:p-5 rounded-xl shadow text-blue-900 text-xl ">
-                    Notre générateur de facture gratuit vous permet de créer des factures conformes à la loi rapidement. Si vous souhaitez facturer encore plus rapidement et simplement, utilisez notre logiciel de facturation avec lequel vous pouvez sauvegarder les données de vos clients et produits et ainsi créer de nouvelles factures valides en seulement quelques secondes tout en évitant de faire des erreurs.
-                </span>
-                <span class="lg:w-1/2 lg:p-5 rounded-xl shadow text-blue-900 text-xl">
-                    <h1 class="text-2xl font-bold">Mentions obligatoires</h1>
-                    <p class="text-gray-600">
-                        Pour être valide, une facture doit comporter un certain nombre de mentions obligatoires. Si vous oubliez de les mentionner, votre client peut refuser de vous payer et vous risquez de payer une amende.
-                    </p>
-                </span>
-                    
-                
-            </div>
-            
-        </div>
-        </div>
-        <div class="p-3 lg:px-60">
-            <div class="lg:grid lg:grid-cols-3 lg:gap-3 space-y-8">
-              <div class="flex space-x-5 items-center">
-                    <div class="img">
-                        <img class="w-50 rounded" src="../assets/temps.png" alt="">
-                    </div>
-                    <div class="text">
-                        <div class="font-bold text-lg">
-                          Gagnez du temps
-                        </div>
-                        <div class="text-gray-600">
-                          Profitez d’un outil gratuit de facturation en ligne qui fait également office de CRM. Retrouvez vos clients et vos factures au même endroit.
-                        </div>
-                    </div>
-              </div>
-              <div class="flex space-x-5 items-center">
-                    <div class="img">
-                        <img class="w-50 rounded" src="../assets/trust_8596259.png" alt="">
-                    </div>
-                    <div class="text">
-                        <div class="font-bold text-lg">
-                          Sécurisez vos paiements
-                        </div>
-                        <div class="text-gray-600">
-                          Gérez gratuitement vos devis et vos factures pour vous assurer que tout est bien traité à temps et recevez vos paiements en ligne.
-                        </div>
-                    </div>
-              </div>
-              <div class="flex space-x-5 items-center">
-                    <div class="img">
-                        <img class="w-70 rounded" src="../assets/money-management.png" alt="">
-                    </div>
-                    <div class="text">
-                        <div class="font-bold text-lg">
-                          SBoostez votre CA
-                        </div>
-                        <div class="text-gray-600">
-                          Ne passez plus à côté d'opportunités professionnelles. Visualisez dans la partie CRM l'activité et le potentiel d'un client en quelques clics.
-                        </div>
-                    </div>
-              </div>
-            </div>
-        </div>
-        <div class="bg-blue-100 text-center lg:px-60 space-y-6">
-            <h4 class="text-4xl font-bold">mes document au meme endroid et <span class="text-blue-400">securiser</span></h4>
+    <!-- Bloc 2 : Pas de publicité -->
+    <div class="flex items-start space-x-5 bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+      <img class="w-16 h-16 object-contain" src="../assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg" alt="Pas de pub" />
+      <div>
+        <h3 class="text-xl font-bold text-blue-900 mb-1">Aucune publicité ciblée</h3>
+        <p class="text-gray-700">
+          Vos données ne sont jamais utilisées à des fins publicitaires. Zéro traçage, zéro profilage. Juste du service.
+        </p>
+      </div>
+    </div>
 
-                <div class="p-6  space-y-10 lg:grid grid-cols-3 grid-rows-1 lg:space-x-7 lg:justify-center text-center">
-                    <div class="p-3 bg-white rounded-xl shadow h-full">
-                        <div class="flex justify-center items-center">
-                            <img class="w-30" src="/home/fillin/FactGen/fact-gen/src/assets/simplicite.png" alt="">
-                        </div>
-                        <div class="flex justify-center items-center">
-                            simpliciter
-                        </div>
-                        <div class="text-center">
-                            Facile à utiliser, aucun apprentissage nécessaire. Avec Factgen, créez vos factures en quelques clics grâce à une interface intuitive pensée pour tous.
-                                
-                        </div>
+  </div>
+</section>
 
-                    </div>
-                    <div class="p-3 bg-white rounded-xl shadow h-full">
-                        <div class="flex justify-center items-center">
-                            <img class="w-30" src="../assets/logo-cyberdefense-coche-confiance-pour-votre-entreprise-numerique.png" alt="">
-                        </div>
-                        <div class="flex justify-center items-center">
-                            securite
-                        </div>
-                        <div class="text-center">
-                            Vos données sont en sécurité. Factgen protège vos informations commerciales avec des standards de sécurité élevés, sans partage ni revente.
-                                
-                        </div>
-
-                    </div>
-                        
-                    
-                    <div class="p-3 bg-white rounded-xl shadow h-full">
-                        <div class="flex justify-center items-center">
-                            <img class="w-30" src="../assets/5850.jpg" alt="">
-                        </div>
-                        <div class="flex justify-center items-center">
-                            archiver
-                        </div>
-                        <div class="text-center">
-                            Gardez vos factures en sécurité et bien organisées. Factgen stocke automatiquement vos factures et vous permet d’y accéder à tout moment via votre historique. Plus besoin de chercher, tout est archivé pour vous.
-                                
-                        </div>
-
-                    </div>
-                </div>
-                <div class="grid place-items-center">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 text-start lg:w-4/5 p-6">
-                    
-                    <!-- Bloc 1 -->
-                    <div class="flex space-x-5 items-center">
-                    <div class="img">
-                          <img class="w-20 rounded text-blue"  src="../assets/icons8-pas-de-frais-cachés-80.png" alt="">
-                    </div>
-                    <div class="text">
-                        <div class="font-bold text-lg">
-                        Aucune revente de données
-                        </div>
-                        <div class="text-gray-600">
-                        Factgen ne revend pas vos données afin de garantir la confidentialité et la sécurité de vos informations commerciales.
-                        </div>
-                    </div>
-                    </div>
-
-                    <!-- Bloc 2 -->
-                    <div class="flex space-x-5 items-center">
-                    <div class="img">
-                        <img class="w-20 rounded" src="../assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg" alt="">
-                    </div>
-                    <div class="text">
-                        <div class="font-bold text-lg">
-                        Aucune publicité ciblée
-                        </div>
-                        <div class="text-gray-600">
-                        Factgen ne diffuse pas vos données à des fins commerciales.
-                        </div>
-                    </div>
-                    </div>
-
-                </div>
-                </div>
-
-
-        </div>
         <div class=" lg:px-60 mt-4 p-5  shadow rounded-xl">
 
              <FactureTemp />
           
         </div>
-        
-        <div class="lg:px-60 w-4/5 space-y-5 space-x-5 ">
-            <h1 class="text-2xl">Que doit contenir une facture ?</h1>
-            <ul class="space-y-3">
-                <li>La date et le numéro de la facture</li>
-                <li>La date de la vente du service ou du bien</li>
-                <li>Des éléments permettant d’identifier l'émetteur (dénomination sociale, adresse du siège social et de facturation, SIREN, forme juridique et capital social). L’identité du client (dénomination sociale, adresses de facturation et de livraison)</li>
-                <li>L’identité du client (dénomination sociale, adresses de facturation et de livraison)</li>
-                <li>La date et l’échéance du règlement</li>
-                <li>Le taux de pénalité de retard</li>
-                <li>La mention “autoliquidation de la TVA” dans les cas applicables (facture intracommunautaire, etc)</li>
-                
-            </ul>
-        </div>
-        <div class="p-3 lg:px-60 flex justify-center flex-col space-y-5">
-                <h1 class="text-4xl " >
-                    Choisir le mode de paiement de la facture
-                </h1>
-                <p>Une facture peut être réglée de diverses manières :</p>
-                <ul role="list" class="list-inside list-disc">
-                    <li>.Par carte bancaire</li>
-                    <li>Par virement bancaire</li>
-                    <li>Par chèque</li>
-                    <li>En espèces</li>
-                </ul>
-            </div>
+ <!-- Section : Contenu obligatoire d'une facture -->
+<section class="px-6 lg:px-40 py-16 space-y-16 bg-white">
+  <div class="space-y-6">
+    <h2 class="text-3xl lg:text-4xl font-bold text-blue-900">Que doit contenir une facture ?</h2>
+    <ul class="list-disc list-inside space-y-3 text-gray-700 text-lg">
+      <li>La date et le numéro de la facture</li>
+      <li>La date de la vente ou de la prestation</li>
+      <li>L’identité de l’émetteur (raison sociale, adresse, SIREN, forme juridique...)</li>
+      <li>L’identité du client (raison sociale, adresses de facturation/livraison)</li>
+      <li>Le montant total et les détails ligne par ligne</li>
+      <li>La date et l’échéance de règlement</li>
+      <li>Le taux de pénalité en cas de retard</li>
+      <li>La mention “autoliquidation de la TVA” si applicable</li>
+    </ul>
+  </div>
+
+  <!-- Section : Modes de paiement -->
+  <div class="space-y-6">
+    <h2 class="text-3xl font-bold text-blue-900">Modes de paiement disponibles</h2>
+    <p class="text-lg text-gray-700">
+      Une facture peut être réglée par plusieurs moyens. Factgen vous laisse la liberté de choisir selon votre activité :
+    </p>
+    <ul class="list-disc list-inside text-lg text-gray-700 space-y-2">
+      <li>Carte bancaire</li>
+      <li>Virement bancaire</li>
+      <li>Chèque</li>
+      <li>Espèces</li>
+    </ul>
+  </div>
+</section>
 
             <!--FAQ-->
-            <div class="lg:px-60 justify-center content-center  flex object-center">
-                <div class=" lg:w-full  space-y-4">
-                <div
-                v-for="(item, index) in sections"
-                :key="index"
-                class=" rounded p-4"
-                >
-                <button
-                    @click="toggle(index)"
-                    class="p-5 bg-black/10 text-black px-3  flex justify-between  font-bold rounded w-full"
-                > 
-                <div class="div">
-                    {{ item.title }}
-                </div>
-                <div class="div">
-                    {{ isOpen[index] ? '-' : '+' }}
-                </div>
-                  
-                </button>
+            <!-- Section : FAQ -->
+<section class="px-6 lg:px-40 py-16 space-y-10 bg-blue-50 rounded-xl">
+  <div class="text-center">
+    <h2 class="text-3xl lg:text-4xl font-bold text-blue-900">Foire aux questions</h2>
+  </div>
 
-                <Transition name="collapse">
-                    <div
-                    v-if="isOpen[index]"
-                    class="mt-2  p-2 rounded"
-                    >
-                    {{ item.content }}
-                    </div>
-                </Transition>
-                </div>
-            </div>
+  <div class="space-y-6">
+    <div
+      v-for="(item, index) in sections"
+      :key="index"
+      class="bg-white rounded-xl shadow-md overflow-hidden"
+    >
+      <button
+        @click="toggle(index)"
+        class="w-full px-6 py-4 flex justify-between items-center text-left text-blue-900 font-semibold text-lg hover:bg-blue-100 transition"
+      >
+        <span>{{ item.title }}</span>
+        <span :class="{ 'rotate-180': isOpen[index] }" class="transition-transform duration-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 9l-7 7-7-7" />
+          </svg>
+        </span>
+      </button>
+
+      <Transition name="collapse" mode="out-in">
+        <div v-if="isOpen[index]" class="px-6 pb-4 text-gray-700">
+          {{ item.content }}
+        </div>
+      </Transition>
+    </div>
+  </div>
+</section>
 
                 
-            </div>
+          
 
             
 

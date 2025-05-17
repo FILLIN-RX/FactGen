@@ -1,79 +1,96 @@
 <template>
-  <div class="lg:flex  inset-shadow-sm inset-shadow-indigo-500/50 p-5 ">
+  <div class="lg:flex p-5 ">
 
   
-  <div class="p-3 space-y-6 bg-white max-w-2xl mx-auto rounded shadow h-full">
-    <!-- Client -->
-    <h2 class="font-bold text-lg mb-2">Informations client</h2>
-    <div class="grid lg:grid-cols-3 grid-rows-1">
-     
-      <div class="p-3">
-        <label for="nom">NOM:</label>
-        <input v-model="client.nom" placeholder="Nom" class=" flex input bg-blue-100  rounded-xl border  border-1px-gray-200 focus:border-0 py-4 text-center" />
-      </div>
-      <div class="p-3">
-        <label for="email">
-            EMAIL:
-        </label>
-        <input v-model="client.email" placeholder="Email" class=" flex input bg-blue-100 rounded-xl  border  border-1px-gray-200 focus:border-0 py-4 text-center" />
-      </div>
-      <div class="p-3">
-        <label for="ADRESSE">
-          ADDRESS:
-        </label>
-        <input v-model="client.adresse" placeholder="Adresse" class="flex input bg-blue-100 rounded-xl  border  border-1px-gray-200 focus:border-0 py-4 text-center" />
-      </div>
-      
-      
-      
-     
-    </div>
+ <!-- Section : Formulaire de création de facture -->
+<section class="p-6 bg-white max-w-4xl mx-auto rounded-2xl shadow-lg space-y-10">
 
-    <!-- Produits -->
+<!-- Informations client -->
+<div>
+  <h2 class="text-2xl font-bold text-blue-900 mb-4">Informations client</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <div>
-      <h2 class="font-bold text-lg mb-2">Produits</h2>
-      <div v-for="(p, index) in produits" :key="index" class="flex mb-2 space-x-3">
-        <input v-model="p.nom" placeholder="Nom" class="input w-1/3 border rounded border-2 border-orange-100 p-1 lg:w-1/4" />
-        <input v-model.number="p.prix" placeholder="Prix" type="number" class="input w-1/3 border border-2 rounded border-orange-100 p-1 lg:w-1/4" />
-        <input  v-model.number="p.quantite" placeholder="Quantité" type="number" class="input w-1/3 border-2 border rounded border-orange-100 p-1 lg:w-1/4" />
-        <div class="lg:w-1/4">{{ (p.prix * p.quantite).toFixed(2) }} €</div>
-        <button @click="supprimerLigne(index)"
-              class=" -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-center shadow hover:bg-red-600">
-        ×
-      </button>
-      </div>
-      <button @click="ajouterProduit" class="btn outline-2 outline-offset-2 outline-green-200 bg-green-400 rounded-xl p-3 hover:bg-green-200">Ajouter un produit</button>
+      <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+      <input v-model="client.nom" id="nom" placeholder="Nom"
+        class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center" />
     </div>
-
-    <!-- Réduction facultative -->
     <div>
-      <h2 class="font-bold text-lg mb-2 space-x-5">Réduction</h2>
-      <label>
-        <input type="radio" value="oui" v-model="utiliseReduction" /> Oui
-      </label>
-      <label class="ml-4">
-        <input type="radio" value="non" v-model="utiliseReduction" /> Non
-      </label>
-
-      <div v-if="utiliseReduction === 'oui'" class="mt-4 space-y-2 space-x-5">
-        <select v-model="reduction.type" class="input p-5 px-6 bg-blue-100 rounded-xl">
-          <option value="pourcentage" class="p-5 bg-blue-200 rounded">Pourcentage %</option>
-          <option value="montant">Montant fixe</option>
-        </select>
-        <input v-model.number="reduction.valeur" placeholder="Valeur de la réduction" type="number" class="input border border-2 rounded-xl border-orange-300 p-4" />
-      </div>
-      <div>
-        <input type="text" v-model="suplement" class="w-full outline-2 outline-offset outline-orange-200  p-3 rounded h-20" placeholder="Information supplementaire">
-      </div>
-      <button @click="sauvegarderFacture" class="mt-6 bg-blue-500 text-white p-3 rounded hover:bg-blue-600">
-      Sauvegarder la facture
-    </button>
-
+      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+      <input v-model="client.email" id="email" placeholder="Email"
+        class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center" />
     </div>
+    <div>
+      <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
+      <input v-model="client.adresse" id="adresse" placeholder="Adresse"
+        class="w-full bg-blue-100 rounded-xl border border-gray-300 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center" />
+    </div>
+  </div>
+</div>
+
+<!-- Produits -->
+<div>
+  <h2 class="text-2xl font-bold text-blue-900 mb-4">Produits</h2>
+  <div v-for="(p, index) in produits" :key="index" class="flex flex-wrap gap-3 items-center mb-4">
+    <input v-model="p.nom" placeholder="Nom"
+      class="w-full lg:w-1/4 border-2 border-orange-100 rounded-xl p-2" />
+    <input v-model.number="p.prix" type="number" placeholder="Prix"
+      class="w-full lg:w-1/4 border-2 border-orange-100 rounded-xl p-2" />
+    <input v-model.number="p.quantite" type="number" placeholder="Quantité"
+      class="w-full lg:w-1/4 border-2 border-orange-100 rounded-xl p-2" />
+    <div class="text-blue-800 font-semibold lg:w-auto">{{ (p.prix * p.quantite).toFixed(2) }} €</div>
+    <button @click="supprimerLigne(index)"
+      class="bg-red-500 text-white rounded-full w-6 h-6 text-center hover:bg-red-600 shadow">×</button>
+  </div>
+  <button @click="ajouterProduit"
+    class="bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition">
+    Ajouter un produit
+  </button>
+</div>
+
+<!-- Réduction -->
+<div>
+  <h2 class="text-2xl font-bold text-blue-900 mb-4">Réduction</h2>
+  <div class="flex items-center gap-6">
+    <label class="flex items-center gap-2">
+      <input type="radio" value="oui" v-model="utiliseReduction" />
+      <span>Oui</span>
+    </label>
+    <label class="flex items-center gap-2">
+      <input type="radio" value="non" v-model="utiliseReduction" />
+      <span>Non</span>
+    </label>
+  </div>
+
+  <div v-if="utiliseReduction === 'oui'" class="mt-4 space-y-4">
+    <select v-model="reduction.type"
+      class="w-full lg:w-1/3 bg-blue-100 rounded-xl p-3 border border-gray-300">
+      <option value="pourcentage">Pourcentage (%)</option>
+      <option value="montant">Montant fixe (€)</option>
+    </select>
+    <input v-model.number="reduction.valeur" type="number" placeholder="Valeur de la réduction"
+      class="w-full lg:w-1/3 border-2 border-orange-300 rounded-xl p-3" />
+  </div>
+</div>
+
+<!-- Commentaire / Info -->
+<div>
+  <h2 class="text-2xl font-bold text-blue-900 mb-4">Informations supplémentaires</h2>
+  <textarea v-model="suplement" placeholder="Informations additionnelles..."
+    class="w-full border-2 border-orange-200 rounded-xl p-4 h-24 resize-none"></textarea>
+</div>
+
+<!-- Bouton sauvegarde -->
+<div class="text-center">
+  <button @click="sauvegarderFacture"
+    class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-700 transition">
+    Sauvegarder la facture
+  </button>
+</div>
+</section>
+
 
     <!-- Aperçu facture -->
     
-  </div>
   <div class="bg-gray-100 p-4 mt-3 rounded shadow lg:w-1/2 ">
       <h2 class="font-bold text-lg mb-2">Aperçu de la facture</h2>
       <div class="py-10 pl-5">
