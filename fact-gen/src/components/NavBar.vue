@@ -1,26 +1,27 @@
 <template>
     <nav :class="{'scrolled-nav':scrollNav}"  >
-        <div class="bg-blue-200 p-5 top-0 left-0 h-16 flex justify-between lg:px-60 fixed z-90 w-full shadow">
+        <div class="bg-blue-900 p-5 top-0 left-0 h- flex justify-between lg:px-40 fixed z-90 w-full shadow">
 
         
-        <div class=" font-mono logo text-blue-800 text-2xl flex">
-            <router-link to="/"> FACTGEN</router-link>
+        <div class=" w-20 font-bold logo text-blue-600 text-3xl flex">
+            <router-link to="/"> <span class="text-white">FACT</span>GEN</router-link>
            
         </div>
-        <div v-if="mobile" class="icon flex h-full justify-center">
+        <div class="lg:hidden icon flex h-full justify-center items-center top-0">
             <img @click="toggleNav" :class="{ 'icon-active':mobileNav}" src="../assets/8604bcf1-d9e9-4924-ab99-89e8a04d5de4.svg" alt="">
         </div>
-        <div>
-            <ul v-if="!mobile" class="flex h-full justify-center space-x-3 items-center text-center ">
-                <li class="hover:underline" ><router-link to="/FacTure">Facture</router-link></li>
-                <li class="hover:underline">customize</li>
-                <button class=" transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-4xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"><router-link to="/clientFact">client</router-link></button>
-                <button class=" transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-4xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"><router-link to="/login">login</router-link></button>
-                <button class="transition duration-500 text-blue-600 p-3 border-green-100 bg-green-400 p-2 border- rounded-4xl hover:text-black hover:border-transparent hover:bg-green-500 active:bg-green-900">login/Registered</button>
+        <div >
+            <ul v-if="!mobile" class=" hidden lg:flex h-full justify-center space-x-10 items-center text-center ">
+                <li class="hover:text-blue-500 ease-in duration-200" ><router-link to="/FacTure">Facture</router-link></li>
+                <li class="hover:text-blue-500 ease-in duration-200">customize</li>
+                <li class="hover:text-blue-500 ease-in duration-200"><router-link to="/clientFact">client</router-link></li>
+                <button class="capitalize transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"><router-link to="/login">login</router-link></button>
+                <button class="transition duration-500 text-blue-600 p-3 border-green-100 bg-green-400 p-2 border- rounded-xl hover:text-black hover:border-transparent hover:bg-green-500 active:bg-green-900">Registered</button>
             </ul>
         </div>
         <transition name="mobile-nav" class="dropdown">
             <ul v-if="mobileNav" class=" h-full space-x-3 items-center text-center ">
+                <div class="absolute">X</div>
                 <li class="hover:underline" ><router-link to="/FacTure">Facture</router-link></li>
                 <li class="hover:underline">customize</li>
                 <li class="hover:underline"><router-link to="/clientFact">client</router-link></li>
@@ -36,7 +37,7 @@ export default{
     data() {
         return {
             scrollNav:null,
-            mobile:null,
+            // mobile:null,
             mobileNav:null,
             WindowWidth: null,
         }
@@ -54,28 +55,28 @@ export default{
         toggleNav(){
             this.mobileNav = ! this.mobileNav
         },
-        checkScreen(){
-                this.WindowWidth = window.innerWidth;
-                if (this.WindowWidth<=750) {
-                    this.mobile = true;
+        // checkScreen(){
+        //         this.WindowWidth = window.innerWidth;
+        //         if (this.WindowWidth<=750) {
+        //             this.mobile = true;
 
-                    return;
+        //             return;
                     
-                }
-                this.mobile = false;
-                this.mobileNav = false;
-                return;
-            },
-            updateScroll(){
-                const scrollPosition = window.scrollY;
-                if (scrollPosition>50) {
-                    this.scrollNav=true;
-                    return;
+        //         }
+        //         this.mobile = false;
+        //         this.mobileNav = false;
+        //         return;
+        //     },
+        //     updateScroll(){
+        //         const scrollPosition = window.scrollY;
+        //         if (scrollPosition>50) {
+        //             this.scrollNav=true;
+        //             return;
                     
-                }
-                this.scrollNav = false;
+        //         }
+        //         this.scrollNav = false;
 
-            }
+        //     }
     }
 }
 

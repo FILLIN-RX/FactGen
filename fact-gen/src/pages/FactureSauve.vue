@@ -7,7 +7,9 @@
     </div>
 
     <div v-else class="space-y-6">
-      <div v-for="(facture, index) in factures" :key="index" class="bg-white p-6 mt-6 rounded-xl shadow-lg  mx-auto font-sans">
+      <div v-for="(facture, index) in factures"
+      :key="index"
+      :ref="'facture-' + index" class="bg-white p-6 mt-6 rounded-xl shadow-lg  mx-auto font-sans">
         <p class="text-lg font-semibold mb-2">Facture {{ index + 1 }}</p>
         <div class="flex justify-between items-center mb-8">
       <div class="flex items-center space-x-4">
@@ -74,7 +76,7 @@
 
         <p class="text-sm text-gray-500 mt-2">Info supp : {{ facture.suplement || '—' }}</p>
         <div class="flex justify-between">
-          <button class="p-3 bg-blue-200 rounded hover:bg-blue-300" @click="telechargerFacturePDF(facture, index)">
+          <button class="p-3 bg-blue-200 rounded hover:bg-blue-300" @click="downloadPDF(index)">
             Télécharger en PDF
         </button>
         <button popovertarget="suprimer" class="p-3 bg-red-200 rounded hover:bg-red-300" @click="supprimerFacture(index)">
@@ -109,6 +111,7 @@
 <script>
   import { ref } from 'vue'
   import {jsPDF} from 'jspdf';
+  import html2pdf from 'html2pdf.js';
   import Facture from '../models/facture';
   import societer from '../models/societer';
 export default {
@@ -167,6 +170,39 @@ export default {
 }
 ,
   methods: {
+  
+    downloadPDF(index) {
+  try {
+    const element = this.$refs[`facture-${index}`];
+    if (!element) {
+      console.error(`Ref 'facture-${index}' not found.`);
+      alert("Erreur : la facture n’a pas pu être trouvée.");
+      return;
+    }
+
+    html2pdf().from(element).set({
+      margin: 10,
+      filename: `facture-${index + 1}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).save();
+  } catch (err) {
+    console.error("Erreur lors de l’export PDF :", err);
+    alert("❌ Une erreur est survenue lors de la génération du PDF.");
+  }
+}
+,
+supprimerFacture(index) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
+    this.factures.splice(index, 1);
+    localStorage.setItem('factures', JSON.stringify(this.factures));
+    alert("Facture supprimée avec succès !");
+  }
+},
+  
+  // Fonction pour formater la date
+
+  
   formatDate(dateStr) {
     const d = new Date(dateStr);
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
@@ -178,64 +214,8 @@ export default {
     const num = Number(value);
     return isNaN(num) ? '0.00' : num.toFixed(2);
   },
-  telechargerFacturePDF(facture, index) {
-    const doc = new jsPDF();
+  
 
-    // Titre
-    doc.setFontSize(16);
-    doc.text(`Facture #${index + 1}`, 10, 10);
-    //societter
-    doc.setFontSize(12);
-    doc.text(`entreprise: ${facture.societer.nom }`,10,20);
-    doc.text(`email: ${facture.societer.email }`,10,20);
-    doc.text(`entreprise: ${facture.societer?.adresse }`,10,20)
-    // Client
-    doc.setFontSize(8);
-    doc.text(`Client : ${facture.client.nom}`, 10, 20);
-    doc.text(`Email : ${facture.client.email}`, 10, 27);
-    doc.text(`Adresse : ${facture.client.adresse}`, 10, 34);
-    doc.text(`Date : ${new Date(facture.date).toLocaleString()}`, 10, 41);
-
-    // Produits
-    let y = 50;
-    facture.produits.forEach((p, i) => {
-      doc.text(
-        `${i + 1}. ${p.nom} — ${p.quantite} × ${p.prix} € = ${(p.quantite * p.prix).toFixed(2)} €`,
-        10,
-        y
-      );
-      y += 7;
-    });
-
-    // Totaux
-    y += 5;
-    doc.text(`Total HT : ${facture.totalHT} €`, 10, y);
-    y += 7;
-    if (facture.montantReduction > 0) {
-      doc.text(`Réduction : -${facture.montantReduction.toFixed(2)} €`, 10, y);
-      y += 7;
-    }
-    doc.text(`Total TTC : ${facture.totalTTC} €`, 10, y);
-    y += 10;
-
-    // Supplément
-    if (facture.suplement) {
-      doc.text(`Supplément : ${facture.suplement}`, 10, y);
-    }
-
-    doc.save(`facture-${index + 1}.pdf`);
-  },
-  supprimerFacture(index) {
-  if (!confirm("❌ Voulez-vous vraiment supprimer cette facture ?")) return;
-
-  // Supprimer la facture de la liste
-  this.factures.splice(index, 1);
-
-  // Mettre à jour le localStorage
-  localStorage.setItem('factures', JSON.stringify(this.factures));
-
-  alert("🗑️ Facture supprimée avec succès !");
-}
 },
 
 

@@ -3,8 +3,8 @@
 
     
     <!-- Hero Section -->
-<section class="bg-white py-20">
-  <div class=" mx-auto lg:px-40 grid lg:grid-cols-2 gap-12 items-center">
+<section class="bg-white py-10">
+  <div class=" mx-auto lg:px-40 grid lg:grid-cols-2 gap-12  px-6 items-center">
     
     <!-- Left Text -->
     <div class="space-y-6">
@@ -13,8 +13,9 @@
       </h1>
       <p class="text-gray-700 text-lg">
         Créez des factures et devis professionnels en toute simplicité avec notre générateur gratuit. Téléchargez des documents conformes et personnalisés, en quelques minutes.
+        La solution simple et rapide pour gérer vos factures et vos clients.
       </p>
-      <button class="bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+      <button class="w-full lg:w-1/3 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
         Créer ma facture
       </button>
     </div>
@@ -129,17 +130,20 @@
 </section>
 
         <!-- Section : Mes documents au même endroit -->
-<section class="bg-blue-50 py-16 px-6 lg:px-40 space-y-16">
+<section class="lg:py-16  px-6  lg:px-40 space-y-16">
+  <div class="bg-blue-50 md:px-6 px-3 rounded-2xl space-y-10  py-10  md:py-16 ">
+
+
   <div class="text-center">
-    <h2 class="text-4xl font-bold text-blue-900">
+    <h2 class="md:text-4xl text-2xl font-bold text-blue-900">
       Mes documents au même endroit et <span class="text-blue-500">sécurisés</span>
     </h2>
   </div>
 
-  <div class="grid lg:grid-cols-3 gap-10">
+  <div class="grid md:grid-cols-3 gap-10">
     
     <!-- Simplicité -->
-    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition h-full flex flex-col items-center text-center">
+    <div class="bg-white md:p-6  p-3 rounded-2xl shadow-md hover:shadow-lg transition h-full flex flex-col items-center text-center">
       <img class="w-20 h-20 object-contain mb-4" src="../assets/simplicite.png" alt="Simplicité" />
       <h3 class="text-xl font-bold text-blue-900 mb-2">Simplicité</h3>
       <p class="text-gray-700">
@@ -166,6 +170,7 @@
     </div>
 
   </div>
+</div>
 </section>
 <!-- Section : Engagements de confidentialité -->
 <section class="px-6 lg:px-40 py-16 bg-white space-y-12">
@@ -176,10 +181,10 @@
     <p class="mt-2 text-gray-600 text-lg">Chez Factgen, la confidentialité et la transparence sont au cœur de notre engagement.</p>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 md gap-8">
 
     <!-- Bloc 1 : Aucune revente -->
-    <div class="flex items-start space-x-5 bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+    <div class="md:flex justify-center items-center  md:items-start space-x-5 bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
       <img class="w-16 h-16 object-contain" src="../assets/icons8-pas-de-frais-cachés-80.png" alt="Pas de revente" />
       <div>
         <h3 class="text-xl font-bold text-blue-900 mb-1">Aucune revente de données</h3>
@@ -190,7 +195,7 @@
     </div>
 
     <!-- Bloc 2 : Pas de publicité -->
-    <div class="flex items-start space-x-5 bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
+    <div class="md:flex items-start space-x-5 bg-blue-50 p-6 rounded-2xl shadow hover:shadow-lg transition">
       <img class="w-16 h-16 object-contain" src="../assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg" alt="Pas de pub" />
       <div>
         <h3 class="text-xl font-bold text-blue-900 mb-1">Aucune publicité ciblée</h3>
@@ -203,7 +208,7 @@
   </div>
 </section>
 
-        <div class=" lg:px-60 mt-4 p-5  shadow rounded-xl">
+        <div class=" lg:px-40 mt-4 p-5  shadow rounded-xl">
 
              <FactureTemp />
           

@@ -2,22 +2,19 @@
   <div id="app">
     <Loading v-if="isLoading" />
     <div v-else>
-    <NavBar />
-
-    <div class="pt-16">
-    
-       <router-view></router-view>
-
+      <NavBar />
+        <div class="pt-16">
+          <router-view></router-view>
+        </div>
+      <FooTer />
     </div>
-  </div>
-    
-  
   </div>
 </template>
 
 <script>
 
 import NavBar from './components/NavBar.vue';
+import FooTer from  './components/FooTer.vue';
 import HomePage from '../src/pages/HomePage.vue';
 import Loading from './components/LoadinApp.vue';
 export default {
@@ -25,7 +22,8 @@ export default {
     
     NavBar,
     HomePage,
-    Loading
+    Loading,
+    FooTer
   },
   data() {
     return {

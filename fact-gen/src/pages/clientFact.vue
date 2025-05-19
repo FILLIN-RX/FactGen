@@ -122,7 +122,7 @@
 
       <div class="flex justify-end space-x-3">
         <button class="bg-gray-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200">Modifier</button>
-        <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Supprimer</button>
+        <button @click="supprimerClient(index)" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Supprimer</button>
       </div>
     </div>
   </div>
@@ -182,8 +182,13 @@ export default {
 
       // ✅ Ferme le popup
       this.open = false;
-    }
+    },
+    supprimerClient(index){
+    this.clients.splice(index,1)
+
   },
+  },
+ 
   mounted() {
     this.chercherClient(this.nom);
   }
