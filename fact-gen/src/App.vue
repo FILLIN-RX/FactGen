@@ -2,11 +2,13 @@
   <div id="app">
     <Loading v-if="isLoading" />
     <div v-else>
-      <NavBar />
-        <div class="pt-16">
-          <router-view></router-view>
-        </div>
-      <FooTer />
+      <NavBar v-if="!isLayoutProtege" />
+      
+      <div class="pt-16">
+        <router-view />
+      </div>
+
+      <FooTer v-if="!isLayoutProtege && $route.meta.showNavbarAndFooter !== false" />
     </div>
   </div>
 </template>
@@ -36,11 +38,21 @@ export default {
       this.isLoading = false; // Fin du chargement => afficher l'app
     }, 2000);
   },
+  computed: {
+  isLayoutProtege() {
+    // AppLayout sera utilisé uniquement sur les routes enfants protégées
+    return this.$route.matched.some(r => r.components?.default?.name === 'AppLayout');
+  }
+}
+
 };
 </script>
 
 <style>
-@plugin "daisyui";
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: false;
+}
 /* Styles généraux */
 
 </style>

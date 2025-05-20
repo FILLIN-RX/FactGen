@@ -1,6 +1,6 @@
 <template >
   <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded ">
-    <h1 class="text-2xl font-bold mb-4">📄 Liste des factures sauvegardées</h1>
+    <h1 class="text-2xl text-blue-200 font-bold mb-4">📄 Liste des factures sauvegardées</h1>
 
     <div v-if="factures.length === 0" class="text-gray-600 flex ">
       Aucune facture sauvegardée pour le moment.
@@ -8,8 +8,10 @@
 
     <div v-else class="space-y-6">
       <div v-for="(facture, index) in factures"
-      :key="index"
-      :ref="'facture-' + index" class="bg-white p-6 mt-6 rounded-xl shadow-lg  mx-auto font-sans">
+     :key="index"
+     :ref="el => setFactureRef(el, index)"
+     class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
+
         <p class="text-lg font-semibold mb-2">Facture {{ index + 1 }}</p>
         <div class="flex justify-between items-center mb-8">
       <div class="flex items-center space-x-4">
@@ -76,7 +78,7 @@
 
         <p class="text-sm text-gray-500 mt-2">Info supp : {{ facture.suplement || '—' }}</p>
         <div class="flex justify-between">
-          <button class="p-3 bg-blue-200 rounded hover:bg-blue-300" @click="downloadPDF(index)">
+          <button class="p-3 bg-primary rounded hover:bg-blue-300" @click="downloadPDF(index)">
             Télécharger en PDF
         </button>
         <button popovertarget="suprimer" class="p-3 bg-red-200 rounded hover:bg-red-300" @click="supprimerFacture(index)">
@@ -95,15 +97,7 @@
       </div>
      
     </div>
-    <div class="p-4 border rounded max-w-md mx-auto mt-10">
-    <button @click="isOpen = !isOpen" class="bg-blue-500 text-white px-4 py-2 rounded">
-      {{ isOpen ? 'Masquer' : 'Afficher' }} la description
-    </button>
-      
-    <div v-show="isOpen" class="mt-4 p-3 bg-gray-100 rounded transition-all duration-300">
-      Voici le contenu que tu peux afficher ou masquer !
-    </div>
-  </div>
+    
     
   </div>
 </template>
@@ -124,6 +118,7 @@ export default {
   data() {
     return {
       factures: [],
+      factureElements: []
       
     };
   },
@@ -172,26 +167,31 @@ export default {
   methods: {
   
     downloadPDF(index) {
-  try {
-    const element = this.$refs[`facture-${index}`];
-    if (!element) {
-      console.error(`Ref 'facture-${index}' not found.`);
-      alert("Erreur : la facture n’a pas pu être trouvée.");
-      return;
-    }
+  const element = this.factureElements[index]
 
-    html2pdf().from(element).set({
+  if (!element) {
+    console.error(`❌ Élément DOM introuvable pour la facture index: ${index}`)
+    alert("Erreur : la facture n'a pas pu être localisée.")
+    return
+  }
+
+  html2pdf()
+    .from(element)
+    .set({
       margin: 10,
       filename: `facture-${index + 1}.pdf`,
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).save();
-  } catch (err) {
-    console.error("Erreur lors de l’export PDF :", err);
-    alert("❌ Une erreur est survenue lors de la génération du PDF.");
-  }
+    })
+    .save()
 }
 ,
+  // Fonction pour définir la référence de l'élément de la facture
+setFactureRef(el, index) {
+  if (el) this.factureElements[index] = el
+}
+,
+  // Fonction pour supprimer une facture
 supprimerFacture(index) {
   if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
     this.factures.splice(index, 1);

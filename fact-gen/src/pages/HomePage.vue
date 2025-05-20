@@ -246,7 +246,7 @@
 
             <!--FAQ-->
             <!-- Section : FAQ -->
-<section class="px-6 lg:px-40 py-16 space-y-10 bg-blue-50 rounded-xl">
+<section data-theme="retro" class="px-6 lg:px-40 py-16 space-y-10 bg-blue-50 rounded-xl">
   <div class="text-center">
     <h2 class="text-3xl lg:text-4xl font-bold text-blue-900">Foire aux questions</h2>
   </div>
@@ -292,7 +292,7 @@
 <script>
 
 import ProduitForm from '../components/ProduitForm.vue';
-import FacTure from '../components/FacTure.vue';
+
 import Client from '../models/client';
 import FactureTemp from '../components/FactureTemp.vue'
 import Produit from '../models/produit';
@@ -304,7 +304,7 @@ export default{
     components:{
         
         ProduitForm,
-        FacTure,
+      
         FactureTemp,
         factureSauve
     },
