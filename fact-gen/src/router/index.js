@@ -23,20 +23,14 @@ const routes = [
         name: 'Facture',
         component: FacTure
       },
+      {
+        path: '/clientFact',
+        name: 'ClientFact',
+        component: clientFact,
+      
+      },
     ]
     },
-  {
-    path: '/facture',
-    name: 'Facture',
-    component: FacTure,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/clientFact',
-    name: 'ClientFact',
-    component: clientFact,
-    meta: { requiresAuth: true }
-  },
   {
     path: '/login',
     name: 'Login',

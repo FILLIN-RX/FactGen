@@ -170,6 +170,8 @@
 import Facture from '../models/facture';
 import societer from '../models/societer';
 import Produit from '../models/produit';
+import html2canvas from 'html2canvas';
+
 
 export default {
   data() {
