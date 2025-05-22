@@ -1,5 +1,6 @@
 export default class Facture {
-  constructor(societer, client, produits, reduction = null,suplement = null) {
+  constructor(societer, client, produits, reduction = null, suplement = null) {
+    this.numero = this.genererNumero();
     this.client = client;
     this.societer = societer;
     this.produits = produits || {}; // objet produit
@@ -25,28 +26,48 @@ export default class Facture {
     return this.getTotalHT() - this.getMontantReduction();
   }
 
+  genererNumero() {
+    let dernier = parseInt(localStorage.getItem("dernierNumeroFacture") || "0");
+    let nouveau = dernier + 1;
+    localStorage.setItem("dernierNumeroFacture", nouveau.toString());
+    return "F-" + String(nouveau).padStart(5, "0"); // Ex : F-00001
+  }
+
+  // ✅ Nouveaux getters
+  get totalHT() {
+    return this.getTotalHT();
+  }
+
+  get montantReduction() {
+    return this.getMontantReduction();
+  }
+
+  get totalTTC() {
+    return this.getTotalTTC();
+  }
+
   toJSON() {
     return {
-      societer:this.societer,
+      societer: this.societer,
       client: this.client,
       produits: this.produits,
       reduction: this.reduction,
-      totalHT: this.getTotalHT(),
-      montantReduction: this.getMontantReduction(),
-      totalTTC: this.getTotalTTC()
+      totalHT: this.totalHT,
+      montantReduction: this.montantReduction,
+      totalTTC: this.totalTTC
     };
   }
 
   sauvegarder() {
     const factureData = {
-      societer:this.societer,
+      societer: this.societer,
       client: this.client,
       produits: this.produits,
       reduction: this.reduction,
       suplement: this.suplement,
-      totalHT: this.getTotalHT(),
-      montantReduction: this.getMontantReduction(),
-      totalTTC: this.getTotalTTC(),
+      totalHT: this.totalHT,
+      montantReduction: this.montantReduction,
+      totalTTC: this.totalTTC,
       date: new Date().toISOString()
     };
 
@@ -57,4 +78,3 @@ export default class Facture {
     alert("✅ Facture sauvegardée avec succès !");
   }
 }
-

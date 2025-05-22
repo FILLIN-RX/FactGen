@@ -5,33 +5,43 @@
     <div v-if="factures.length === 0" class="text-gray-600 flex ">
       Aucune facture sauvegardée pour le moment.
     </div>
-
-    <div v-else class="space-y-6">
-      <div v-for="(facture, index) in factures"
-     :key="index"
-     :ref="el => setFactureRef(el, index)"
+    <ul v-else >
+      <li
+         v-for="(facture, index) in factures"
+        :key="facture.numero"
+          @click="selectionnerFacture(facture, index)"
+        :ref="el => setFactureRef(el, index)"
+        class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans cursor-pointer hover:bg-gray-200 p-2"
+      >
+        <!-- Affichage résumé : numéro, client, date, total TTC -->
+        #{{ facture.numero }} - {{ facture.client.nom }} - {{ facture.date }} - {{ facture.getTotalTTC().toFixed(2) }} €
+      </li>
+    </ul>
+    <div  v-if="factureSelectionnee" class="fixed inset-0 bg-black/10 bg-opacity-20 backdrop-blur-sm z-50 flex items-center justify-center space-y-6" @click.self="factureSelectionnee = null">
+      <div 
      class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
 
-        <p class="text-lg font-semibold mb-2">Facture {{ index + 1 }}</p>
+      
+        <p class="text-lg font-semibold mb-2">Facture:{{factureSelectionnee.numero}}</p>
         <div class="flex justify-between items-center mb-8">
       <div class="flex items-center space-x-4">
         <div class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow">
           <img v-if="logoDataUrl" :src="logoDataUrl" alt="Logo" class="h-full w-full object-cover" />
         </div>
-        <div v-if="facture.societer">
-          <h3 class="text-xl font-semibold"> {{  facture.societer.nom }}</h3>
-          <p class="text-sm text-gray-600">{{ facture.societer.email }}</p>
-          <p class="text-sm text-gray-600">{{ facture.societer?.adresse }}</p>
+        <div v-if="factureSelectionnee.societer">
+          <h3 class="text-xl font-semibold"> {{  factureSelectionnee.societer.nom }}</h3>
+          <p class="text-sm text-gray-600">{{ factureSelectionnee.societer.email }}</p>
+          <p class="text-sm text-gray-600">{{ factureSelectionnee.societer?.adresse }}</p>
         </div>
       </div>
 
           </div>
           <div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
       <h4 class="font-semibold mb-2 text-gray-800">Client :</h4>
-      <p><strong>Nom :</strong> {{ facture.client?.nom  }}</p>
-      <p><strong>Email :</strong>{{ facture.client?.email }}</p>
-      <p><strong>Adresse :</strong> {{ facture.client?.adresse }}</p>
-      <p><strong>Date :</strong> {{ formatDate(facture.date) }}</p>
+      <p><strong>Nom :</strong> {{ factureSelectionnee.client?.nom  }}</p>
+      <p><strong>Email :</strong>{{ factureSelectionnee.client?.email }}</p>
+      <p><strong>Adresse :</strong> {{ factureSelectionnee.client?.adresse }}</p>
+      <p><strong>Date :</strong> {{ formatDate(factureSelectionnee.date) }}</p>
       
     </div>
     
@@ -43,7 +53,7 @@
         <div class="text-center">Prix unitaire</div>
         <div class="text-right">Prix total</div>
     </div>
-      <div v-for="(p, i) in facture.produits || []" :key="i" class="grid grid-cols-4 p-3 border-b text-sm text-gray-800">
+      <div v-for="(p, i) in factureSelectionnee.produits || []" :key="i" class="grid grid-cols-4 p-3 border-b text-sm text-gray-800">
         <div class="truncate">{{ p.nom }}</div>
         <div class="text-center">{{ p.quantite }}</div>
         <div class="text-center">{{ p.prix }} €</div>
@@ -53,30 +63,28 @@
     
       <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
         <p class="mt-2">
-          <strong>Total HT :</strong> {{ formatPrix(facture.totalHT) }} €
+          <strong>Total HT :</strong> {{ factureSelectionnee.totalHT.toFixed(2) }} €
         </p>
-
-        <p v-if="isNumber(facture.montantReduction) && facture.montantReduction > 0">
-          <strong>Réduction :</strong> -{{ formatPrix(facture.montantReduction) }} €
-        </p>
-      <p class="font-bold text-lg">
-          Total TTC : {{ formatPrix(facture.totalTTC || facture.totalHT) }} €
-        </p>
+        
+        <template v-if="factureSelectionnee.montantReduction > 0">
+          
+                <p class="text-red-500"><strong>Réduction :</strong>-{{ factureSelectionnee.montantReduction.toFixed(2) }} €</p>
+        </template>
+        
+     
     </div>
 
         
 
         
 
-        <p v-if="isNumber(facture.montantReduction) && facture.montantReduction > 0">
-          <strong>Réduction :</strong> -{{ formatPrix(facture.montantReduction) }} €
+            
+
+        <p class="font-bold text-lg text-end">
+          Total TTC : {{ factureSelectionnee.totalTTC.toFixed(2)  }} €
         </p>
 
-        <p class="font-bold text-lg">
-          Total TTC : {{ formatPrix(facture.totalTTC || facture.totalHT) }} €
-        </p>
-
-        <p class="text-sm text-gray-500 mt-2">Info supp : {{ facture.suplement || '—' }}</p>
+        <p class="text-sm text-gray-500 mt-2">Info supp : {{ factureSelectionnee.suplement || '—' }}</p>
         <div class="flex justify-between">
           <button class="p-3 bg-primary rounded hover:bg-blue-300" @click="downloadPDF">
             Télécharger en PDF
@@ -87,18 +95,21 @@
         <div popover id="my-popover" class="opacity-0 starting:open:opacity-0 ...">
             suprimer avec succès 
         </div>
+        <button @click="factureSelectionnee = null" class="mt-4 btn btn-sm btn-danger">
+        Fermer
+      </button>
 
 
 
 
         </div>
         
-        
+       
       </div>
      
     </div>
     
-    
+    <BarChart />
   </div>
 </template>
 
@@ -109,7 +120,12 @@
   import Facture from '../models/facture';
   import societer from '../models/societer';
   import html2canvas from 'html2canvas';
+ 
+import BarChart from '../components/BarChart.vue';
 export default {
+  components: {
+    BarChart,
+  },
   setup() {
     const isOpen = ref(false);
     return { isOpen };
@@ -119,8 +135,9 @@ export default {
   data() {
     return {
       factures: [],
-      factureElements: []
-      
+      factureElements: [],
+      factureSelectionnee: null ,
+      indexSelectionne: null,
     };
   },
   created() {
@@ -167,6 +184,12 @@ export default {
 ,
   methods: {
   
+    selectionnerFacture(facture, index) {
+    this.factureSelectionnee = facture
+    this.indexSelectionne = index
+  },
+
+  
     downloadPDF() {
   // Trouver l'élément canvas (ou l'élément racine à capturer)
   var canvas = document.getElementById('canvas');
@@ -199,6 +222,7 @@ setFactureRef(el, index) {
 supprimerFacture(index) {
   if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
     this.factures.splice(index, 1);
+    his.factureSelectionnee = null
     localStorage.setItem('factures', JSON.stringify(this.factures));
     alert("Facture supprimée avec succès !");
   }

@@ -145,16 +145,20 @@
       </div>
 
           <!-- Totaux -->
-          <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
-            <p><strong>Total HT :</strong></p>
-            <p>{{ totalHT.toFixed(2) }} €</p>
-            <template v-if="montantReduction > 0">
-              <p class="text-red-500"><strong>Réduction :</strong></p>
-              <p class="text-red-500">-{{ montantReduction.toFixed(2) }} €</p>
-            </template>
-            <p class="text-lg font-bold">Total TTC :</p>
-            <p class="text-lg font-bold">{{ totalTTC.toFixed(2) }} €</p>
-          </div>
+                  <!-- Totaux -->
+        <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
+          <p><strong>Total HT :</strong></p>
+          <p>{{ totalHT.toFixed(2) }} €</p>
+
+          <template v-if="montantReduction > 0">
+            <p class="text-red-500"><strong>Réduction :</strong></p>
+            <p class="text-red-500">-{{ montantReduction.toFixed(2) }} €</p>
+          </template>
+
+          <p class="text-lg font-bold">Total TTC :</p>
+          <p class="text-lg font-bold">{{ totalTTC.toFixed(2) }} €</p>
+        </div>
+
 
           <!-- Supplément -->
           <div class="text-sm text-gray-600 italic">
@@ -188,7 +192,8 @@ export default {
   computed: {
     factureInstance() {
       const reductionActive = this.utiliseReduction === 'oui' ? this.reduction : null;
-      return new Facture(this.client, this.produits, reductionActive);
+      return new Facture(this.societer, this.client, this.produits, reductionActive);
+
     },
     totalHT() {
       return this.factureInstance.getTotalHT();
