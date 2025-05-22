@@ -1,5 +1,5 @@
 <template >
-  <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded ">
+  <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded " id="canvas">
     <h1 class="text-2xl text-blue-200 font-bold mb-4">📄 Liste des factures sauvegardées</h1>
 
     <div v-if="factures.length === 0" class="text-gray-600 flex ">
@@ -78,7 +78,7 @@
 
         <p class="text-sm text-gray-500 mt-2">Info supp : {{ facture.suplement || '—' }}</p>
         <div class="flex justify-between">
-          <button class="p-3 bg-primary rounded hover:bg-blue-300" @click="downloadPDF(index)">
+          <button class="p-3 bg-primary rounded hover:bg-blue-300" @click="downloadPDF">
             Télécharger en PDF
         </button>
         <button popovertarget="suprimer" class="p-3 bg-red-200 rounded hover:bg-red-300" @click="supprimerFacture(index)">
@@ -104,10 +104,11 @@
 
 <script>
   import { ref } from 'vue'
-  import {jsPDF} from 'jspdf';
+  import jspdf from 'jspdf';
   import html2pdf from 'html2pdf.js';
   import Facture from '../models/facture';
   import societer from '../models/societer';
+  import html2canvas from 'html2canvas';
 export default {
   setup() {
     const isOpen = ref(false);
@@ -166,24 +167,27 @@ export default {
 ,
   methods: {
   
-    downloadPDF(index) {
-  const element = this.factureElements[index]
+    downloadPDF() {
+  // Trouver l'élément canvas (ou l'élément racine à capturer)
+  var canvas = document.getElementById('canvas');
 
-  if (!element) {
-    console.error(`❌ Élément DOM introuvable pour la facture index: ${index}`)
-    alert("Erreur : la facture n'a pas pu être localisée.")
-    return
-  }
+  // Sauvegarder l'attribut style original
+  const originalStyle = canvas.getAttribute('style') || '';
 
-  html2pdf()
-    .from(element)
-    .set({
-      margin: 10,
-      filename: `facture-${index + 1}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    })
-    .save()
+  // Appliquer un style qui écrase les couleurs problématiques (exemple)
+  canvas.style.color = '#000';          // noir simple
+  canvas.style.backgroundColor = '#fff'; // blanc simple
+
+  // Lancer html2canvas
+  html2canvas(canvas).then(function(canvas) {
+    var imgData = canvas.toDataURL('image/png')
+    var doc = new jspdf()
+    doc.addImage(imgData,'PNG',10,10)
+    doc.save('output.pdf')
+
+    // Restaurer le style original
+    canvas.setAttribute('style', originalStyle);
+  });
 }
 ,
   // Fonction pour définir la référence de l'élément de la facture

@@ -1,11 +1,11 @@
 <template>
     <div>
-      <!-- Topbar -->
+      <LoginNav />
       <header class="bg-gray-800 text-white p-4 flex justify-between items-center">
         <h1 class="text-lg font-bold">🧾 FactGen</h1>
   
         <div class="flex items-center gap-4">
-          <span class="text-sm">👋 {{ utilisateur?.email }}</span>
+          <span class="text-sm">👋 {{ utilisateur?.email }}<Icon icon="mdi-light:home" /></span>
           <button @click="logout" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600 text-sm">
             Se déconnecter
           </button>
@@ -20,8 +20,13 @@
   </template>
   
   <script>
+  
+import LoginNav from '../components/LoginNav.vue'
   export default {
     name: 'AppLayout',
+    components: {
+        LoginNav
+    },
     data() {
       return {
         utilisateur: null

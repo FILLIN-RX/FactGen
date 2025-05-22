@@ -36,7 +36,7 @@ export default {
     // Simuler chargement (ex: récupération initiale de données)
     setTimeout(() => {
       this.isLoading = false; // Fin du chargement => afficher l'app
-    }, 2000);
+    }, 1000);
   },
   computed: {
   isLayoutProtege() {
