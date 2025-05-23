@@ -91,13 +91,20 @@ onMounted(()=>{
 
 
 </script>
-
 <template>
-  <div style="height: 300px;">
-    <Bar :data="chartData" :options="chartOptions" />
-  </div>
-  <div class="bg-black/10 p-6  rounded-xl shadow-md">
-    <h2 class="text-lg font-semibold mb-4">Monthly Revenue</h2>
-    <Line :data="revenuchartData" :options="lineChartOption" class="max-h-[300px]" :key="lineChartKey" />
+  <div class="space-y-6">
+    <!-- TTC par mois -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Montant TTC par mois</h2>
+      <div style="height: 300px;">
+        <Bar :data="chartData" :options="chartOptions" />
+      </div>
+    </div>
+
+    <!-- Revenus -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Revenus mensuels</h2>
+      <Line :data="revenuchartData" :options="lineChartOption" class="max-h-[300px]" :key="lineChartKey" />
+    </div>
   </div>
 </template>

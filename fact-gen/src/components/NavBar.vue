@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       scrollNav: null,
-      // mobile:null,
+      mobile:null,
       mobileNav: null,
       WindowWidth: null,
     };
