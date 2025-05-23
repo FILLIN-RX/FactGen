@@ -1,7 +1,7 @@
 <template >
   <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded " id="canvas">
     <h1 class="text-2xl text-blue-200 font-bold mb-4">📄 Liste des factures sauvegardées</h1>
-
+    <FiltreSearch />
     <div v-if="factures.length === 0" class="text-gray-600 flex ">
       Aucune facture sauvegardée pour le moment.
     </div>
@@ -122,9 +122,11 @@
   import html2canvas from 'html2canvas';
  
 import BarChart from '../components/BarChart.vue';
+import FiltreSearch from '../components/FiltreSearch.vue';
 export default {
   components: {
     BarChart,
+    FiltreSearch,
   },
   setup() {
     const isOpen = ref(false);
