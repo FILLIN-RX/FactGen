@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white space-y-20">
+  <div class="bg-white pt-16 space-y-20">
     <!-- Hero Section -->
     <section class="bg-white py-10">
       <div

@@ -4,7 +4,7 @@
     <div v-else>
       <NavBar v-if="!isLayoutProtege" />
 
-      <div class="pt-16">
+      <div class="">
         <router-view />
       </div>
 

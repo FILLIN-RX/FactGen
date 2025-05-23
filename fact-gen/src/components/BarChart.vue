@@ -1,110 +1,78 @@
 <script setup>
-import { Bar , Line} from 'vue-chartjs'
+import { onMounted, computed, ref } from 'vue'
+import { Bar, Line } from 'vue-chartjs'
 import {
   Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  ArcElement,
-  LineElement,
-  scales
+  Title, Tooltip, Legend,
+  BarElement, CategoryScale, LinearScale,
+  LineElement, PointElement, ArcElement,
 } from 'chart.js'
-import { ref,onMounted } from 'vue'
+import { useStatsStore } from '../stores/stats'
+import { useFacturesStore } from '../stores/Facture'
 
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement, ArcElement)
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale,LineElement,PointElement,ArcElement)
+const statsStore = useStatsStore()
+const facturesStore = useFacturesStore()
 const lineChartKey = ref(0)
-const chartData = {
-  labels: ['Janvier', 'Février', 'Mars','Avril','Mai'],
-  datasets: [
-    {
-      label: 'TTC ($)',
-      data: [1200, 1800, 1400],
-      fill:false,
-      backgroundColor: '#60a5fa',
-    },
-  ],
-}
+
+onMounted(() => {
+  facturesStore.charger()
+  lineChartKey.value++ // Forcer le rechargement du graphique
+})
+
+// Données dynamiques depuis Pinia
+const barChartData = computed(() => ({
+  labels: statsStore.mois,
+  datasets: [{
+    label: 'Montant TTC',
+    data: statsStore.revenusParMois,
+    backgroundColor: '#60a5fa'
+  }]
+}))
+
+const lineChartData = computed(() => ({
+  labels: statsStore.mois,
+  datasets: [{
+    label: 'Revenus',
+    data: statsStore.revenusParMois,
+    fill: false,
+    backgroundColor: '#34d399',
+    tension: 0.4
+  }]
+}))
+
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-}
-const revenuchartData = {
-  labels: ['Janvier', 'Février', 'Mars','Avril','Mai'],
-  datasets: [
-    {
-      label: 'Revenue ($)',
-      data: [1200, 1800, 1400, 3000, 6000],
-      fill:false,
-      backgroundColor: '#60a5fa',
-      tension:0.4
+  scales: {
+    x: {
+      ticks: { color: '#64748b' },
+      grid: { color: 'rgba(0,0,0,0.05)' }
     },
-  ],
-}
-const lineChartOption = ref({
-    responsive:true,
-    maintainAspectRatio:false,
-    Animation: {
-        tension:{
-            duration:5000,
-            easing:'linear',
-            from:1,
-            to:0,
-            loop:false
-        }
-    },
-    plugin:{
-        legend:{
-            labels:{
-                color:'#64748b'
-            }
-        }
-    },
-    scales:{
-        x:{
-            grid:{
-                color:'rgba(0,0,0,0.1)'
-            },
-            ticks:{
-                color:'#64748b'
-            }
-
-        },
-        y:{
-            grid:{
-                color:'rgba(0,0,0,0.1)'
-            },
-            ticks:{
-                color:'#64748b'
-            }
-
-        }
+    y: {
+      ticks: { color: '#64748b' },
+      grid: { color: 'rgba(0,0,0,0.05)' }
     }
-})
-onMounted(()=>{
-    lineChartKey.value ++;
-})
-
-
+  },
+  plugins: {
+    legend: { labels: { color: '#64748b' } }
+  }
+}
 </script>
+
 <template>
-  <div class="space-y-6">
-    <!-- TTC par mois -->
+  <div class="space-y-6 lg:px-40">
     <div class="bg-white rounded-xl shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Montant TTC par mois</h2>
       <div style="height: 300px;">
-        <Bar :data="chartData" :options="chartOptions" />
+        <Bar :data="barChartData" :options="chartOptions" />
       </div>
     </div>
 
-    <!-- Revenus -->
     <div class="bg-white rounded-xl shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Revenus mensuels</h2>
-      <Line :data="revenuchartData" :options="lineChartOption" class="max-h-[300px]" :key="lineChartKey" />
+      <Line :data="lineChartData" :options="chartOptions" :key="lineChartKey" class="max-h-[300px]" />
     </div>
   </div>
 </template>

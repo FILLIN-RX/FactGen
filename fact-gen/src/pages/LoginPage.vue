@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-lg h-150 mx-auto mt-20 text-center space-y-5 p-6 bg-white rounded shadow-md">
+    <div class="max-w-lg h-150 mx-auto mt-20 pt-16 text-center space-y-5 p-6 bg-white rounded shadow-md">
       <h2 class="text-2xl font-bold mb-4">Connexion a factgen</h2>
       
       <div class="space-y-4">
