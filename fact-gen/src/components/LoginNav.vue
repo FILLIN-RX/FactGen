@@ -8,7 +8,7 @@
         <Icon icon="mdi:menu" class="inline-block w-6 h-6" />
       </label>
     </nav>
-    <h1 class="text-lg font-bold">🧾 FactGen</h1>
+    <h1 class="text-lg font-bold"><router-link to="/real">🧾 FactGen</router-link></h1>
     <!-- Barre de recherche -->
     <section class="flex-1">
       <input

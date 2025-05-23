@@ -5,6 +5,7 @@ import FacTure from '../pages/FactureSauve.vue';
 import Login from '../pages/LoginPage.vue';
 import clientFact from '../pages/clientFact.vue';
 import AppLayout from '../pages/AppLayout.vue';
+import RealLayout from '../pages/RealLayout.vue';
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
+        path: '/real',
+        name: 'Real',
+        component: RealLayout,
+    },
+      {
         path: '/facture',
         name: 'Facture',
         component: FacTure
@@ -29,6 +35,7 @@ const routes = [
         component: clientFact,
       
       },
+      
     ]
     },
   {
