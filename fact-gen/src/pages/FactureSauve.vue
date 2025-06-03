@@ -109,7 +109,7 @@
      
     </div>
     
-    <BarChart />
+    
   </div>
 </template>
 
@@ -125,7 +125,7 @@ import BarChart from '../components/BarChart.vue';
 import FiltreSearch from '../components/FiltreSearch.vue';
 export default {
   components: {
-    BarChart,
+  
     FiltreSearch,
   },
   setup() {

@@ -1,5 +1,6 @@
 <template>
-    <section class="flex-1 border-2 rounded-xl p-4 space-y-4 overflow-auto h-[calc(100vh-80px)]">
+    <section class="flex-1  rounded-xl p-4 space-y-4 ">
+     
         <div class="mb-4">
           <StatisTics />
         </div>
@@ -12,6 +13,8 @@
         <div class="w-full border rounded-lg p-4 shadow">
           <RecentActivity />
         </div>
+      
+        
       </section>
 </template>
 <script>

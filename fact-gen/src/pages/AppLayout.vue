@@ -1,8 +1,14 @@
 <template>
-  <div class="min-h-screen">
-    <LoginNav />
+  <div class="min-h-screen grid lg:grid-cols-6">
+    <div class="col-span-1">
+      <LoginNav />
+    </div>
+   <div class="col-span-5">
+    <HaeDer />
+    <router-view></router-view>
+   </div>
 
-        <router-view></router-view>
+        
 
   </div>
 </template>
@@ -11,6 +17,7 @@
  // ⚠️ Vérifie l'orthographe
 import LoginNav from "../components/LoginNav.vue";
 
+import HaeDer from "../components/HaeDer.vue";
 
 
 
@@ -18,6 +25,7 @@ export default {
   name: "AppLayout",
   components: {
     LoginNav,
+    HaeDer,
     
   },
 

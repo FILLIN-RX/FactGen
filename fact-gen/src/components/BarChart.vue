@@ -9,6 +9,7 @@ import {
 } from 'chart.js'
 import { useStatsStore } from '../stores/stats'
 import { useFacturesStore } from '../stores/Facture'
+import RevenueBreakchart from './RevenueBreakchart.vue'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement, ArcElement)
 
@@ -62,17 +63,25 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="space-y-6 lg:px-40">
-    <div class="bg-white rounded-xl shadow p-6">
+  <div class="space-y-6  grid lg:grid-cols-2 gap-5 lg:px-10">
+    <div class="bg-white rounded-xl hover:shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Montant TTC par mois</h2>
       <div style="height: 300px;">
         <Bar :data="barChartData" :options="chartOptions" />
       </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow p-6">
+    <div class="bg-white rounded-xl hover:shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Revenus mensuels</h2>
-      <Line :data="lineChartData" :options="chartOptions" :key="lineChartKey" class="max-h-[300px]" />
+      <div style="height: 300px;">
+        <Line :data="lineChartData" :options="chartOptions" :key="lineChartKey" />
+      </div>
+     
     </div>
+    
   </div>
+  <div class="lg:px-10">
+    <RevenueBreakchart />
+  </div>
+  
 </template>
