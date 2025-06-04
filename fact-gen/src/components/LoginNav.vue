@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-const menuItems = [
-  { id: 1, icon: "menu", label: "Menu", active: true },
-  { id: 2, icon: "dashboard", label: "Dashboard", active: false },
-  { id: 3, icon: "people", label: "client", active: false },
-  { id: 4, icon: "folder", label: "Projects", active: false },
-  { id: 5, icon: "document", label: "Facture", active: false },
-  { id: 6, icon: "chart", label: "Analytics", active: false },
-  { id: 7, icon: "mail", label: "Messages", active: false },
-  { id: 8, icon: "settings", label: "Settings", active: false },
-  { id: 9, icon: "logout", label: "Logout", active: false },
-];
+import { onMounted, ref , watch, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+const menuItems =ref([
+  { id: 1, icon: "menu", label: "Menu", route: "/", active: true },
+  { id: 2, icon: "dashboard", label: "Dashboard", route: "/real", active: false },
+  { id: 3, icon: "people", label: "Client", route: "/clientFact", active: false },
+  { id: 4, icon: "folder", label: "Projects", route: "/projects", active: false },
+  { id: 5, icon: "document", label: "Facture", route: "/facture", active: false },
+  { id: 6, icon: "chart", label: "Analytics", route: "/analytics", active: false },
+  { id: 7, icon: "mail", label: "Messages", route: "/messages", active: false },
+  { id: 8, icon: "settings", label: "Settings", route: "/settings", active: false },
+  { id: 9, icon: "logout", label: "Logout", route: "/login", active: false },
+]);
+const route = useRoute();
 const router = useRouter();
 let utilisateur = ref(null);
 onMounted(() => {
@@ -30,6 +31,10 @@ const isSidebarOpen = ref(false);
 function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value;
 }
+// COMPUTED → menu avec l’item actif mis à jour automatiquement
+
+
+
 </script>
 
 <template>
@@ -52,16 +57,10 @@ function toggleSidebar() {
     </svg>
   </button>
 
-  <!-- Overlay noir semi-transparent quand le menu est ouvert -->
-  <div
-    v-if="isSidebarOpen"
-    @click="toggleSidebar"
-    class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-  ></div>
 
   <aside
     :class="[
-      'fixed top-0 left-0 z-10  shadow-md text-blue-900 h-full transition-transform duration-300',
+      'fixed w-16 top-0 bg-white flex flex-col py-6 left-0 z-10  shadow-md text-blue-900 h-full transition-transform duration-300 group',
       isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
       'w-64', // largeur fixée
       'lg:relative lg:translate-x-0 lg:w-16 lg:hover:w-64 lg:block', // comportement desktop
@@ -77,8 +76,10 @@ function toggleSidebar() {
     <nav class="flex-1">
       <ul class="space-y-6 px-3">
         <li
-          @click="isSidebarOpen = false"
+          @click="isSidebarOpen = false;router.push(item.route);"
           v-for="item in menuItems"
+        
+
           :key="item.id"
           :class="[
             'flex items-center rounded-lg transition-all duration-300 cursor-pointer',
@@ -254,12 +255,9 @@ function toggleSidebar() {
           <span class="hidden group-hover:block ml-3 text-blue-400 whitespace-nowrap">{{ item.label }}</span>
         </li>
       </ul>
+      <transition>
+      
+      </transition>
     </nav>
   </aside>
-</template>
-
-/*export default { name: "AppLayout", data() { return { utilisateur: null,
-mobile:false, isDark:false }; }, created() { this.utilisateur =
-JSON.parse(localStorage.getItem("utilisateurConnecte")); }, methods: { logout()
-{ localStorage.removeItem("utilisateurConnecte"); this.$router.push("/login");
-}, }, }; */
+</template>  je veux laddapter ici
