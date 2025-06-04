@@ -1,10 +1,13 @@
 <template>
-  <div class="min-h-screen grid lg:grid-cols-6">
-    <div class="col-span-1">
+  <div class="h-screen  w-full flex">
+    <div >
       <LoginNav />
     </div>
-   <div class="col-span-5">
-    <HaeDer />
+   <div class="">
+    <div class="container mx-auto px-6">
+      <HaeDer />
+    </div>
+    
     <router-view></router-view>
    </div>
 

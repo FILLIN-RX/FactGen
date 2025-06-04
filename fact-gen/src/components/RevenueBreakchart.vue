@@ -1,15 +1,6 @@
 <template>
     <div class="grid lg:grid-cols-2 gap-6 p-6">
-        <!-- Expense Monitoring (3 Donuts) -->
-        <div class="bg-white p-6 rounded-xl shadow col-span-1">
-            <h2 class="text-lg font-semibold text-gray-700 mb-4">Expense Monitoring</h2>
-            <div class="grid grid-cols-3 gap-4">
-                <div v-for="(val, index) in expenses" :key="index" class="text-center">
-                    <Doughnut :data="getDonutData(val.value)" :options="donutOptions" style="height: 120px;" />
-                    <p class="mt-2 text-sm text-gray-600">{{ val.label }}</p>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Agency Sales -->
         <div class="bg-white p-6 rounded-xl shadow">
