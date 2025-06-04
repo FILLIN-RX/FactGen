@@ -1,132 +1,82 @@
-<template>
-    <div class="grid lg:grid-cols-2 gap-6 p-6">
-        
+<script setup lang="ts">
+import { ref } from 'vue';
+import { Doughnut } from 'vue-chartjs';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-        <!-- Agency Sales -->
-        <div class="bg-white p-6 rounded-xl shadow">
-            <h2 class="text-lg font-semibold text-gray-700 mb-4">Agency Sales</h2>
-            <div style="height: 300px;">
-                <Bar :data="barChartData" :options="chartOptions" />
-            </div>
-        </div>
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-        <!-- Revenue Breakdown -->
-        <div class="bg-white p-6 rounded-xl shadow">
-            <h2 class="text-lg font-semibold text-gray-700 mb-4">Revenue Breakdown</h2>
-            <div style="height: 300px;">
-                <Doughnut :data="donutChartData" :options="donutOptions" />
-            </div>
-        </div>
-
-        <!-- Yearly Revenue (stacked) -->
-        <div class="bg-white p-6 rounded-xl shadow col-span-1">
-            <h2 class="text-lg font-semibold text-gray-700 mb-4">Yearly Revenue</h2>
-            <div style="height: 350px;">
-                <Bar :data="stackedData" :options="stackedOptions" />
-            </div>
-        </div>
-    </div>
-</template>
-
-<script setup>
-import { Bar, Doughnut } from 'vue-chartjs'
-import {
-    Chart as ChartJS,
-    Title, Tooltip, Legend,
-    BarElement, CategoryScale, LinearScale,
-    ArcElement
-} from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
-
-const expenses = [
-    { label: 'Marketing', value: 45 },
-    { label: 'Operations', value: 29 },
-    { label: 'Licensing', value: 23 }
-]
-
-function getDonutData(pourcentage) {
-    return {
-        labels: ['Used', 'Remaining'],
-        datasets: [{
-            data: [pourcentage, 100 - pourcentage],
-            backgroundColor: ['#3b82f6', '#e5e7eb'],
-            borderWidth: 0
-        }]
+// Chart data
+const chartData = {
+  labels: ['Product A', 'Product B', 'Product C', 'Product D', 'Product E'],
+  datasets: [
+    {
+      data: [40, 20, 15, 15, 10],
+      backgroundColor: [
+        '#0EA5E9',
+        '#F97316',
+        '#14B8A6',
+        '#6366F1',
+        '#8B5CF6'
+      ],
+      borderWidth: 0,
+      cutout: '65%'
     }
-}
+  ]
+};
 
-const donutOptions = {
-    cutout: '70%',
-    plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false }
-    }
-}
-
-const barChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [{
-        label: 'Agency Sales',
-        data: [10, 12, 15, 18, 22, 28],
-        backgroundColor: '#3b82f6'
-    }]
-}
-
+// Chart options
 const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-        x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-        y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false
     },
-    plugins: { legend: { labels: { color: '#64748b' } } }
-}
-
-const donutChartData = {
-    labels: ['Produits', 'Services', 'Frais', 'Autres'],
-    datasets: [{
-        data: [50, 25, 15, 10],
-        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
-    }]
-}
-
-const stackedData = {
-    labels: ['2010', '2015', '2020'],
-    datasets: [
-        {
-            label: 'Services',
-            data: [100, 200, 300],
-            backgroundColor: '#3b82f6',
-            stack: 'stack1'
-        },
-        {
-            label: 'Produits',
-            data: [50, 150, 200],
-            backgroundColor: '#10b981',
-            stack: 'stack1'
-        },
-        {
-            label: 'Frais',
-            data: [20, 40, 60],
-            backgroundColor: '#f59e0b',
-            stack: 'stack1'
+    tooltip: {
+      backgroundColor: 'white',
+      titleColor: '#262626',
+      bodyColor: '#525252',
+      borderColor: '#E5E5E5',
+      borderWidth: 1,
+      padding: 12,
+      boxPadding: 6,
+      usePointStyle: true,
+      callbacks: {
+        label: function(context: any) {
+          return `${context.label}: ${context.parsed}%`;
         }
-    ]
-}
-
-const stackedOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-        x: { stacked: true },
-        y: { stacked: true }
-    },
-    plugins: {
-        legend: { position: 'top' },
-        tooltip: { mode: 'index', intersect: false }
+      }
     }
-}
+  }
+};
+
+// Legend items
+const legendItems = [
+  { color: '#0EA5E9', label: 'Product A', percentage: '40%' },
+  { color: '#F97316', label: 'Product B', percentage: '20%' },
+  { color: '#14B8A6', label: 'Product C', percentage: '15%' },
+  { color: '#6366F1', label: 'Product D', percentage: '15%' },
+  { color: '#8B5CF6', label: 'Product E', percentage: '10%' }
+];
 </script>
 
-<style scoped></style>
+<template>
+  <div class="card h-full">
+    <div class="card-title">Revenue Breakdown</div>
+    
+    <div class="grid grid-cols-2 gap-6">
+      <div class="flex items-center justify-center h-64">
+        <Doughnut :data="chartData" :options="chartOptions" />
+      </div>
+      
+      <div class="flex flex-col justify-center space-y-4">
+        <div v-for="(item, index) in legendItems" :key="index" class="flex items-center">
+          <div :style="`background-color: ${item.color}`" class="w-4 h-4 rounded-sm mr-3"></div>
+          <div class="flex-1 h-2 bg-neutral-100 rounded-full">
+            <div :style="`background-color: ${item.color}; width: ${item.percentage}`" class="h-full rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

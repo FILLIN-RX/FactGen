@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, computed, ref } from 'vue'
 import { Bar, Line } from 'vue-chartjs'
 import {
@@ -44,23 +44,74 @@ const lineChartData = computed(() => ({
   }]
 }))
 
+// const chartOptions = {
+//   responsive: true,
+//   maintainAspectRatio: false,
+//   scales: {
+//     x: {
+//       ticks: { color: '#64748b' },
+//       grid: { color: 'rgba(0,0,0,0.05)' }
+//     },
+//     y: {
+//       ticks: { color: '#64748b' },
+//       grid: { color: 'rgba(0,0,0,0.05)' }
+//     }
+//   },
+//   plugins: {
+//     legend: { labels: { color: '#64748b' } }
+//   }
+// }
+
+// Chart options
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  scales: {
-    x: {
-      ticks: { color: '#64748b' },
-      grid: { color: 'rgba(0,0,0,0.05)' }
+  plugins: {
+    legend: {
+      display: false
     },
-    y: {
-      ticks: { color: '#64748b' },
-      grid: { color: 'rgba(0,0,0,0.05)' }
+    tooltip: {
+      backgroundColor: 'white',
+      titleColor: '#262626',
+      bodyColor: '#525252',
+      borderColor: '#E5E5E5',
+      borderWidth: 1,
+      padding: 12,
+      boxPadding: 6,
+      usePointStyle: true,
+      callbacks: {
+        label: function(context: any) {
+          return `${context.parsed.y}%`;
+        }
+      }
     }
   },
-  plugins: {
-    legend: { labels: { color: '#64748b' } }
+  scales: {
+    y: {
+      beginAtZero: true,
+      grid: {
+        display: false
+      },
+      ticks: {
+        callback: function(value: number) {
+          return value + '%';
+        },
+        padding: 10
+      },
+      border: {
+        display: false
+      }
+    },
+    x: {
+      grid: {
+        display: false
+      },
+      border: {
+        display: false
+      }
+    }
   }
-}
+};
 </script>
 
 <template>
@@ -80,10 +131,10 @@ const chartOptions = {
       </div>
      
     </div>
-    
+    <RevenueBreakchart />
   </div>
   <div class="lg:px-10">
-    <RevenueBreakchart />
+    
   </div>
   
 </template>

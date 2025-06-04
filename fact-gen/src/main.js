@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from 'pinia'
-import "./style.css";
+import './style.css'
 import { Icon } from '@iconify/vue'
 
 import App from "./App.vue";

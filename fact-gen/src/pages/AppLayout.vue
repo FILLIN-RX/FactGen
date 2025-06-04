@@ -1,35 +1,37 @@
 <template>
-  <div class="h-screen  w-full flex">
-    <div >
+  <div class="flex h-screen"> <!-- toute la hauteur de l'écran -->
+    <!-- Sidebar -->
+    <div class="w-64  text-white">
       <LoginNav />
     </div>
-   <div class="">
-    <div class="container mx-auto px-6">
-      <HaeDer />
+
+    <!-- Contenu principal -->
+    <div class="flex flex-col flex-1 pr-20">
+      <!-- Header -->
+      <div class="sticky top-0 z-10 ">
+        <HaeDer />
+      </div>
+
+      <!-- Contenu -->
+      <div class="flex-1 overflow-auto p-4 bg-gray-50">
+        <router-view />
+      </div>
     </div>
-    
-    <router-view></router-view>
-   </div>
-
-        
-
   </div>
 </template>
 
+
 <script>
- // ⚠️ Vérifie l'orthographe
+// ⚠️ Vérifie l'orthographe
 import LoginNav from "../components/LoginNav.vue";
 
 import HaeDer from "../components/HaeDer.vue";
-
-
 
 export default {
   name: "AppLayout",
   components: {
     LoginNav,
     HaeDer,
-    
   },
 
   created() {

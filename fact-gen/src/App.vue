@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style>
-@import "tailwindcss";
+
 @plugin "daisyui" {
   themes: false;
 }
