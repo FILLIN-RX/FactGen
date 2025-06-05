@@ -1,6 +1,6 @@
 // routes/factures.js
 import express from 'express';
-import supabase from '../config/supabaseClient.js';
+import supabase from '../config/superbaseclient.js';
 
 const router = express.Router();
 
@@ -22,8 +22,8 @@ router.post('/', async (req, res) => {
   const lignesData = lignes.map(ligne => ({
     facture_id: facture.id,
     produit_id: ligne.produit_id,
-    quantite: ligne.quantite,
-    prix_unitaire: ligne.prix_unitaire,
+    quantite: ligne.quantity,
+    prix_unitaire: ligne.price,
   }));
 
   const { error: lignesError } = await supabase
