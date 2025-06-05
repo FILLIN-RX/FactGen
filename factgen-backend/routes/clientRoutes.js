@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
+
 // Ajouter un client
 router.post('/', async (req, res) => {
     const { nom, email, address } = req.body;
