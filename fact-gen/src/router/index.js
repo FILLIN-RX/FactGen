@@ -6,6 +6,7 @@ import Login from '../pages/LoginPage.vue';
 import clientFact from '../pages/clientFact.vue';
 import AppLayout from '../pages/AppLayout.vue';
 import RealLayout from '../pages/RealLayout.vue';
+import SignUp from '../pages/SignUp.vue';
 
 const routes = [
   {
@@ -37,6 +38,11 @@ const routes = [
       },
       
     ]
+    },
+    {
+      path: '/signUp',
+      name: 'register',
+      component: SignUp
     },
   {
     path: '/login',
