@@ -2,39 +2,36 @@
 import express from 'express';
 import supabase from '../config/superbaseclient.js';
 
+const express = require('express');
 const router = express.Router();
+const { supabase } = require('../supabase/client');
+const authenticateUser = require('../middleware/auth');
 
-router.post('/', async (req, res) => {
-  const { client_id, lignes } = req.body;
-
-  // 1. Créer la facture
-  const { data: facture, error: factureError } = await supabase
+// Lire toutes les factures de l'utilisateur connecté
+router.get('/', authenticateUser, async (req, res) => {
+  const { data, error } = await supabase
     .from('factures')
-    .insert({ client_id })
-    .select()
-    .single();
+    .select('*')
+    .eq('user_id', req.user.id)
+    .order('date', { ascending: false });
 
-  if (factureError) {
-    return res.status(500).json({ error: factureError.message });
-  }
-
-  // 2. Créer les lignes de facture
-  const lignesData = lignes.map(ligne => ({
-    facture_id: facture.id,
-    produit_id: ligne.produit_id,
-    quantite: ligne.quantity,
-    prix_unitaire: ligne.price,
-  }));
-
-  const { error: lignesError } = await supabase
-    .from('lignes_facture')
-    .insert(lignesData);
-
-  if (lignesError) {
-    return res.status(500).json({ error: lignesError.message });
-  }
-
-  res.status(201).json({ facture });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
 });
 
-export default router;
+// Créer une facture
+router.post('/', authenticateUser, async (req, res) => {
+  const { client_id, montant, date } = req.body;
+
+  const { data, error } = await supabase.from('factures').insert([{
+    client_id,
+    montant,
+    date,
+    user_id: req.user.id
+  }]).select();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json(data[0]);
+});
+
+module.exports = router;

@@ -6,17 +6,21 @@ export default class Facture {
     this.produits = produits || {}; // objet produit
     this.reduction = reduction;
     this.suplement = suplement;
+    this.date = new Date().toISOString();
   }
 
   getTotalHT() {
-    return Object.values(this.produits).reduce((total, p) => total + p.prix * p.quantite, 0);
+    return Object.values(this.produits).reduce(
+      (total, p) => total + p.prix * p.quantite,
+      0
+    );
   }
 
   getMontantReduction() {
     if (!this.reduction || this.reduction.valeur === 0) return 0;
-    if (this.reduction.type === 'montant') {
+    if (this.reduction.type === "montant") {
       return this.reduction.valeur;
-    } else if (this.reduction.type === 'pourcentage') {
+    } else if (this.reduction.type === "pourcentage") {
       return this.getTotalHT() * (this.reduction.valeur / 100);
     }
     return 0;
@@ -45,7 +49,15 @@ export default class Facture {
   get totalTTC() {
     return this.getTotalTTC();
   }
-
+  validate() {
+    if (!this.client || !this.client.nom) {
+      throw new Error("Le client est requis");
+    }
+    if (!this.produits || this.produits.length === 0) {
+      throw new Error("Au moins un produit est requis");
+    }
+    return true;
+  }
   toJSON() {
     return {
       societer: this.societer,
@@ -54,11 +66,12 @@ export default class Facture {
       reduction: this.reduction,
       totalHT: this.totalHT,
       montantReduction: this.montantReduction,
-      totalTTC: this.totalTTC
+      totalTTC: this.totalTTC,
     };
   }
 
   sauvegarder() {
+     this.validate();
     const factureData = {
       societer: this.societer,
       client: this.client,
@@ -68,12 +81,12 @@ export default class Facture {
       totalHT: this.totalHT,
       montantReduction: this.montantReduction,
       totalTTC: this.totalTTC,
-      date: new Date().toISOString()
+      date: new Date().toISOString(),
     };
 
-    let factures = JSON.parse(localStorage.getItem('factures')) || [];
+    let factures = JSON.parse(localStorage.getItem("factures")) || [];
     factures.push(factureData);
-    localStorage.setItem('factures', JSON.stringify(factures));
+    localStorage.setItem("factures", JSON.stringify(factures));
 
     alert("✅ Facture sauvegardée avec succès !");
   }

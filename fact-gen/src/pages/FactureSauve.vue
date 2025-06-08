@@ -189,31 +189,7 @@ export default {
     selectionnerFacture(facture, index) {
     this.factureSelectionnee = facture
     this.indexSelectionne = index
-  },
-
-  
-    downloadPDF() {
-  // Trouver l'élément canvas (ou l'élément racine à capturer)
-  var canvas = document.getElementById('canvas');
-
-  // Sauvegarder l'attribut style original
-  const originalStyle = canvas.getAttribute('style') || '';
-
-  // Appliquer un style qui écrase les couleurs problématiques (exemple)
-  canvas.style.color = '#000';          // noir simple
-  canvas.style.backgroundColor = '#fff'; // blanc simple
-
-  // Lancer html2canvas
-  html2canvas(canvas).then(function(canvas) {
-    var imgData = canvas.toDataURL('image/png')
-    var doc = new jspdf()
-    doc.addImage(imgData,'PNG',10,10)
-    doc.save('output.pdf')
-
-    // Restaurer le style original
-    canvas.setAttribute('style', originalStyle);
-  });
-}
+  }
 ,
   // Fonction pour définir la référence de l'élément de la facture
 setFactureRef(el, index) {
@@ -232,11 +208,17 @@ supprimerFacture(index) {
   
   // Fonction pour formater la date
 
-  
-  formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
-  },
+ formatDate(dateStr) {
+  if (!dateStr) return 'Non spécifiée';
+  const options = { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  return new Date(dateStr).toLocaleDateString('fr-FR', options);
+},
   isNumber(value) {
     return typeof value === 'number' && !isNaN(value);
   },
