@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 const router = express.Router();
 import clientRoutes from "./routes/clientRoutes.js";
-import factureRoutes from "./routes/factureRoutes.js"
+const facturesRoutes = require('./routes/factureRoutes');
 dotenv.config();
 const app = express();
 
@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/clients", clientRoutes);
-app.use("/api/factures",factureRoutes)
+app.use("/api/factures", facturesRoutes);
 // Ajouter un client
 
 

@@ -1,10 +1,10 @@
 // routes/factures.js
-import express from 'express';
+
 import supabase from '../config/superbaseclient.js';
 
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../supabase/client');
+
 const authenticateUser = require('../middleware/auth');
 
 // Lire toutes les factures de l'utilisateur connecté
