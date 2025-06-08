@@ -4,70 +4,110 @@ import { ref } from "vue";
 import { data } from "jquery";
 
 export const useAuthStore = defineStore("auth", () => {
+  const user = ref(null);
+  const isAuthenticated = ref(false);
+  //
   //Etat: utilisateur courent
+  function setUser(userData) {
+    user.value = userData;
+    isAuthenticated.value = !!userData;
 
-
- async function getCurrentUser()   {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    console.error('Erreur lors de la récupération de l’utilisateur :', error.message);
-    return null;
+    // Optional: Persist to localStorage
+    if (userData) {
+      localStorage.setItem("supabase_user", JSON.stringify(userData));
+    } else {
+      localStorage.removeItem("supabase_user");
+    }
   }
-  return data.user;
-}
+  //utilisateur courent
+  async function getCurrentUser() {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error(
+        "Erreur lors de la récupération de l’utilisateur :",
+        error.message
+      );
+      return null;
+    }
+    setUser(data.user);
+    return data.user;
+  }
 
- //peut etre null si non authentifie
+  //peut etre null si non authentifie
   //Action: incription(email/password)
   async function signUp({ email, password }) {
-    const { error, user: newUser } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
     if (error) {
+      console.error("Sign up error:", error);
       throw error;
-      console.log(error);
-      
-    }else{
-        console.log(data)
     }
-     console.log('registere');
-    // Supabase envoie un email de confirmation si activé.
-    return newUser;
+
+    setUser(data.user);
+    console.log("User registered:", data.user);
+    //supabase envoi l'email de confirmation
+    return data.user;
   }
 
   //action:connexion
   async function signIn({ email, password }) {
-    const { error, user: loggedUser } = await supabase.auth.signIn({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
     if (error) {
+      console.error("Sign in error:", error);
       throw error;
     }
-    user.value = loggedUser;
-    return loggedUser;
-  
-     console.log('logged in')
-    
+
+    setUser(data.user);
+    console.log("User logged in:", data.user);
+    return data.user;
   }
   // 4. Action : déconnexion
   async function signOut() {
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    user.value = null;
+    if (error) {
+      console.error("Sign out error:", error);
+      throw error;
+    }
+    setUser(null);
+    console.log("User logged out");
   }
 
-  // 5. Écouteur de session : mise à jour de `user` automatiquement
-  supabase.auth.onAuthStateChange((_event, session) => {
-    user.value = session?.user ?? null;
-    console.log('disconnected')
-  });
+  //Purpose: Runs when the app starts to check for an active session.
 
+  //supabase.auth.getSession(): Checks for an existing Supabase session.
 
-  return{
-    
-    signIn,
-    signUp,
-    signOut,
+  //If a session exists: Updates the store with the user.
+  async function initialize() {
+    const { data } = await supabase.auth.getSession();
+    if (data.session?.user) {
+      setUser(data.session.user);
+    }
   }
+//signe up with google
+async function signInWithGoogle() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin // or your custom redirect URL
+    }
+  })
+  
+  if (error) throw error
+  return data
+}
+ return {
+  user,
+  isAuthenticated,
+  getCurrentUser,
+  setUser,
+  signUp,
+  signIn,
+  signOut,
+  initialize,
+  signInWithGoogle
+};
 });

@@ -7,6 +7,7 @@ import clientFact from '../pages/clientFact.vue';
 import AppLayout from '../pages/AppLayout.vue';
 import RealLayout from '../pages/RealLayout.vue';
 import SignUp from '../pages/SignUp.vue';
+import { supabase } from '../lib/supabase';
 
 const routes = [
   {
@@ -17,6 +18,7 @@ const routes = [
   },
   {
     path: '/accueil',
+    name: 'accueil',
     component: AppLayout,
     meta: { requiresAuth: true },
     children: [
@@ -24,6 +26,7 @@ const routes = [
         path: '/real',
         name: 'Real',
         component: RealLayout,
+        meta: { requiresAuth: true },
     },
       {
         path: '/facture',
@@ -34,6 +37,7 @@ const routes = [
         path: '/clientFact',
         name: 'Client',
         component: clientFact,
+        meta: { requiresAuth: true },
       
       },
       
@@ -56,16 +60,28 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 });
+async function getUser(next) {
+  localUser = await supabase.auth.getSession();
 
-router.beforeEach((to, from, next) => {
-  const utilisateur = JSON.parse(localStorage.getItem('utilisateurConnecte'));
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
-  if (requiresAuth && !utilisateur) {
-    next('/login');
-  } else {
-    next();
+  if (localUser.data.session == null) {
+      next("/login")    
+  }else{
+    next()
   }
-});
+  
+
+}
+
+  router.beforeEach((to,from,next)=>{
+    if (to.meta.requiresAuth) {
+      console.log("requiresAuth")
+      getUser(next); 
+      
+    }else{
+      next();
+    }
+  })
+
+
 
 export default router;

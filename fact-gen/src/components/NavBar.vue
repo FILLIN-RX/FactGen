@@ -40,17 +40,19 @@
           </button>
         </ul>
       </div>
-      <transition name="mobile-nav" class="dropdown">
+      <transition name="mobile-nav" class="dropdown p-5">
         <ul v-if="mobileNav" class="h-full space-x-3 items-center text-center">
-          <div class="absolute">X</div>
-          <li class="hover:underline">
-            <router-link to="/FacTure">Facture</router-link>
-          </li>
-          <li class="hover:underline">customize</li>
-          <li class="hover:underline">
-            <router-link to="/clientFact">client</router-link>
-          </li>
-          <li class="">login/Registered</li>
+          <div>
+            <div class="absolute mb-4">X</div>
+            <li class="hover:underline">
+              <router-link to="/FacTure">Facture</router-link>
+            </li>
+            <li class="hover:underline">customize</li>
+            <li class="hover:underline">
+              <router-link to="/clientFact">client</router-link>
+            </li>
+            <li class="">login/Registered</li>
+          </div>
         </ul>
       </transition>
     </div>
@@ -62,7 +64,7 @@ export default {
   data() {
     return {
       scrollNav: null,
-      mobile:null,
+      mobile: null,
       mobileNav: null,
       WindowWidth: null,
     };
@@ -129,12 +131,12 @@ export default {
   text-align: start;
   position: fixed;
   width: 100%;
-  max-width: 250px;
-  height: 100%;
+  max-width: 200px;
+  height: 50%;
   padding-left: 30px;
   background-color: #fff;
-  top: 0;
-  left: 0;
+  bottom: 0;
+
   transition: 500ms ease all;
 
   li {
