@@ -1,11 +1,10 @@
 // routes/factures.js
 
 import supabase from '../config/superbaseclient.js';
-
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const authenticateUser = require('../middleware/auth');
+import { authenticateUser } from '../middleware/auth.js';
 
 // Lire toutes les factures de l'utilisateur connecté
 router.get('/', authenticateUser, async (req, res) => {
@@ -34,4 +33,4 @@ router.post('/', authenticateUser, async (req, res) => {
   res.status(201).json(data[0]);
 });
 
-module.exports = router;
+export default router;

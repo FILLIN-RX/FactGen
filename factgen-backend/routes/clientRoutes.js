@@ -1,33 +1,55 @@
 import express from 'express';
-import supabase from '../config/superbaseclient.js';
+import { authenticateUser } from '../middleware/auth.js';
+import  supabase  from '../config/superbaseclient.js';
 
 const router = express.Router();
 
 // Récupérer tous les clients
-router.get('/', async (req, res) => {
-  const { data, error } = await supabase.from('clients').select('*');
+router.get('/', authenticateUser, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .order('nom', { ascending: true });
 
-
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Erreur:', err);
+    res.status(500).json({ error: 'Erreur lors de la récupération des clients' });
+  }
 });
 
-// Ajouter un client
-router.post('/', async (req, res) => {
-    const { nom, email, address } = req.body;
-  
-    // Vérification rapide
-    if (!nom || !email) {
-      return res.status(400).json({ error: 'Nom et email sont requis.' });
+// Créer un nouveau client
+router.post('/', authenticateUser, async (req, res) => {
+  try {
+    const { nom, email, adresse, telephone } = req.body;
+
+    if (!nom) {
+      return res.status(400).json({ error: 'Le nom du client est requis' });
     }
-  
-    const { data, error } = await supabase.from('clients').insert([
-      { nom, email, address }
-    ]).select();
-  
-    if (error) return res.status(500).json({ error: error.message });
-    res.status(201).json(data[0]); // On retourne le nouveau client
-  });
-  
+
+    const { data, error } = await supabase
+      .from('clients')
+      .insert([{
+        nom,
+        email,
+        adresse,
+        telephone,
+        user_id: req.user.id
+      }])
+      .select();
+
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (err) {
+    console.error('Erreur:', err);
+    res.status(500).json({ error: 'Erreur lors de la création du client' });
+  }
+});
+
+// Autres routes (mettre à jour, supprimer, etc.)
+// ...
 
 export default router;
