@@ -11,12 +11,19 @@ const app = express();
 
 // Middlewares de sécurité
 app.use(helmet());
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173'
-}));
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+  credentials: true
+}))
 app.use(express.json());
 
 
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
 
 // Routes
 app.use('/api/clients', clientRoutes);
