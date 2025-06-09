@@ -1,49 +1,41 @@
-import supabase from "../config/supabaseClient.js"; // Corrigez le nom du fichier
+// auth.js
+import supabase from '../config/supabaseClient.js';
 
+// Middleware d'authentification
 export const authenticateUser = async (req, res, next) => {
-  console.log("🛂 Requête reçue - Headers:", req.headers);
+  console.log("🛂 Middleware d'authentification exécuté");
+
+  // Récupère l'en-tête Authorization
+  const authHeader = req.headers.authorization;
+
+  // Vérifie la présence et le format du token
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.warn("🚫 En-tête Authorization manquant ou invalide");
+    return res.status(401).json({ error: "En-tête Authorization manquant ou invalide" });
+  }
+
+  // Extrait le token JWT de l'en-tête
+  const token = authHeader.split(' ')[1];
+  console.log("🔐 Token reçu (partiel):", token.substring(0, 10) + '...');
 
   try {
-    // 1. Vérifier la présence du header
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      console.log("❌ Header Authorization manquant");
-      return res.status(401).json({ error: "Authorization header manquant" });
+    // Vérifie le token via l'API Supabase
+    const { data, error } = await supabase.auth.getUser(token);
+
+    // Si erreur ou utilisateur non trouvé
+    if (error || !data?.user) {
+      console.error("🚫 Token invalide ou utilisateur non trouvé:", error);
+      return res.status(401).json({ error: "Token invalide ou utilisateur non trouvé" });
     }
 
-    // 2. Extraire le token
-    const token = authHeader.split(" ")[1];
-    if (!token) {
-      console.log("❌ Format de token invalide");
-      return res.status(401).json({ error: "Format de token invalide" });
-    }
+    console.log("✅ Utilisateur authentifié:", data.user.email);
 
-    // 3. Vérifier le token avec Supabase
-    console.log("🔐 Vérification du token...");
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+    // Attache les données de l'utilisateur à l'objet req
+    req.user = data.user;
 
-    if (error || !user) {
-      console.log(
-        "❌ Token invalide:",
-        error?.message || "Utilisateur non trouvé"
-      );
-      return res.status(401).json({
-        error: error?.message || "Token invalide",
-        details: error,
-      });
-    }
-
-    console.log("✅ Utilisateur authentifié:", user.email);
-    req.user = user;
-    next();
+    next(); // Passe au middleware/route suivant
   } catch (err) {
-    console.error("🔥 Erreur auth middleware:", err);
-    res.status(500).json({
-      error: "Erreur d'authentification",
-      details: process.env.NODE_ENV === "development" ? err.message : undefined,
-    });
+    console.error("💥 Erreur serveur lors de l'authentification:", err);
+    res.status(500).json({ error: "Erreur serveur lors de l'authentification" });
   }
 };

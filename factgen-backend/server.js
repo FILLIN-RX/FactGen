@@ -1,41 +1,36 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import helmet from 'helmet';
-import clientRoutes from './routes/clientRoutes.js';
-import factureRoutes from './routes/factureRoutes.js';
+import express from 'express'
+import supabase from './config/supabaseClient.js'
 
-dotenv.config();
+const app = express()
+app.use(express.json())
 
-const app = express();
+// Route de test : récupère l'utilisateur Supabase depuis le token
+app.get('/api/test-user', async (req, res) => {
+  const authHeader = req.headers.authorization;
 
-// Middlewares de sécurité
-app.use(helmet());
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Authorization header manquant ou invalide" });
+  }
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Authorization'],
-  credentials: true
-}))
-app.use(express.json());
+  const token = authHeader.split(" ")[1];
 
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser(token);
 
-app.get('/ping', (req, res) => {
-  res.send('pong');
-});
+    if (error || !user) {
+      return res.status(401).json({ error: "Token invalide", details: error });
+    }
 
-// Routes
-app.use('/api/clients', clientRoutes);
-app.use('/api/factures', factureRoutes);
+    console.log("✅ Utilisateur récupéré:", user.email);
 
-// Gestion des erreurs
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Erreur interne du serveur' });
-});
+    return res.json({ user });
+  } catch (err) {
+    console.error("💥 Erreur lors de la récupération utilisateur:", err);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+})
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`✅ Serveur Express démarré sur http://localhost:${PORT}`);
-});
+// Lancer le serveur
+app.listen(4000, () => {
+  console.log("✅ Serveur Express démarré sur http://localhost:4000");
+})

@@ -1,11 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
-dotenv.config();
+// supabaseClient.js
+import 'dotenv/config'; // Charge automatiquement les variables d'environnement
+import { createClient } from '@supabase/supabase-js'; // Client Supabase
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-console.log("SUPABASE_URL:", process.env.SUPABASE_URL);
-console.log("SUPABASE_ANON_KEY:", process.env.SUPABASE_ANON_KEY);
+// Crée et exporte une instance du client Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL, // URL de votre projet Supabase
+  process.env.SUPABASE_ANON_KEY // Clé publique (anon key) de Supabase
+);
 
 export default supabase;
-
-
