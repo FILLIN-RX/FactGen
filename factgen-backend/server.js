@@ -1,10 +1,11 @@
 import express from 'express'
+import cors from 'cors'
 import supabase from './config/supabaseClient.js'
 import clientRoutes from './routes/clientRoutes.js'
 import factureRoutes from './routes/factureRoutes.js'
 const app = express()
 app.use(express.json())
-
+app.use(cors());
 
  app.use("/api/clients", clientRoutes);
  app.use("/api/factures",factureRoutes)

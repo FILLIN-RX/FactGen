@@ -262,7 +262,7 @@ import Facture from "../models/facture";
 import societer from "../models/societer";
 import Produit from "../models/produit";
 import html2canvas from "html2canvas";
-
+import { creerFacture } from "../services/api";
 export default {
   data() {
     return {
@@ -308,17 +308,44 @@ export default {
     supprimerLigne(index) {
       this.produits.splice(index, 1);
     },
-    sauvegarderFacture() {
-      const f = new Facture(
-        this.societer,
-        this.client,
-        this.produits,
-        this.utiliseReduction === "oui" ? this.reduction : null,
-        this.suplement
-      );
+     async sauvegarderFacture() {
+      try {
+        console.log("🧾 Client actuel :", this.client);
 
-      f.sauvegarder();
+        const facture = new Facture(
+          this.societer,
+          this.client,
+          this.produits,
+          this.utiliseReduction === "oui" ? this.reduction : null,
+          this.suplement
+        );
+
+        // ✅ Facultatif : vérifie les champs obligatoires
+        facture.validate();
+
+        // ✅ Création de l’objet à envoyer dans Supabase
+        const factureData = {
+          client_id: this.client.id, // UUID du client (référence)
+          client_data: this.client, // Données figées dans la facture
+          societer: this.societer,
+          produits: facture.produits,
+          reduction: facture.reduction,
+          suplement: facture.suplement,
+          montant_total: facture.totalTTC,
+          created_at: new Date().toISOString()
+        };
+
+        // ✅ Envoi à Supabase via api.js
+        await creerFacture(factureData);
+
+        alert("✅ Facture enregistrée avec succès !");
+      } catch (error) {
+        console.error("Erreur :", error);
+        console.log(error)
+        alert("❌ Erreur lors de la sauvegarde : " + error.message);
+      }
     },
+  
     previewLogo(event) {
       const file = event.target.files[0];
       if (!file) return;

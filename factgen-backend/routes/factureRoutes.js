@@ -20,17 +20,30 @@ router.get("/", async (req, res) => {
 
 // Crée une nouvelle facture
 router.post("/", async (req, res) => {
-  const { client_id, montant_total } = req.body;
+    const {
+    client_id,
+    client_data,
+    produits,
+    reduction,
+    suplement,
+    montant_total,
+    numero
+  } = req.body;
+  console.log("✅ REQUÊTE /factures autorisée");
 
   // Insère la nouvelle facture dans la base de données
   const { data, error } = await supabase
     .from("facture")
-    .insert([
-      {
-        client_id,
-        montant_total,
-      },
-    ])
+    .insert([{
+      client_id,
+      client_data,
+      produits,
+      reduction,
+      suplement,
+      montant_total,
+      numero,
+      created_at: new Date().toISOString()
+    }])
     .select(); // Retourne les données insérées
 
   if (error) return res.status(500).json({ error: error.message });
@@ -39,18 +52,36 @@ router.post("/", async (req, res) => {
 // Met à jour une facture par son ID
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { client_id, montant_total } = req.body;
+   const {
+    client_id,
+    client_data,
+    produits,
+    reduction,
+    suplement,
+    montant_total,
+    numero
+  } = req.body;
+
+ 
 
   if (!id) {
     return res.status(400).json({ error: "ID de la facture manquant" });
   }
 
   try {
-    const { data, error } = await supabase
-      .from("facture")
-      .update({ client_id, montant_total })
-      .eq("id", id)
-      .select();
+     const { data, error } = await supabase
+    .from('facture')
+    .update({
+      client_id,
+      client_data,
+      produits,
+      reduction,
+      suplement,
+      montant_total,
+      numero
+    })
+    .eq('id', id)
+    .select();
 
     console.log("🧾 Données Supabase:", data);
     console.log("⚠️ Erreur Supabase:", error);

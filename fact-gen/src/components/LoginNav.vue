@@ -43,8 +43,13 @@ onMounted(() => {
 });
 
 function logout() {
+  auth.logout();
+  router.push({ name: "Login" });
   localStorage.removeItem("utilisateurConnecte");
-  router.push("/login");
+  utilisateur.value = null;
+  alert("Vous avez été déconnecté avec succès.");
+  console.log("Déconnexion réussie");
+  window.location.reload();
 }
 const isSidebarOpen = ref(false);
 

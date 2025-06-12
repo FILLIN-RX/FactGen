@@ -58,17 +58,27 @@ export default class Facture {
     }
     return true;
   }
-  toJSON() {
-    return {
-      societer: this.societer,
-      client: this.client,
-      produits: this.produits,
-      reduction: this.reduction,
-      totalHT: this.totalHT,
-      montantReduction: this.montantReduction,
-      totalTTC: this.totalTTC,
-    };
-  }
+toJSON() {
+  return {
+    client_id: this.client.id, // ATTENTION : nécessite que client ait un .id
+    client_data: {
+      nom: this.client.nom,
+      adresse: this.client.adresse,
+      email: this.client.email,
+      telephone: this.client.telephone,
+    },
+    produits: Object.values(this.produits).map(p => ({
+      nom: p.nom,
+      prix: p.prix,
+      quantite: p.quantite,
+    })),
+    reduction: this.reduction || {},
+    suplement: this.suplement || {},
+    montant_total: this.totalTTC,
+    created_at: new Date().toISOString()
+  };
+}
+
 
   sauvegarder() {
      this.validate();

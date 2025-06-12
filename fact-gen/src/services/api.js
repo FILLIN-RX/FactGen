@@ -1,39 +1,35 @@
-import { supabase } from '../lib/supabase';
+const API_BASE_URL = "http://localhost:4000/api";
 
-export async function fetchFactures() {
-  try {
-    console.log("🔍 Récupération de la session...");
-    const { data: { session }, error } = await supabase.auth.getSession();
+// 📌 Créer une nouvelle facture
+export async function creerFacture(factureData) {
+  const res = await fetch(`${API_BASE_URL}/factures`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(factureData),
+  });
 
-    if (error) {
-      console.error("❌ Erreur session:", error);
-      throw error;
-    }
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Erreur lors de la création");
+  return data;
+}
 
-    if (!session) {
-      console.log("⚠️ Aucune session active");
-      throw new Error('Veuillez vous connecter');
-    }
+// 📌 Récupérer toutes les factures d’un client
+export async function getFacturesParClient(client_id) {
+  const res = await fetch(`${API_BASE_URL}/factures/client/${client_id}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Erreur lors du chargement");
+  return data;
+}
 
-    console.log("🔐 Token:", session.access_token.substring(0, 10) + '...');
-    console.log("🌐 Envoi requête API...");
+// 📌 Créer un nouveau client
+export async function creerClient(clientData) {
+  const res = await fetch(`${API_BASE_URL}/clients`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(clientData),
+  });
 
-    const response = await fetch('http://localhost:4000/api/factures', {
-      headers: {
-        'Authorization': `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("❌ Erreur API:", response.status, errorData);
-      throw new Error(errorData.error || 'Erreur serveur');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("💥 Erreur fetchFactures:", error);
-    throw error;
-  }
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Erreur lors de la création du client");
+  return data;
 }
