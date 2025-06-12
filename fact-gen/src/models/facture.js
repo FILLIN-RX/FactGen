@@ -63,9 +63,9 @@ toJSON() {
     client_id: this.client.id, // ATTENTION : nécessite que client ait un .id
     client_data: {
       nom: this.client.nom,
-      adresse: this.client.adresse,
+      address: this.client.address,
       email: this.client.email,
-      telephone: this.client.telephone,
+    
     },
     produits: Object.values(this.produits).map(p => ({
       nom: p.nom,

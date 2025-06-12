@@ -1,11 +1,14 @@
-// supabaseClient.js
-import 'dotenv/config'; // Charge automatiquement les variables d'environnement
-import { createClient } from '@supabase/supabase-js'; // Client Supabase
+// config/supabaseClient.js
+import { createClient } from '@supabase/supabase-js'
+import dotenv from 'dotenv'
 
-// Crée et exporte une instance du client Supabase
-const supabase = createClient(
-  process.env.SUPABASE_URL, // URL de votre projet Supabase
-  process.env.SUPABASE_ANON_KEY // Clé publique (anon key) de Supabase
-);
+dotenv.config() // ⚠️ À mettre avant toute lecture des variables
 
-export default supabase;
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("SUPABASE_URL ou SUPABASE_KEY manquant dans le fichier .env")
+}
+const supabase = createClient(supabaseUrl, supabaseKey)
+export default supabase

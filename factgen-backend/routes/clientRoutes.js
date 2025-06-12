@@ -54,18 +54,18 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Erreur lors de la création du client" });
   }
 });
-//verifie si le clien existe
+//verifie si le client existe
 router.post("/upsert", async (req, res) => {
-  const { nom, email, adresse } = req.body;
+  const { nom, email, address } = req.body;
 
-  if (!nom || !email || !adresse) {
+  if (!nom || !email || !address) {
     return res.status(400).json({ message: "Champs requis manquants" });
   }
 
   try {
     const { data, error } = await supabase
       .from("clients")
-      .upsert([{ nom, email, adresse }], { onConflict: ["email"] })
+      .upsert([{ nom, email, address }], { onConflict: ["email"] })
       .select()
       .single();
 

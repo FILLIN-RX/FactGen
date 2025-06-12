@@ -3,6 +3,10 @@ import cors from 'cors'
 import supabase from './config/supabaseClient.js'
 import clientRoutes from './routes/clientRoutes.js'
 import factureRoutes from './routes/factureRoutes.js'
+import dotenv from 'dotenv'
+
+dotenv.config();
+
 const app = express()
 app.use(express.json())
 app.use(cors());

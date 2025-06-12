@@ -1,17 +1,17 @@
 export default class Client {
-  constructor(nom, adresse, email, telephone) {
+  constructor(nom, address, email) {
     this.nom = nom;
-    this.adresse = adresse;
+    this.address = address;
     this.email = email;
-    this.telephone = telephone;
+   
   }
 
   toJSON() {
     return {
       nom: this.nom,
-      adresse: this.adresse,
+      address: this.address,
       email: this.email,
-      telephone: this.telephone
+      
     };
   }
 
@@ -28,9 +28,9 @@ export default class Client {
       const data = JSON.parse(localStorage.getItem('clients')) || [];
       return data.map(client => new Client(
         client.nom,
-        client.adresse,
+        client.address,
         client.email,
-        client.telephone
+        
       ));
     }
 }

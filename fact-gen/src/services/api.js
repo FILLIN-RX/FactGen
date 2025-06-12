@@ -1,4 +1,21 @@
 const API_BASE_URL = "http://localhost:4000/api";
+export async function upsertClient(client) {
+  const response = await fetch(`${API_BASE_URL}/clients/upsert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(client),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error("Erreur lors de l'upsert du client : " + message);
+  }
+
+  return await response.json(); // retourne le client avec son `id`
+}
+
 
 // 📌 Créer une nouvelle facture
 export async function creerFacture(factureData) {
