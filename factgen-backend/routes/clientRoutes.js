@@ -54,10 +54,44 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Erreur lors de la création du client" });
   }
 });
+//update client by id
+
+
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nom, email, address } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "ID du client manquant" });
+  }
+
+  try {
+    // Mise à jour du client dans Supabase
+    const { data, error } = await supabase
+      .from("clients")
+      .update({ nom, email, address })
+      .eq("id", id)
+      .select(); // pour voir les données mises à jour
+
+    console.log("🧾 Données Supabase:", data);
+    console.log("⚠️ Erreur Supabase:", error);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Client non trouvé" });
+    }
+
+    res.json({ message: "Client mis à jour avec succès", client: data[0] });
+  } catch (err) {
+    console.error("Erreur:", err);
+    res.status(500).json({ error: "Erreur lors de la mise à jour du client" });
+  }
+});
 
 //delete client by id
 router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
+  const  id  = req.params.id;
   if (!id) {
     return res.status(400).json({ error: "ID du client manquant" });
   }
@@ -65,7 +99,8 @@ router.delete("/:id", async (req, res) => {
     const { data, error } = await supabase
       .from("clients")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select(); 
 
     console.log("🧾 Données Supabase:", data);
     console.log("⚠️ Erreur Supabase:", error);
@@ -77,10 +112,10 @@ router.delete("/:id", async (req, res) => {
     if (!data) {
       return res.status(404).json({ error: "Client non trouvé" });
     } else if (data.length === 0) {
-      return res.status(404).json({ error: "Aucun client trouvé avec cet ID" });
+      return res.status(404).json({ error: "Aucun client trouvé dans la liste: liste vide" });
     }
 
-    res.status(200).json({ message: "Client supprimé avec succès", data });
+    res.status(200).json({ message: "Client supprimé avec succès", client: data[0] });
   } catch (err) {
     console.error("Erreur attrapée:", err.message); // Ajouté
     console.log(err.message);
