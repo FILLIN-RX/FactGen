@@ -12,11 +12,12 @@ router.get("/", async (req, res) => {
     const { data, error } = await supabase
       .from("clients") // Table clients
       .select("*") // Sélectionne toutes les colonnes
-      .eq("user_id", req.user.id) // Filtre par user_id
-      .order("nom", { ascending: true }); // Trie par nom ascendant
+     // .eq("user_id", req.user.id) // Filtre par user_id
+      //.order("nom", { ascending: true }); // Trie par nom ascendant
 
     if (error) throw error;
     res.json(data); // Renvoie les données
+    console.log(data)
   } catch (err) {
     console.error("Erreur:", err);
     res.status(500).json({ error: "Erreur lors de la récupération des clients" });

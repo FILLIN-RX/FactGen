@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
   console.log("📦 Résultat Supabase:", data);
   if (error) return res.status(500).json({ error: error.message });
   res.json(data); // Renvoie les factures
+  console.log(data)
 });
 
 // Crée une nouvelle facture

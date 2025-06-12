@@ -1,6 +1,25 @@
 <script setup lang="ts">
 import { onMounted, ref , watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import  { useAuthStore } from "../stores/auth";
+const auth = useAuthStore()
+const token = localStorage.getItem('supabase.auth.token'); // adapte selon où tu stockes le token
+import { testUser } from '../api/testeUser';
+
+testUser();
+
+fetch('http://localhost:4000/api/secret', {
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }
+})
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message); // Affiche la réponse du backend
+  })
+  .catch(err => {
+    alert('Erreur API : ' + err);
+  });
 const menuItems =ref([
   { id: 1, icon: "menu", label: "Menu", route: "/", active: true },
   { id: 2, icon: "dashboard", label: "Dashboard", route: "/real", active: false },
@@ -20,6 +39,7 @@ onMounted(() => {
   if (storedUser) {
     utilisateur.value = JSON.parse(storedUser);
   }
+  auth.getCurrentUser()
 });
 
 function logout() {

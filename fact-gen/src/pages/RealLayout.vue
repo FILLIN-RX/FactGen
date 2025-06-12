@@ -24,6 +24,7 @@ import BarChart from "../components/BarChart.vue";
 import RecentActivity from "../components/RecentActivity.vue";
 import StatisTics from "../components/StatisTics.vue";
 
+// Exemple avec fetch dans un composant Vue
 
 
 export default {
@@ -70,6 +71,7 @@ export default {
   
   },
 };
+
 </script>
 
 <style scoped>

@@ -8,6 +8,9 @@ import AppLayout from '../pages/AppLayout.vue';
 import RealLayout from '../pages/RealLayout.vue';
 import SignUp from '../pages/SignUp.vue';
 import { supabase } from '../lib/supabase';
+console.log('Session actuelle:', await supabase.auth.getSession())
+const { data } = await supabase.auth.getSession();
+console.log(data.session.access_token);
 
 const routes = [
   {
@@ -60,27 +63,25 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
 async function getUser(next) {
-  localUser = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getSession();
 
-  if (localUser.data.session == null) {
-      next("/login")    
-  }else{
-    next()
+  if (!data.session) {
+    next('/login');
+  } else {
+    next();
   }
-  
-
 }
 
-  router.beforeEach((to,from,next)=>{
-    if (to.meta.requiresAuth) {
-      console.log("requiresAuth")
-      getUser(next); 
-      
-    }else{
-      next();
-    }
-  })
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth) {
+    console.log("requiresAuth");
+    await getUser(next);
+  } else {
+    next();
+  }
+});
 
 
 

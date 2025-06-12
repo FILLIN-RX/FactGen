@@ -1,4 +1,11 @@
 <script setup >
+import { useAuthStore } from '../stores/auth'
+import { onMounted } from 'vue'
+const auth = useAuthStore()
+
+onMounted(() => {
+  auth.getCurrentUser()
+})
 const today = new Date().toLocaleDateString('en-US', {
   weekday: 'long',
   month: 'long',
@@ -31,6 +38,11 @@ const today = new Date().toLocaleDateString('en-US', {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
       </button>
+      <div>
+    <p v-if="auth.user">
+      Bonjour {{ auth.user.user_metadata.nom }} ({{ auth.user.email }})
+    </p>
+  </div>
     </div>
   </header>
 </template>
