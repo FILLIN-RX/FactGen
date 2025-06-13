@@ -18,6 +18,7 @@
         {title:'Total des facture',value:'100',desc:' + 14% from last month'},
         {title:'Total des Revenue',value:'100,999.55',desc:' - 4% from last month'},
         {title:'Total des profit',value:'100',desc:' + 39% from last month'},
+        {title:'Total des profit',value:'100',desc:' + 39% from last month'},
     ])
 
 
