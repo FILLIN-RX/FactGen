@@ -5,21 +5,21 @@ import { getFacturesParClient } from '../services/api'
 export const useFacturesStore = defineStore('factures', {
   state: () => ({
     factures: ref([]),
-    laoding:false,
+    loading:false,
     error: null,
     revenusParMois: Array(12).fill(0),
   }),
   
   actions: {
    async charger() {
-      this.laoding = true
+      this.loading = true
       this.error = null
       try{
         this.factures = await getFacturesParClient()
       }catch (error) {
         this.error = error.message
       }finally {
-        this.laoding = false
+        this.loading = false
       }
 
     },
