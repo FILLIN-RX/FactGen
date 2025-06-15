@@ -31,8 +31,8 @@ export async function creerFacture(factureData) {
 }
 
 // 📌 Récupérer toutes les factures d’un client
-export async function getFacturesParClient(client_id) {
-  const res = await fetch(`${API_BASE_URL}/factures/client/${client_id}`);
+export async function getFacturesParClient() {
+  const res = await fetch(`${API_BASE_URL}/factures/`);
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Erreur lors du chargement");
   return data;
@@ -45,8 +45,16 @@ export async function creerClient(clientData) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(clientData),
   });
-
+ 
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Erreur lors de la création du client");
   return data;
 }
+ export async function getClients() {
+    const res = await fetch(`${API_BASE_URL}/clients`);
+    if (!res.ok) {
+      const message = await res.text();
+      throw new Error("Erreur lors de la récupération des clients : " + message); 
+    }
+    return await res.json();
+  }
