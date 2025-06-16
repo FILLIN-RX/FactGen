@@ -1,240 +1,49 @@
-<template >
-  <div class="p-6  max-w-4xl mx-auto bg-white shadow rounded " id="canvas">
-    <h1 class="text-2xl text-blue-200 font-bold mb-4">📄 Liste des factures sauvegardées</h1>
-    <FiltreSearch />
-    <div v-if="factures.length === 0" class="text-gray-600 flex ">
+<template>
+  <div class="p-6 max-w-4xl mx-auto bg-white shadow rounded">
+    <h1 class="text-2xl text-blue-600 font-bold mb-4">📄 Liste des factures sauvegardées</h1>
+    
+    
+    <div v-if="!invoiceStore.hasInvoices" class="text-gray-600 py-4">
       Aucune facture sauvegardée pour le moment.
     </div>
-    <ul v-else >
-      <li
-         v-for="(facture, index) in factures"
-        :key="facture.numero"
-          @click="selectionnerFacture(facture, index)"
-        :ref="el => setFactureRef(el, index)"
-        class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans cursor-pointer hover:bg-gray-200 p-2"
-      >
-        <!-- Affichage résumé : numéro, client, date, total TTC -->
-        #{{ facture.numero }} - {{ facture.client.nom }} - {{ facture.date }} - {{ facture.getTotalTTC().toFixed(2) }} €
-      </li>
+    
+    <ul v-else>
+      <InvoiceListItem
+        v-for="(invoice, index) in invoiceStore.factures"
+        :key="invoice.id"
+        :invoice="invoice"
+        @select="invoiceStore.selectInvoice(invoice, index)"
+      />
     </ul>
-    <div  v-if="factureSelectionnee" class="fixed inset-0 bg-black/10 bg-opacity-20 backdrop-blur-sm z-50 flex items-center justify-center space-y-6" @click.self="factureSelectionnee = null">
-      <div 
-     class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
 
-      
-        <p class="text-lg font-semibold mb-2">Facture:{{factureSelectionnee.numero}}</p>
-        <div class="flex justify-between items-center mb-8">
-      <div class="flex items-center space-x-4">
-        <div class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow">
-          <img v-if="logoDataUrl" :src="logoDataUrl" alt="Logo" class="h-full w-full object-cover" />
-        </div>
-        <div v-if="factureSelectionnee.societer">
-          <h3 class="text-xl font-semibold"> {{  factureSelectionnee.societer.nom }}</h3>
-          <p class="text-sm text-gray-600">{{ factureSelectionnee.societer.email }}</p>
-          <p class="text-sm text-gray-600">{{ factureSelectionnee.societer?.adresse }}</p>
-        </div>
-      </div>
-
-          </div>
-          <div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
-      <h4 class="font-semibold mb-2 text-gray-800">Client :</h4>
-      <p><strong>Nom :</strong> {{ factureSelectionnee.client?.nom  }}</p>
-      <p><strong>Email :</strong>{{ factureSelectionnee.client?.email }}</p>
-      <p><strong>Adresse :</strong> {{ factureSelectionnee.client?.adresse }}</p>
-      <p><strong>Date :</strong> {{ formatDate(factureSelectionnee.date) }}</p>
-      
-    </div>
-    
-    
-    <div class="mb-8">
-      <div class="grid grid-cols-4 gap-2 bg-gray-100 font-semibold text-gray-700 p-3 text-sm border-b border-gray-300">
-        <div class="truncate">Description</div>
-        <div class="text-center">Quantité</div>
-        <div class="text-center">Prix unitaire</div>
-        <div class="text-right">Prix total</div>
-    </div>
-      <div v-for="(p, i) in factureSelectionnee.produits || []" :key="i" class="grid grid-cols-4 p-3 border-b text-sm text-gray-800">
-        <div class="truncate">{{ p.nom }}</div>
-        <div class="text-center">{{ p.quantite }}</div>
-        <div class="text-center">{{ p.prix }} €</div>
-        <div class="text-right">{{ formatPrix(p.quantite * p.prix) }} €</div>
-    </div>
-      </div>
-    
-      <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
-        <p class="mt-2">
-          <strong>Total HT :</strong> {{ factureSelectionnee.totalHT.toFixed(2) }} €
-        </p>
-        
-        <template v-if="factureSelectionnee.montantReduction > 0">
-          
-                <p class="text-red-500"><strong>Réduction :</strong>-{{ factureSelectionnee.montantReduction.toFixed(2) }} €</p>
-        </template>
-        
-     
-    </div>
-
-        
-
-        
-
-            
-
-        <p class="font-bold text-lg text-end">
-          Total TTC : {{ factureSelectionnee.totalTTC.toFixed(2)  }} €
-        </p>
-
-        <p class="text-sm text-gray-500 mt-2">Info supp : {{ factureSelectionnee.suplement || '—' }}</p>
-        <div class="flex justify-between">
-          <button class="p-3 bg-primary rounded hover:bg-blue-300" @click="downloadPDF">
-            Télécharger en PDF
-        </button>
-        <button popovertarget="suprimer" class="p-3 bg-red-200 rounded hover:bg-red-300" @click="supprimerFacture(index)">
-          supprimer
-        </button>
-        <div popover id="my-popover" class="opacity-0 starting:open:opacity-0 ...">
-            suprimer avec succès 
-        </div>
-        <button @click="factureSelectionnee = null" class="mt-4 btn btn-sm btn-danger">
-        Fermer
-      </button>
-
-
-
-
-        </div>
-        
-       
-      </div>
-     
-    </div>
-    
-    
+    <InvoiceDetailModal
+      v-if="invoiceStore.selectedInvoice"
+      :invoice="invoiceStore.selectedInvoice"
+      @close="invoiceStore.clearSelection()"
+      @delete="invoiceStore.deleteInvoice(invoiceStore.selectedIndex)"
+      @download="downloadPDF"
+    />
   </div>
 </template>
 
-<script>
-  import { ref } from 'vue'
-  import jspdf from 'jspdf';
-  import html2pdf from 'html2pdf.js';
-  import Facture from '../models/facture';
-  import societer from '../models/societer';
-  import html2canvas from 'html2canvas';
- 
-import BarChart from '../components/BarChart.vue';
-import FiltreSearch from '../components/FiltreSearch.vue';
-export default {
-  components: {
-  
-    FiltreSearch,
-  },
-  setup() {
-    const isOpen = ref(false);
-    return { isOpen };
-    
-  },
-  name: 'ListeFactures',
-  data() {
-    return {
-      factures: [],
-      factureElements: [],
-      factureSelectionnee: null ,
-      indexSelectionne: null,
-    };
-  },
-  created() {
-  const data = localStorage.getItem('factures')
-  if (data) {
-    const facturesBrutes = JSON.parse(data)
+<script setup>
+import { onMounted } from 'vue';
+import { useFacturesStore } from '../stores/Facture';
+//import FiltreSearch from '../components/factures/';
+import InvoiceListItem from '../components/factures/InvoiceListItem.vue';
+import InvoiceDetailModal from '../components/factures/InvoiceDetailModal.vue';
 
-    this.factures = facturesBrutes.map(factureData => {
-      // Sécuriser l'accès à societer
-      const socData = factureData.societer || {
-        
-      }
+const invoiceStore = useFacturesStore();
 
-      const soc = new societer(
-        socData.nom,
-        socData.adresse,
-        socData.email,
-        socData.telephone
-      )
+onMounted(() => {
+  invoiceStore.charger();
+});
 
-      const client = factureData.client || { nom: '', email: '', adresse: '' }
-      const produits = factureData.produits || []
-      const reduction = factureData.reduction || null
-
-      const facture = new Facture(
-        soc,
-        client,
-        produits,
-        reduction
-      )
-
-      if (factureData.date) {
-        facture.date = factureData.date
-      }
-
-      if (factureData.suplement) {
-        facture.suplement = factureData.suplement
-      }
-
-      return facture
-    })
-  }
+function downloadPDF() {
+  // PDF generation logic here
 }
-,
-  methods: {
-  
-    selectionnerFacture(facture, index) {
-    this.factureSelectionnee = facture
-    this.indexSelectionne = index
-  }
-,
-  // Fonction pour définir la référence de l'élément de la facture
-setFactureRef(el, index) {
-  if (el) this.factureElements[index] = el
-}
-,
-  // Fonction pour supprimer une facture
-supprimerFacture(index) {
-  if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
-    this.factures.splice(index, 1);
-    his.factureSelectionnee = null
-    localStorage.setItem('factures', JSON.stringify(this.factures));
-    alert("Facture supprimée avec succès !");
-  }
-},
-  
-  // Fonction pour formater la date
-
- formatDate(dateStr) {
-  if (!dateStr) return 'Non spécifiée';
-  const options = { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  };
-  return new Date(dateStr).toLocaleDateString('fr-FR', options);
-},
-  isNumber(value) {
-    return typeof value === 'number' && !isNaN(value);
-  },
-  formatPrix(value) {
-    const num = Number(value);
-    return isNaN(num) ? '0.00' : num.toFixed(2);
-  },
-  
-
-},
-
-
-
-  
-};
 </script>
 
 <style scoped>
+/* Add any component-specific styles here */
 </style>

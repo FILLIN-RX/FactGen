@@ -21,10 +21,28 @@ export default class Facture {
     if (this.reduction.type === "montant") {
       return this.reduction.valeur;
     } else if (this.reduction.type === "pourcentage") {
-      return this.getTotalHT() * (this.reduction.valeur / 100);
+      const total = this.getTotalHT();
+      
+      return total * (this.reduction.valeur / 100);
     }
     return 0;
   }
+  getReductionFinale() {
+  if (!this.reduction || this.reduction.valeur === 0) return null;
+
+  const total = this.getTotalHT();
+
+  return {
+    type: this.reduction.type,
+    valeurOriginale: this.reduction.valeur,
+    valeurCalculee:
+      this.reduction.type === "montant"
+        ? this.reduction.valeur
+        : total * (this.reduction.valeur / 100),
+    base: total
+  };
+}
+
 
   getTotalTTC() {
     return this.getTotalHT() - this.getMontantReduction();
@@ -58,35 +76,33 @@ export default class Facture {
     }
     return true;
   }
-toJSON() {
-  return {
-    client_id: this.client.id, // ATTENTION : nécessite que client ait un .id
-    client_data: {
-      nom: this.client.nom,
-      address: this.client.address,
-      email: this.client.email,
-    
-    },
-    produits: Object.values(this.produits).map(p => ({
-      nom: p.nom,
-      prix: p.prix,
-      quantite: p.quantite,
-    })),
-    reduction: this.reduction || {},
-    suplement: this.suplement || {},
-    montant_total: this.totalTTC,
-    created_at: new Date().toISOString()
-  };
-}
-
+  toJSON() {
+    return {
+      client_id: this.client.id, // ATTENTION : nécessite que client ait un .id
+      client_data: {
+        nom: this.client.nom,
+        address: this.client.address,
+        email: this.client.email,
+      },
+      produits: Object.values(this.produits).map((p) => ({
+        nom: p.nom,
+        prix: p.prix,
+        quantite: p.quantite,
+      })),
+      reduction: this.getReductionFinale(),
+      suplement: this.suplement || {},
+      montant_total: this.totalTTC,
+      created_at: new Date().toISOString(),
+    };
+  }
 
   sauvegarder() {
-     this.validate();
+    this.validate();
     const factureData = {
       societer: this.societer,
       client: this.client,
       produits: this.produits,
-      reduction: this.reduction,
+      reduction: this.getReductionFinale(),
       suplement: this.suplement,
       totalHT: this.totalHT,
       montantReduction: this.montantReduction,

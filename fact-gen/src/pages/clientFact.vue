@@ -21,7 +21,7 @@
 
       <!-- Client List -->
       <div v-if="clientStore.clients.length === 0" class="text-gray-600 py-4">
-        Aucune facture sauvegardée pour le moment.
+        Aucune client sauvegardée pour le moment.
       </div>
       <ul v-else class="mt-4 space-y-4">
         <li

@@ -37,6 +37,18 @@ export async function getFacturesParClient() {
   if (!res.ok) throw new Error(data.error || "Erreur lors du chargement");
   return data;
 }
+//supprime toute les factures
+
+export async function deleteFactures(){
+  const res = await fetch(`${API_BASE_URL}/factures`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error("Erreur lors de la suppression des factures : " + message);
+  }
+  return await res.json(); // retourne un message de confirmation ou un objet vide
+}
 
 // 📌 Créer un nouveau client
 export async function creerClient(clientData) {
