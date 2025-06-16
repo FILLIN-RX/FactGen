@@ -17,7 +17,7 @@ export const useFacturesStore = defineStore('factures', {
       this.error = null
       try{
         this.factures = await getFacturesParClient()
-        console.log("Factures chargées:", this.factures)
+       
       }catch (error) {
         this.error = error.message
       }finally {

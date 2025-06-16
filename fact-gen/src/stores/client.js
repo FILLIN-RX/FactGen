@@ -1,12 +1,12 @@
 // src/stores/clients.js
 import { defineStore } from 'pinia'
-import { getClients } from '../services/api'
+import { getClients,deleteClient,creerClient } from '../services/api'
 
 import Client from '../models/client';
 
 export const useClientsStore = defineStore('client', {
   state: () => ({
-    clients: Client.chargerTous() || [],
+    clients:  [],
     clientForm: {
       nom: "",
       email: "",
@@ -46,23 +46,53 @@ export const useClientsStore = defineStore('client', {
   },
 
   actions: {
-    addClient() {
-      const newClient = new Client(
-        this.clientForm.nom,
-        this.clientForm.adresse,
-        this.clientForm.email,
-        this.clientForm.telephone
-      );
-      
-      newClient.sauvegarder();
-      this.clients.push(newClient);
-      this.resetForm();
+    async charger() {
+      this.loading = true
+      this.error = null
+      try {
+        this.clients = await getClients()
+      } catch (error) {
+        this.error = error.message
+      } finally {
+        this.loading = false
+      }
     },
-    
-    deleteClient() {
-      if (this.selectedIndex !== null) {
-        this.clients.splice(this.selectedIndex, 1);
-        localStorage.setItem("clients", JSON.stringify(this.clients));
+    async addClient() {
+      try {
+        const clientData = {
+          nom: this.clientForm.nom,
+          adresse: this.clientForm.adresse,
+          email: this.clientForm.email,
+          telephone: this.clientForm.telephone,
+        };
+        // Appel API d'abord
+        const created = await creerClient(clientData);
+        // Ajoute dans le store local seulement si succès
+        this.clients.push(created);
+        this.sauvegarder();
+        this.resetForm();
+        alert("Client ajouté avec succès !");
+      } catch (error) {
+        console.error("Erreur lors de l'ajout du client:", error);
+        alert("Erreur lors de l'ajout du client : " + error.message); 
+      }
+    },
+    sauvegarder() {
+      localStorage.setItem('clients', JSON.stringify(this.clients))
+    },
+   async deleteClient(index) {
+      // Utilise l'index passé OU le selectedIndex si index est undefined
+      const idx = typeof index === 'number' ? index : this.selectedIndex;
+      if (idx === null || idx === undefined) return;
+
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
+        const client = this.clients[idx];
+        if (!client) return; // Sécurité
+
+        const clientId = client.id;
+        await deleteClient(clientId); // Appel API pour supprimer côté backend
+        this.clients.splice(idx, 1);
+        this.sauvegarder();
         this.closeDetails();
       }
     },
@@ -101,17 +131,7 @@ export const useClientsStore = defineStore('client', {
     prevPage() {
       if (this.page > 1) this.page--;
     },
-    async charger() {
-      this.loading = true
-      this.error = null
-      try {
-        this.clients = await getClients()
-      } catch (error) {
-        this.error = error.message
-      } finally {
-        this.loading = false
-      }
-    },
+    
   },
 });
 

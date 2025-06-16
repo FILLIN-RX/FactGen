@@ -39,8 +39,8 @@ export async function getFacturesParClient() {
 }
 //supprime toute les factures
 
-export async function deleteFactures(){
-  const res = await fetch(`${API_BASE_URL}/factures`, {
+export async function deleteFactures(factureId){
+  const res = await fetch(`${API_BASE_URL}/factures/${factureId}`, {
     method: "DELETE",
   });
   if (!res.ok) {
@@ -62,6 +62,8 @@ export async function creerClient(clientData) {
   if (!res.ok) throw new Error(data.error || "Erreur lors de la création du client");
   return data;
 }
+
+// Recuper tous les clients
  export async function getClients() {
     const res = await fetch(`${API_BASE_URL}/clients`);
     if (!res.ok) {
@@ -70,3 +72,15 @@ export async function creerClient(clientData) {
     }
     return await res.json();
   }
+ // Supprimer un client par son ID
+ export async function deleteClient(clientId) {
+  const res = await fetch(`${API_BASE_URL}/clients/${clientId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error("Erreur lors de la suppression du client : " + message);
+  }
+  return await res.json(); // retourne un message de confirmation ou un objet vide
+  
+ }
