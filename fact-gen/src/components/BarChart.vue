@@ -19,6 +19,7 @@ const facturesStore = useFacturesStore()
 const lineChartKey = ref(0)
 
 onMounted(() => {
+  statsStore.fetchStatistiques()
   facturesStore.charger()
   lineChartKey.value++ // Forcer le rechargement du graphique
 })
@@ -28,7 +29,7 @@ const barChartData = computed(() => ({
   labels: statsStore.mois,
   datasets: [{
     label: 'Montant TTC',
-    data: statsStore.revenusParMois,
+    data: statsStore.totalRevenu,
     backgroundColor: '#60a5fa'
   }]
 }))
@@ -81,7 +82,7 @@ const chartOptions = {
       usePointStyle: true,
       callbacks: {
         label: function(context: any) {
-          return `${context.parsed.y}%`;
+          return `${context.parsed.y}$`;
         }
       }
     }

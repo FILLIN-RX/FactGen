@@ -7,9 +7,9 @@ export const getStatistiques = async (req, res) => {
       .from('clients')
       .select('*', { count: 'exact', head: true });
 
-    const { data: facture, error } = await supabase
+    const { data: factures, error } = await supabase
       .from('facture')
-      .select('totalTTC, reduction');
+      .select('montant_total, reduction');
 
     if (error) throw error;
 
@@ -17,7 +17,7 @@ export const getStatistiques = async (req, res) => {
     let totalReductions = 0;
 
     for (const facture of factures) {
-      totalRevenu += facture.totalTTC || 0;
+      totalRevenu += facture.montant_total || 0;
 
       const red = facture.reduction;
       if (red && red.valeurCalculee) {
@@ -27,7 +27,7 @@ export const getStatistiques = async (req, res) => {
 
     res.json({
       totalClients,
-      totalFactures: facture.length,
+      totalFactures: factures.length,
       totalRevenu,
       totalReductions
     });
