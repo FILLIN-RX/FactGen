@@ -8,9 +8,8 @@ import AppLayout from '../pages/AppLayout.vue';
 import RealLayout from '../pages/RealLayout.vue';
 import SignUp from '../pages/SignUp.vue';
 import { supabase } from '../lib/supabase';
-console.log('Session actuelle:', await supabase.auth.getSession())
 const { data } = await supabase.auth.getSession();
-console.log(data.session.access_token);
+
 
 const routes = [
   {

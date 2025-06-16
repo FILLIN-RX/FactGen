@@ -44,7 +44,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     setUser(data.user);
-    console.log("User registered:", data.user);
+
     //supabase envoi l'email de confirmation
     return data.user;
   }
@@ -63,7 +63,10 @@ export const useAuthStore = defineStore("auth", () => {
 
     setUser(data.user);
     console.log("User logged in:", data.user);
-     localStorage.setItem('supabase_token', data.session.access_token);
+    if (data.session) {
+  localStorage.setItem('supabase_token', data.session.access_token);
+}
+
     return data.user;
   }
   // 4. Action : déconnexion
