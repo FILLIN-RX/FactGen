@@ -1,6 +1,6 @@
 // controllers/statistiquesController.js
 import  supabase  from '../config/supabaseClient.js';
-
+import { getRevenusParMois } from '../service/totalMois.js';
 export const getStatistiques = async (req, res) => {
   try {
     const { count: totalClients } = await supabase

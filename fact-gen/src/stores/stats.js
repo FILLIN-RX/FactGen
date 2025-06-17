@@ -1,37 +1,62 @@
-import { defineStore } from 'pinia'  // 1
-import axios from 'axios' 
-import axiosapi from '../api/axios'       // 2
+import { defineStore } from "pinia";
+import axiosapi from "../api/axios";
 
-export const useStatsStore = defineStore('statistiques', {  // 3
-  state: () => ({                   
-    totalClients: 0,                
-    totalFactures: 0,              
-    totalRevenu: 0,                 
-    totalReductions: 0, 
-    mois:[],  
-    revenusParmois:[],          
-    isLoading: false,             
-    error: null,                   
+export const useStatsStore = defineStore("statistiques", {
+  state: () => ({
+    totalClients: 0,
+    totalFactures: 0,
+    totalRevenu: 0,
+    totalReductions: 0,
+    mois: [],
+    revenusParMois: [],
+    isLoading: false,
+    error: null,
   }),
-  actions: {                     
-    async fetchStatistiques() {   // 12 - fonction asynchrone pour récupérer les stats depuis le backend
-      this.isLoading = true       // 13 - indique qu'on lance la requête, loading=true
-      console.log('Fetching stats...') // ← pour vérifier si l’appel démarre
+
+  actions: {
+    async fetchStatistiques() {
+      this.isLoading = true;
       try {
-        const { data } = await axiosapi.get('/api/statistiques') // 14 - appel HTTP GET sur l'API backend
-          console.log('Réponse reçue:', data) // ← vérifie que tu reçois bien les données
-        this.totalClients = data.totalClients
-        this.mois = data.mois // 15 - stocke les mois dans le state
-        this.totalFactures = data.totalFactures // 16 - stocke la donnée nombre factures
-        this.revenusParmois = data.revenusParmois // 16 - stocke les revenus par mois
-        this.totalRevenu = data.totalRevenu    // 17 - stocke la donnée revenu total
-        this.totalReductions = data.totalReductions // 18 - stocke la donnée total réductions
-        this.error = null        // 19 - aucune erreur, on nettoie
-      } catch (err) {            // 20 - capture d’erreur si l’appel échoue
-        this.error = err.message  // 21 - stocke le message d’erreur dans le state
+        // Statistiques globales
+        const { data } = await axiosapi.get("/api/statistiques");
+        this.totalClients = data.totalClients;
+        this.totalFactures = data.totalFactures;
+        this.totalRevenu = data.totalRevenu;
+        this.totalReductions = data.totalReductions;
+
+        // Statistiques mensuelles
+        const { data: revenusData } = await axiosapi.get("/api/statistiques/revenusmois");
+
+        // Liste fixe des 12 mois (année 2025)
+        const moisFixes = [
+          "janvier 2025", "février 2025", "mars 2025", "avril 2025",
+          "mai 2025", "juin 2025", "juillet 2025", "août 2025",
+          "septembre 2025", "octobre 2025", "novembre 2025", "décembre 2025"
+        ];
+
+        // Crée un dictionnaire { "juin 2025": montant }
+        const moisNomParIndex = [
+          'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+          'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+        ];
+
+        const revenusMap = {};
+        revenusData.revenusParMois.forEach(item => {
+          const date = new Date(item.mois + "-01"); // item.mois = "2025-06"
+          const label = `${moisNomParIndex[date.getMonth()]} ${date.getFullYear()}`; // "juin 2025"
+          revenusMap[label] = item.total_revenu;
+        });
+
+        // Remplissage final
+        this.mois = moisFixes;
+        this.revenusParMois = moisFixes.map(mois => revenusMap[mois] || 0);
+
+        this.error = null;
+      } catch (err) {
+        this.error = err.message;
       } finally {
-        this.isLoading = false    // 22 - la requête est terminée (réussite ou échec), loading=false
+        this.isLoading = false;
       }
     },
   },
-})
+});

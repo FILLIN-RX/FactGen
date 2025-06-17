@@ -19,17 +19,20 @@ const facturesStore = useFacturesStore()
 const lineChartKey = ref(0)
 
 onMounted(() => {
-  statsStore.fetchStatistiques()
-  facturesStore.charger()
-  lineChartKey.value++ // Forcer le rechargement du graphique
+  statsStore.fetchStatistiques().then(() => {
+     lineChartKey.value++
+    console.log('Mois:', statsStore.mois)
+    console.log('Revenus:', statsStore.revenusParMois)
+  })
 })
+
 
 // Données dynamiques depuis Pinia
 const barChartData = computed(() => ({
   labels: statsStore.mois,
   datasets: [{
     label: 'Montant TTC',
-    data: statsStore.totalRevenu,
+    data: statsStore.revenusParMois,
     backgroundColor: '#60a5fa'
   }]
 }))
@@ -95,7 +98,7 @@ const chartOptions = {
       },
       ticks: {
         callback: function(value: number) {
-          return value + '%';
+          return value + '$';
         },
         padding: 10
       },
@@ -116,6 +119,8 @@ const chartOptions = {
 </script>
 
 <template>
+  
+
   <div class="space-y-6  grid lg:grid-cols-2 gap-5 lg:px-10">
     <ActiviterRecente />
     <div class="bg-white rounded-xl hover:shadow p-6">
@@ -128,7 +133,7 @@ const chartOptions = {
     <div class="bg-white rounded-xl hover:shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Revenus mensuels</h2>
       <div style="height: 300px;">
-        <Line :data="lineChartData" :options="chartOptions" :key="lineChartKey" />
+        <Line :data="lineChartData" :options="chartOptions" />
       </div>
      
     </div>
