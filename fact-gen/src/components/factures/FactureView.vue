@@ -141,11 +141,29 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.facture-container {
-  width: 210mm; /* Format A4 */
-  min-height: 297mm;
-  margin: 0 auto;
-  padding: 10mm;
-  background: white;
+@media print {
+  body {
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .no-break {
+    page-break-inside: avoid;
+  }
 }
+.facture-container {
+  page-break-inside: avoid !important;
+}
+.facture-container {
+  width: 794px;      /* largeur A4 */
+  min-height: 1123px; /* hauteur A4 */
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 20px; /* Ajuste si besoin */
+}
+
 </style>

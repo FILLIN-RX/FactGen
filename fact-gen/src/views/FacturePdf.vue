@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="facture"
-    class="bg-white p-6 mt-6  facture-container rounded-xl shadow-lg mx-auto font-sans"
+    class="bg-white p-6 mt-6  facture-container  mx-auto font-sans"
   >
-    <div class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
+    <div class="bg-white p-6 mt-6  mx-auto font-sans">
       <h2 class="font-bold text-2xl mb-6 text-center text-gray-700">
         Aperçu de la facture
       </h2>
@@ -12,7 +12,7 @@
       <div class="flex justify-between items-center mb-8">
         <div class="flex items-center space-x-4">
           <div
-            class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow"
+            class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden "
           >
             <img
               v-if="logoDataUrl"
@@ -133,6 +133,30 @@ onMounted(async () => {
 
 
 <style>
+
+.facture-container {
+  width: 794px;      /* largeur A4 */
+  min-height: 1123px; /* hauteur A4 */
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 20px; /* Ajuste si besoin */
+}
+
+@media print {
+  body {
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .no-break {
+    page-break-inside: avoid;
+  }
+}
+
 body {
   background: white;
   font-family: sans-serif;
