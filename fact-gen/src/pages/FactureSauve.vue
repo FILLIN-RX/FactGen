@@ -28,6 +28,7 @@
 
 <script setup>
 import { onMounted } from 'vue';
+import axios from 'axios';
 import { useFacturesStore } from '../stores/Facture';
 //import FiltreSearch from '../components/factures/';
 import InvoiceListItem from '../components/factures/InvoiceListItem.vue';
@@ -39,8 +40,16 @@ onMounted(() => {
   invoiceStore.charger();
 });
 
-function downloadPDF() {
-  // PDF generation logic here
+ async function downloadPDF() {
+    const response = await axios.get(`/api/pdf/getpdf/${invoiceStore.selectedInvoice.id}`, {
+      responseType: 'blob'
+    });
+
+    const blob = new Blob([response.data],{type:'application/pdf'});
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `facture-${invoiceStore.selectedInvoice.numero}.pdf`;
+    link.click();
 }
 </script>
 
