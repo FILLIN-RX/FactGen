@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
+import FactureView from '../components/factures/FactureView.vue';
 import Home from '../pages/HomePage.vue';
+import PrintLayout from '../components/layout/PrintLayout.vue';
 import FacTure from '../pages/FactureSauve.vue';
 import Login from '../pages/LoginPage.vue';
 import clientFact from '../pages/clientFact.vue';
@@ -18,6 +19,12 @@ const routes = [
     component: Home,
     meta: { requiresAuth: false }
   },
+ {
+  path: '/facture/:id/pdf',
+  name: 'FacturePDF',
+  component: () => import('@/views/FacturePdf.vue'),
+  meta: { requiresAuth: false } // ← très important pour laisser Puppeteer accéder
+},
   {
     path: '/accueil',
     name: 'accueil',
@@ -33,7 +40,9 @@ const routes = [
       {
         path: '/facture',
         name: 'Facture',
-        component: FacTure
+        component: FacTure,
+        meta: { requiresAuth: false },
+        
       },
       {
         path: '/clientFact',

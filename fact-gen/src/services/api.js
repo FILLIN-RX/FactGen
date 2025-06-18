@@ -84,3 +84,9 @@ export async function creerClient(clientData) {
   return await res.json(); // retourne un message de confirmation ou un objet vide
   
  }
+ export async function getFactureById(id) {
+  const res = await fetch(`${API_BASE_URL}/factures/${id}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Erreur lors du chargement");
+  return data;
+}

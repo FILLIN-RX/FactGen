@@ -1,4 +1,8 @@
 <template>
+  <div
+    v-if="facture"
+    class="bg-white p-6 mt-6  facture-container rounded-xl shadow-lg mx-auto font-sans"
+  >
     <div class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
       <h2 class="font-bold text-2xl mb-6 text-center text-gray-700">
         Aperçu de la facture
@@ -7,8 +11,15 @@
       <!-- En-tête -->
       <div class="flex justify-between items-center mb-8">
         <div class="flex items-center space-x-4">
-          <div class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow">
-            <img v-if="logoDataUrl" :src="logoDataUrl" alt="Logo" class="h-full w-full object-cover" />
+          <div
+            class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow"
+          >
+            <img
+              v-if="logoDataUrl"
+              :src="logoDataUrl"
+              alt="Logo"
+              class="h-full w-full object-cover"
+            />
           </div>
           <div>
             <h3 class="text-xl font-semibold">{{ societer.nom }}</h3>
@@ -29,14 +40,21 @@
       <!-- Produits -->
       <div class="mb-8">
         <div
-          class="grid grid-cols-4 gap-2 bg-gray-100 font-semibold text-gray-700 p-3 text-sm border-b border-gray-300">
+          class="grid grid-cols-4 gap-2 bg-gray-100 font-semibold text-gray-700 p-3 text-sm border-b border-gray-300"
+        >
           <div class="truncate">Description</div>
           <div class="text-center">Quantité</div>
           <div class="text-center">Prix unitaire</div>
           <div class="text-right">Prix total</div>
         </div>
-        <div v-for="(p, i) in produits" :key="i" class="grid grid-cols-4 p-3 border-b text-sm text-gray-800">
-          <div class="whitespace-normal sm:whitespace-nowrap sm:truncate sm:overflow-hidden">
+        <div
+          v-for="(p, i) in produits"
+          :key="i"
+          class="grid grid-cols-4 p-3 border-b text-sm text-gray-800"
+        >
+          <div
+            class="whitespace-normal sm:whitespace-nowrap sm:truncate sm:overflow-hidden"
+          >
             {{ p.nom }}
           </div>
 
@@ -66,4 +84,53 @@
         {{ suplement }}
       </div>
     </div>
+  </div>
+  <div v-else>Chargement de la facture...</div>
 </template>
+<script setup>
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import axios from 'axios'
+
+const route = useRoute()
+const facture = ref(null)
+
+// Style spécifique pour l'impression
+const style = `
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    .facture-container, .facture-container * {
+      visibility: visible;
+    }
+    .facture-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  }
+`
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(`http://localhost:4000/api/factures/${route.params.id}`)
+    facture.value = response.data
+  } catch (error) {
+    console.error("Erreur:", error)
+  }
+})
+</script>
+
+<style scoped>
+.facture-container {
+  width: 210mm; /* Format A4 */
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 10mm;
+  background: white;
+}
+</style>

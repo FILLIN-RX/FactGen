@@ -1,39 +1,35 @@
 import puppeteer from 'puppeteer';
 
-const webUrl = (id)=> `http://localhost:5173/${id}`; // URL de la page à convertir en PDF
-const optionsPDF = {width:1024, height: 768}; // Options pour la taille du PDF
+export async function createPDF(req, res) {
+  const factureId = req.params.id;
+  const url = `http://localhost:5173/facture/${factureId}/pdf`;
 
-async function puppeteerPDF(webUrl,optionsPDF) {
+  try {
     const browser = await puppeteer.launch({
-        headless:true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
-    const coverpage = await browser.newPage();
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
-    await coverpage.goto(webUrl,{waitUntil: 'networkidle0'}); // Chargement de la page
-
-    const pdfbuffer = await coverpage.pdf({
-        printBackground:true,
-        width: optionsPDF.width,
-        height:optionsPDF.height,
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '20mm', bottom: '20mm', left: '15mm', right: '15mm' },
     });
 
-    return pdfbuffer;
-    
+    await browser.close();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=facture-${factureId}.pdf`,
+    });
+
+    res.send(pdfBuffer);
+  } catch (err) {
+    console.error('Erreur PDF:', err);
+    res.status(500).send('Erreur lors de la génération du PDF');
+  }
 }
-async function createPDF(req,res) {
-    const {id}= req.params; // Récupération de l'ID depuis les paramètres de la requête
-    await puppeteerPDF(webUrl(id),optionsPDF).then((pdfdata) =>{
-        res.set('content-type', 'application/pdf');
-        res.status(201).send(Buffer.from(pdfdata, 'binary'));
-
-    }).catch((error)=>{
-        console.log("Error generating PDF:", error);
-        res.status(500).json({ error: "Failed to generate PDF" });
-    })
-
-    
-}
-
-export default createPDF
+export default createPDF;
