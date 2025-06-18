@@ -2,7 +2,7 @@
   <div id="app">
     <Loading v-if="isLoading" />
     <div v-else>
-      <NavBar v-if="!isLayoutProtege" />
+      <NavBar v-if="!isLayoutProtege && $route.meta.showNavbarAndFooter !== false" />
 
       <div class="">
         <router-view />

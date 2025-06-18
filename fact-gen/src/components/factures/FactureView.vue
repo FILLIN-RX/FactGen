@@ -113,7 +113,21 @@ const style = `
       padding: 0;
     }
   }
+
 `
+const invoiceStore = useFacturesStore();
+
+defineProps({
+  invoice: Object,
+  logoDataUrl: String,
+  isDownloading: Boolean,
+});
+
+defineEmits(["close", "download", "delete"]);
+function formatDate(date) {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString();
+}
 
 onMounted(async () => {
   try {
@@ -122,6 +136,7 @@ onMounted(async () => {
   } catch (error) {
     console.error("Erreur:", error)
   }
+  invoiceStore.charger()
 })
 </script>
 

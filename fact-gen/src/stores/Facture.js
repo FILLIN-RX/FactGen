@@ -59,4 +59,10 @@ export const useFacturesStore = defineStore('factures', {
   getters: {
     hasInvoices: (state) => state.factures.length > 0,
   },
+  getFactureParId: (state) => (id) => {
+    return state.factures.find(f => f.id === id);
+  
+}
+
+
 })

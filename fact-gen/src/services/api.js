@@ -15,7 +15,25 @@ export async function upsertClient(client) {
 
   return await response.json(); // retourne le client avec son `id`
 }
+// fonction pour telecharger le pdf
+export async function telechargerPDF(factureId) {
+  const response = await fetch(`${API_BASE_URL}/pdf/${factureId}`);
 
+  const contentType = response.headers.get("content-type");
+  if (!response.ok || !contentType.includes("application/pdf")) {
+    const text = await response.text();
+    console.warn("❌ Contenu reçu :", text);
+    throw new Error("Le serveur n’a pas retourné un fichier PDF.");
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `facture-${factureId}.pdf`;
+  link.click();
+  URL.revokeObjectURL(url); // libère la mémoire
+}
 
 // 📌 Créer une nouvelle facture
 export async function creerFacture(factureData) {

@@ -23,7 +23,7 @@ const routes = [
   path: '/facture/:id/pdf',
   name: 'FacturePDF',
   component: () => import('@/views/FacturePdf.vue'),
-  meta: { requiresAuth: false } // ← très important pour laisser Puppeteer accéder
+  meta: { requiresAuth: false, showNavbarAndFooter: false } // ← très important pour laisser Puppeteer accéder
 },
   {
     path: '/accueil',

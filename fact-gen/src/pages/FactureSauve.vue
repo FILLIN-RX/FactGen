@@ -20,7 +20,7 @@
       :invoice="invoiceStore.selectedInvoice"
       @close="invoiceStore.clearSelection()"
       @delete="invoiceStore.deleteInvoice(invoiceStore.selectedIndex)"
-      @download="telechargerPDF"
+      @download="telecharger"
       :is-downloading="isDownloading"
     />
   </div>
@@ -32,24 +32,29 @@ import axios from 'axios';
 import { useFacturesStore } from '../stores/Facture';
 import InvoiceListItem from '../components/factures/InvoiceListItem.vue';
 import InvoiceDetailModal from '../components/factures/InvoiceDetailModal.vue';
+import { telechargerPDF } from "@/services/api";
 
 const invoiceStore = useFacturesStore();
 const isDownloading = ref(false);
+defineProps({
+  invoice: Object
+})
 
 onMounted(() => {
   invoiceStore.charger();
 });
 
-const telechargerPDF = async () => {
-  const response = await axios.get(`/api/pdf/getpdf/${facture.id}`, {
-    responseType: 'blob'
-  });
 
-  const blob = new Blob([response.data], { type: 'application/pdf' });
-  const link = document.createElement('a');
-  link.href = window.URL.createObjectURL(blob);
-  link.download = `facture-${facture.id}.pdf`;
-  link.click();
+const telecharger = async () => {
+  try {
+    isDownloading.value = true;
+    await telechargerPDF(invoiceStore.selectedInvoice.id);
+  } catch (error) {
+    console.error("Erreur lors du téléchargement PDF :", error.message);
+  } finally {
+    isDownloading.value = false;
+  }
 };
+
 
 </script>
