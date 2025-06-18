@@ -5,6 +5,8 @@ import clientRoutes from './routes/clientRoutes.js'
 import factureRoutes from './routes/factureRoutes.js'
 import statisticRoutes from './routes/statisticRoutes.js'
 import dotenv from 'dotenv'
+import  pdfRoutes from './routes/pdf.js'
+
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ app.use(cors());
  app.use("/api/clients", clientRoutes);
  app.use("/api/factures",factureRoutes);
  app.use("/api/statistiques", statisticRoutes);
+ app.use("/api/pdf", pdfRoutes);
 
 // Lancer le serveur
 app.listen(4000, () => {
