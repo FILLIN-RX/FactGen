@@ -76,9 +76,9 @@
 
       <!-- Totals -->
       <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
-        <p><strong>Total HT :</strong> {{ invoice.montant_total }} €</p>
+        <p><strong>Total HT :</strong> {{ totalHt.toFixed(2) }} €</p>
         <p v-if="invoice.reduction" class="text-red-500">
-          <strong>Réduction :</strong> -{{ invoice.reduction.valeur }} €
+          <strong>Réduction :</strong> -{{ invoice.reduction.valeur }} {{ invoice.reduction.type }} €
         </p>
         <p class="col-span-2 font-bold text-lg">
           Total TTC : {{ invoice.montant_total }} €
@@ -112,14 +112,15 @@
 </template>
 
 <script setup>
+import Facture from '../../models/facture';
+
 //import { formatDate, formatPrice } from '@/utils/formatters';
 
-defineProps({
+const props = defineProps({
   invoice: Object,
   logoDataUrl: String,
   isDownloading: Boolean,
 });
-
 defineEmits(["close", "download", "delete"]);
 function formatDate(date) {
   if (!date) return "";
@@ -130,4 +131,20 @@ function formatPrice(val) {
   if (typeof val !== "number") return "";
   return val.toFixed(2);
 }
+
+const totalTTc = props.invoice.montant_total;
+let totalHt = totalTTc;
+
+if (props.invoice.reduction) {
+  if (props.invoice.reduction.type === 'montant') {
+    totalHt = totalTTc + props.invoice.reduction.valeur;
+  } else if (props.invoice.reduction.type === 'pourcentage') {
+    totalHt = totalTTc /(1 - props.invoice.reduction.valeur / 100);
+  }
+}
+
+
+
+
+
 </script>

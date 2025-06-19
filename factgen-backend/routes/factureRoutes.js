@@ -1,10 +1,48 @@
 // routes/factureRoutes.js
 import supabase from "../config/supabaseClient.js";
 import express from "express";
-const router = express.Router(); // Crée un routeur Express
+import { body, validationResult } from 'express-validator';
 
+const router = express.Router(); // Crée un routeur Express
+function validateRequest(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+}
+
+// Validation pour POST (création)
+const factureValidationRules = [
+  body("client_id")
+    .isUUID()
+    .withMessage("Client ID doit être un UUID valide"),
+  body("client_data.nom")
+    .notEmpty()
+    .withMessage("Le nom du client est requis"),
+  body("client_data.email")
+    .isEmail()
+    .withMessage("Email client invalide"),
+  body("produits")
+    .isArray({ min: 1 })
+    .withMessage("Au moins un produit est requis"),
+  body("produits.*.nom")
+    .notEmpty()
+    .withMessage("Le nom du produit est requis"),
+  body("produits.*.quantite")
+    .isInt({ min: 1 })
+    .withMessage("La quantité doit être un entier supérieur ou égal à 1"),
+  body("produits.*.prix")
+    .isFloat({ min: 0 })
+    .withMessage("Le prix doit être un nombre positif"),
+  body("montant_total")
+    .isFloat({ min: 0 })
+    .withMessage("Montant total invalide"),
+];
 // Récupère toutes les factures de l'utilisateur connecté
 router.get("/", async (req, res) => {
+
+  
   console.log("✅ REQUÊTE /factures autorisée");
 
   // Requête Supabase pour récupérer les factures
@@ -19,7 +57,9 @@ router.get("/", async (req, res) => {
 });
 
 // Crée une nouvelle facture
-router.post("/", async (req, res) => {
+router.post("/",factureValidationRules,validateRequest, async (req, res) => {
+    
+    
     const {
     client_id,
     client_data,
@@ -50,7 +90,9 @@ router.post("/", async (req, res) => {
   res.status(201).json(data[0]); // Renvoie la facture créée avec statut 201
 });
 // Met à jour une facture par son ID
-router.put("/:id", async (req, res) => {
+router.put("/:id",factureValidationRules,validateRequest,[
+
+], async (req, res) => {
   const { id } = req.params;
    const {
     client_id,

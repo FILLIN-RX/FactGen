@@ -3,10 +3,11 @@ import dotenv from 'dotenv';
 import supabase from './config/supabaseClient.js';
 dotenv.config();
 
-async function testConnection() {
-  const { data, error } = await supabase.from("clients").select("*").limit(1);
-  if (error) console.error("❌ Supabase error:", error.message);
-  else console.log("✅ Connexion réussie :", data);
-}
 
-testConnection();
+app.get('/test-error', (req, res, next) => {
+  const err = new Error("Erreur test middleware !");
+  next(err);  // envoie l'erreur au middleware de gestion d'erreur
+});
+
+
+export default test

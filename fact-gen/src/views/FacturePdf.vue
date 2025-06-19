@@ -68,7 +68,7 @@
       <!-- Totaux -->
       <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
         <p><strong>Total HT :</strong></p>
-        <p>{{ totalHT }} €</p>
+        <p>{{ totalHt }} €</p>
 
         <template v-if="montantReduction > 0">
           <p class="text-red-500"><strong>Réduction :</strong></p>
@@ -89,47 +89,51 @@
 </template>
 <script setup>
 import { useRoute } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useFacturesStore } from '@/stores/Facture'
-
-const societer = ref(null)
-const logoDataUrl = ref('')
 
 const route = useRoute()
 const factureStore = useFacturesStore()
-const facture = ref(null)
-const client = ref({ nom: '', email: '', adresse: '' })
 
-const produits = ref([])
-const totalHT = ref(0)
-const montantReduction = ref(0)
-const totalTTC = ref(0)
-const suplement = ref('')
+const facture = ref(null)
+
+// Logo & société (statique pour l’instant)
+const logoDataUrl = ref('/logo.png')
+const societer = ref({
+  nom: 'LegacyTech SARL',
+  adresse: 'Douala, Cameroun',
+  email: 'contact@legacytech.com',
+  telephone: '+237 6 XX XX XX XX',
+})
+
+// Données dérivées
+const client = computed(() => facture.value?.client_data || {})
+const produits = computed(() => facture.value?.produits || [])
+const suplement = computed(() => facture.value?.suplement || '')
+
+// Calculs
+const totalTTC = computed(() => facture.value?.montant_total || 0)
+
+const montantReduction = computed(() => {
+  const reduction = facture.value?.reduction
+  if (!reduction) return 0
+  if (reduction.type === 'montant') return reduction.valeur
+  if (reduction.type === 'pourcentage') {
+    return parseFloat((totalTTC.value * reduction.valeur / 100).toFixed(2))
+  }
+  return 0
+})
+
+const totalHt = computed(() => {
+  return parseFloat((totalTTC.value + montantReduction.value).toFixed(2))
+})
 
 onMounted(async () => {
-  societer.value = {
-    nom: 'LegacyTech SARL',
-    adresse: 'Douala, Cameroun',
-    email: 'contact@legacytech.com',
-    telephone: '+237 6 XX XX XX XX',
-  }
-
-  logoDataUrl.value = '/logo.png'
-
   await factureStore.charger()
-
   facture.value = factureStore.factures.find(f => f.id === route.params.id)
-
-  if (facture.value) {
-    client.value = facture.value.client
-    produits.value = facture.value.produits
-    totalHT.value = facture.value.totalHT
-    montantReduction.value = facture.value.montantReduction || 0
-    totalTTC.value = facture.value.totalTTC
-    suplement.value = facture.value.suplement || ''
-  }
 })
 </script>
+
 
 
 <style>
