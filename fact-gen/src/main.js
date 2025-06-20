@@ -12,11 +12,12 @@ app.use(createPinia())
 app.component('Icon', Icon)
 app.mount("#app");
 // 🔐 Gestion du token Supabase
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-    localStorage.setItem("supabase_token", session.access_token);
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+    localStorage.setItem('sb_session', JSON.stringify(session));
   }
+  
   if (event === 'SIGNED_OUT') {
-    localStorage.removeItem("supabase_token");
+    localStorage.removeItem('sb_session');
   }
 });

@@ -1,41 +1,30 @@
-// auth.js
-import supabase from '../config/supabaseClient.js';
-
-// Middleware d'authentification
-export async function authenticateUser(req, res, next){
-  console.log("🛂 Middleware d'authentification exécuté");
-
-   // Extrait le token JWT de l'en-tête
- const authHeader = req.headers.authorization;
-if (!authHeader || !authHeader.startsWith("Bearer ")) {
-  return res.status(401).json({error:"Token manquant" });
-}
-const token = authHeader.split(" ")[1];
-
-  // Vérifie la présence et le format du token
-  if (!token) {
-    return res.status(401).json({ error: 'Token manquant' });
+export async function authenticateUser(req, res, next) {
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader) {
+    return res.status(401).json({ error: "Authorization header missing" });
   }
-  console.log("🔐 Token reçu (partiel):", token.substring(0, 10) + '...');
 
+  const token = authHeader.split(' ')[1];
+  
   try {
-    // Vérifie le token via l'API Supabase
-    const { data, error } = await supabase.auth.getUser(token);
-
-    // Si erreur ou utilisateur non trouvé
-    if (error || !data?.user) {
-      console.error("🚫 Token invalide ou utilisateur non trouvé:", error);
-      return res.status(401).json({ error: "Token invalide ou utilisateur non trouvé" });
+    // Vérifiez ET rafraîchissez le token si nécessaire
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    
+    if (error) {
+      console.error("Supabase auth error:", error.message);
+      return res.status(401).json({ error: "Token invalid or expired" });
     }
 
-    console.log("✅ Utilisateur authentifié:", data.user.email);
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
+    }
 
-    // Attache les données de l'utilisateur à l'objet req
-    req.user = data.user;
-
-    next(); // Passe au middleware/route suivant
+    // Attachez l'utilisateur à la requête
+    req.user = user;
+    next();
   } catch (err) {
-    console.error("💥 Erreur serveur lors de l'authentification:", err);
-    res.status(500).json({ error: "Erreur serveur lors de l'authentification" });
+    console.error("Auth middleware error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
-};
+}

@@ -91,20 +91,41 @@ export async function deleteFactures(factureId) {
 
 // 📌 Créer un nouveau client
 export async function creerClient(clientData) {
-  const token = localStorage.getItem("supabase_token");
-  if (!token) throw new Error("uilisateur non connecter");
-  const res = await fetch(`${API_BASE_URL}/clients`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization:`Bearer ${token}` },
-    body: JSON.stringify(clientData),
-  });
+  // Récupérez la session complète
+  const session = JSON.parse(localStorage.getItem('sb_session'));
+  
+  if (!session?.access_token) {
+    throw new Error("Session utilisateur invalide - veuillez vous reconnecter");
+  }
 
-  const data = await res.json();
-  if (!res.ok)
-    throw new Error(data.error || "Erreur lors de la création du client");
-  return data;
+  try {
+    const res = await fetch(`${API_BASE_URL}/clients`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify(clientData),
+    });
+
+    const data = await res.json();
+    
+    if (!res.ok) {
+      // Si erreur 401, le token est probablement expiré
+      if (res.status === 401) {
+        // Forcez une déconnexion
+        localStorage.removeItem('sb_session');
+        window.location.reload(); // Redirigez vers la page de login
+      }
+      throw new Error(data.error || "Erreur serveur");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Erreur API:", error);
+    throw error;
+  }
 }
-
 // Recuper tous les clients
 export async function getClients() {
   const token = localStorage.getItem("supabase_token");

@@ -45,25 +45,46 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   //action:connexion
-  async function signIn({ email, password }) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+async function signIn({ email, password }) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    if (error) {
-      console.error("Sign in error:", error);
-      throw error;
-    }
+  if (error) {
+    console.error("Sign in error:", error);
+    throw error;
+  }
 
-    setUser(data.user);
-    console.log("User logged in:", data.user);
-    if (data.session) {
-  localStorage.setItem('supabase_token', data.session.access_token);
+  setUser(data.user);
+  
+  // Stockez TOUTE la session, pas juste le token
+  localStorage.setItem('sb_session', JSON.stringify(data.session));
+  
+  return data.user;
 }
 
-    return data.user;
+async function initialize() {
+  // Récupérez toute la session depuis le stockage local
+  const savedSession = JSON.parse(localStorage.getItem('sb_session'));
+  
+  if (savedSession) {
+    // Vérifiez si le token est encore valide
+    const { data, error } = await supabase.auth.setSession(savedSession);
+    
+    if (!error && data?.session?.user) {
+      setUser(data.session.user);
+      return;
+    }
   }
+  
+  // Si aucune session valide, déconnectez
+  setUser(null);
+  localStorage.removeItem('sb_session');
+}
+
+    
+  
   // 4. Action : déconnexion
 async function signOut() {
   const { error } = await supabase.auth.signOut();

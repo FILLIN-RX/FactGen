@@ -28,33 +28,37 @@ router.get("/",authenticateUser, async (req, res) => {
 });
 
 // Crée un nouveau client
-router.post("/",authenticateUser, async (req, res) => {
+router.post("/", authenticateUser, async (req, res) => {
   try {
-    const { nom, email, address } = req.body;
-   
+    const { nom, email, address, telephone } = req.body;
 
     if (!nom) {
       return res.status(400).json({ error: "Le nom est requis" });
     }
 
-    // Insère le nouveau client dans la base de données
     const { data, error } = await supabase
       .from("clients")
-      .insert([
-        {
-          nom,
-          email,
-          address,
-          user_id:req.user.id
-        },
-      ])
-      .select(); // Retourne les données insérées
+      .insert([{
+        nom,
+        email,
+        address,
+        telephone,
+        user_id: req.user.id // Assurez-vous que ce champ existe dans votre table
+      }])
+      .select();
 
-    if (error) throw error;
-    res.status(201).json(data[0]); // Renvoie le client créé avec statut 201
+    if (error) {
+      console.error("Supabase error:", error);
+      throw error;
+    }
+
+    res.status(201).json(data[0]);
   } catch (err) {
     console.error("Erreur:", err);
-    res.status(500).json({ error: "Erreur lors de la création du client" });
+    res.status(500).json({ 
+      error: "Erreur lors de la création du client",
+      details: err.message 
+    });
   }
 });
 //verifie si le client existe

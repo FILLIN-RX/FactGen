@@ -30,7 +30,7 @@ export const useClientsStore = defineStore('client', {
       return state.clients.filter(client => 
         client.nom.toLowerCase().includes(searchLower) ||
         client.email.toLowerCase().includes(searchLower) ||
-        client.adresse.toLowerCase().includes(searchLower)
+        client.address.toLowerCase().includes(searchLower)
       );
     },
     
