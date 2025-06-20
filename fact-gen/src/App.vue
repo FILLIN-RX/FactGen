@@ -20,16 +20,23 @@ import NavBar from "./components/NavBar.vue";
 import FooTer from "./components/FooTer.vue";
 import HomePage from "../src/pages/HomePage.vue";
 import Loading from "./components/LoadinApp.vue";
+import { useAuthStore } from '@/stores/auth'
 export default {
+  
+
+
+
   components: {
     NavBar,
     HomePage,
     Loading,
     FooTer,
+    
   },
   data() {
     return {
       isLoading: false, // On démarre sur loading actif
+      
     };
   },
 
@@ -46,8 +53,6 @@ export default {
 
 <style>
 
-@plugin "daisyui" {
-  themes: false;
-}
+
 /* Styles généraux */
 </style>

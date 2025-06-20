@@ -9,7 +9,10 @@ import AppLayout from '../pages/AppLayout.vue';
 import RealLayout from '../pages/RealLayout.vue';
 import SignUp from '../pages/SignUp.vue';
 import { supabase } from '../lib/supabase';
-const { data } = await supabase.auth.getSession();
+import { useAuthStore } from '../stores/auth'
+
+const session = supabase.auth.getSession();
+console.log(session);
 
 
 const routes = [
@@ -41,7 +44,7 @@ const routes = [
         path: '/facture',
         name: 'Facture',
         component: FacTure,
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
         
       },
       {
@@ -63,7 +66,7 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { requiresAuth: false, showNavbarAndFooter: false }
+    meta: { requiresAuth: false, showNavbarAndFooter: true }
   }
 ];
 
@@ -72,25 +75,18 @@ const router = createRouter({
   routes
 });
 
-async function getUser(next) {
-  const { data } = await supabase.auth.getSession();
-
-  if (!data.session) {
-    next('/login');
-  } else {
-    next();
-  }
-}
-
 router.beforeEach(async (to, from, next) => {
-  if (to.meta.requiresAuth) {
-    console.log("requiresAuth");
-    await getUser(next);
-  } else {
-    next();
+  const auth = useAuthStore();
+
+  if (auth.user === null) {
+    await auth.initialize();
   }
+
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return next('/login');
+  }
+
+  next();
 });
-
-
 
 export default router;

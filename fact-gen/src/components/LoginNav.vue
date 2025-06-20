@@ -30,15 +30,11 @@ onMounted(() => {
   auth.getCurrentUser()
 });
 
-function logout() {
-  auth.logout();
-  router.push({ name: "Login" });
-  localStorage.removeItem("utilisateurConnecte");
-  utilisateur.value = null;
-  alert("Vous avez été déconnecté avec succès.");
-  console.log("Déconnexion réussie");
-  window.location.reload();
+  async function handleLogout(){
+ await auth.signOut();
+ router.push('/login');
 }
+
 const isSidebarOpen = ref(false);
 
 function toggleSidebar() {
@@ -248,7 +244,7 @@ function toggleSidebar() {
 
             <!-- Logout icon -->
             <svg
-              @click="logout"
+              @click="handleLogout"
               v-else-if="item.icon === 'logout'"
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"

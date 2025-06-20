@@ -12,12 +12,7 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = userData;
     isAuthenticated.value = !!userData;
 
-    // Optional: Persist to localStorage
-    if (userData) {
-      localStorage.setItem("supabase_user", JSON.stringify(userData));
-    } else {
-      localStorage.removeItem("supabase_user");
-    }
+ 
   }
   //utilisateur courent
   async function getCurrentUser() {
@@ -70,15 +65,16 @@ export const useAuthStore = defineStore("auth", () => {
     return data.user;
   }
   // 4. Action : déconnexion
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Sign out error:", error);
-      throw error;
-    }
-    setUser(null);
-    console.log("User logged out");
+async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error("Sign out error:", error);
+    throw error;
   }
+  setUser(null);  // Correction ici
+  console.log("User logged out");
+}
+
 
   //Purpose: Runs when the app starts to check for an active session.
 
@@ -89,6 +85,8 @@ export const useAuthStore = defineStore("auth", () => {
     const { data } = await supabase.auth.getSession();
     if (data.session?.user) {
       setUser(data.session.user);
+    }else {
+      setUser(null);
     }
   }
 //signe up with google
