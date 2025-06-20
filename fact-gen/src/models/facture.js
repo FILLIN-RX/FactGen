@@ -1,5 +1,5 @@
 export default class Facture {
-  constructor(societer, client, produits, reduction = null, suplement = null) {
+  constructor(societer, client, produits, reduction = null, suplement = null,user_id = null) {
     this.numero = this.genererNumero();
     this.client = client;
     this.societer = societer;
@@ -7,6 +7,7 @@ export default class Facture {
     this.reduction = reduction;
     this.suplement = suplement;
     this.date = new Date().toISOString();
+    this.user_id = user_id;
   }
 
   getTotalHT() {
@@ -78,6 +79,7 @@ export default class Facture {
   }
   toJSON() {
     return {
+      user_id: this.user_id,
       client_id: this.client.id, // ATTENTION : nécessite que client ait un .id
       client_data: {
         nom: this.client.nom,

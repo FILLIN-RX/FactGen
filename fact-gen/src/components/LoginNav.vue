@@ -1,38 +1,72 @@
 <script setup lang="ts">
-import { onMounted, ref , watch, computed } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import  { useAuthStore } from "../stores/auth";
-const auth = useAuthStore()
-const token = localStorage.getItem('supabase.auth.token'); // adapte selon où tu stockes le token
+import { useAuthStore } from "../stores/auth";
+const auth = useAuthStore();
+const token = localStorage.getItem("supabase.auth.token"); // adapte selon où tu stockes le token
 
-
-
-
-const menuItems =ref([
+const menuItems = ref([
   { id: 1, icon: "menu", label: "Menu", route: "/", active: true },
-  { id: 2, icon: "dashboard", label: "Dashboard", route: "/real", active: false },
-  { id: 3, icon: "people", label: "Client", route: "/clientFact", active: false },
-  { id: 4, icon: "folder", label: "Projects", route: "/projects", active: false },
-  { id: 5, icon: "document", label: "Facture", route: "/facture", active: false },
-  { id: 6, icon: "chart", label: "Analytics", route: "/analytics", active: false },
+  {
+    id: 2,
+    icon: "dashboard",
+    label: "Dashboard",
+    route: "/real",
+    active: false,
+  },
+  {
+    id: 3,
+    icon: "people",
+    label: "Client",
+    route: "/clientFact",
+    active: false,
+  },
+  {
+    id: 4,
+    icon: "folder",
+    label: "Projects",
+    route: "/projects",
+    active: false,
+  },
+  {
+    id: 5,
+    icon: "document",
+    label: "Facture",
+    route: "/facture",
+    active: false,
+  },
+  {
+    id: 6,
+    icon: "chart",
+    label: "Analytics",
+    route: "/analytics",
+    active: false,
+  },
   { id: 7, icon: "mail", label: "Messages", route: "/messages", active: false },
-  { id: 8, icon: "settings", label: "Settings", route: "/settings", active: false },
+  {
+    id: 8,
+    icon: "settings",
+    label: "Settings",
+    route: "/settings",
+    active: false,
+  },
   { id: 9, icon: "logout", label: "Logout", route: "/login", active: false },
 ]);
 const route = useRoute();
 const router = useRouter();
-let utilisateur = ref(null);
+const utilisateur = computed(() => auth.user); // Utilisez directement le store
 onMounted(() => {
-  const storedUser = localStorage.getItem("utilisateurConnecte");
-  if (storedUser) {
-    utilisateur.value = JSON.parse(storedUser);
-  }
-  auth.getCurrentUser()
+  auth.getCurrentUser();
 });
 
-  async function handleLogout(){
- await auth.signOut();
- router.push('/login');
+async function handleLogout() {
+  try {
+    await auth.signOut();
+    router.push("/login");
+  } catch (error) {
+    console.error("Logout failed:", error);
+    // Optionnel : afficher un message d'erreur à l'utilisateur
+  }
 }
 
 const isSidebarOpen = ref(false);
@@ -41,9 +75,6 @@ function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value;
 }
 // COMPUTED → menu avec l’item actif mis à jour automatiquement
-
-
-
 </script>
 
 <template>
@@ -66,7 +97,6 @@ function toggleSidebar() {
     </svg>
   </button>
 
-
   <aside
     :class="[
       'fixed w-16 top-0 bg-white flex flex-col py-6 left-0 z-10  shadow-md text-blue-900 h-full transition-transform duration-300 group',
@@ -85,10 +115,11 @@ function toggleSidebar() {
     <nav class="flex-1">
       <ul class="space-y-6 px-3">
         <li
-          @click="isSidebarOpen = false;router.push(item.route);"
+          @click="
+            isSidebarOpen = false;
+            router.push(item.route);
+          "
           v-for="item in menuItems"
-        
-
           :key="item.id"
           :class="[
             'flex items-center rounded-lg transition-all duration-300 cursor-pointer',
@@ -261,12 +292,14 @@ function toggleSidebar() {
             </svg>
           </div>
 
-          <span class="hidden group-hover:block ml-3 text-blue-400 whitespace-nowrap">{{ item.label }}</span>
+          <span
+            class="hidden group-hover:block ml-3 text-blue-400 whitespace-nowrap"
+            >{{ item.label }}</span
+          >
         </li>
       </ul>
-      <transition>
-      
-      </transition>
+      <transition> </transition>
     </nav>
   </aside>
-</template>  je veux laddapter ici
+</template>
+je veux laddapter ici

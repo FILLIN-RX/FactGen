@@ -1,3 +1,4 @@
+import { useAuthStore } from "../stores/auth";
 const API_BASE_URL = "http://localhost:4000/api";
 export async function upsertClient(client) {
   const response = await fetch(`${API_BASE_URL}/clients/upsert`, {
@@ -37,9 +38,13 @@ export async function telechargerPDF(factureId) {
 
 // 📌 Créer une nouvelle facture
 export async function creerFacture(factureData) {
+  const auth = useAuthStore();
+  const token = localStorage.getItem("supabase_token")
+  if(!token) throw new Error("Utilisateur non connecter");
+
   const res = await fetch(`${API_BASE_URL}/factures`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Authorization:`Bearer ${token}` },
     body: JSON.stringify(factureData),
   });
 

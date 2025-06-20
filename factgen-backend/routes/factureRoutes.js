@@ -1,6 +1,7 @@
 // routes/factureRoutes.js
 import supabase from "../config/supabaseClient.js";
 import express from "express";
+import { authenticateUser } from "../middleware/auth.js";
 import { body, validationResult } from 'express-validator';
 
 const router = express.Router(); // Crée un routeur Express
@@ -40,15 +41,17 @@ const factureValidationRules = [
     .withMessage("Montant total invalide"),
 ];
 // Récupère toutes les factures de l'utilisateur connecté
-router.get("/", async (req, res) => {
-
+router.get("/",authenticateUser, async (req, res) => {
+  const user_id = req.user.id;
   
   console.log("✅ REQUÊTE /factures autorisée");
 
   // Requête Supabase pour récupérer les factures
   const { data, error } = await supabase
     .from("facture") // Table facture
-    .select("*"); // Sélectionne toutes les colonnes
+    .select("*") // Sélectionne toutes les colonnes
+    .eq("user_id",user_id)//filtre uniquement les facture de l'utilisateur
+    .order("created_at",{ascending:false});
 
   console.log("📦 Résultat Supabase:", data);
   if (error) return res.status(500).json({ error: error.message });
@@ -57,7 +60,7 @@ router.get("/", async (req, res) => {
 });
 
 // Crée une nouvelle facture
-router.post("/",factureValidationRules,validateRequest, async (req, res) => {
+router.post("/",authenticateUser,factureValidationRules,validateRequest, async (req, res) => {
     
     
     const {
@@ -69,12 +72,17 @@ router.post("/",factureValidationRules,validateRequest, async (req, res) => {
     montant_total,
     numero
   } = req.body;
+  const user_id = req.user.id;
+   if (user_id !== req.user.id) {
+    return res.status(403).json({ error: "Accès interdit : mauvais user_id" });
+  }
   console.log("✅ REQUÊTE /factures autorisée");
 
   // Insère la nouvelle facture dans la base de données
   const { data, error } = await supabase
     .from("facture")
     .insert([{
+      user_id,
       client_id,
       client_data,
       produits,
@@ -90,7 +98,7 @@ router.post("/",factureValidationRules,validateRequest, async (req, res) => {
   res.status(201).json(data[0]); // Renvoie la facture créée avec statut 201
 });
 // Met à jour une facture par son ID
-router.put("/:id",factureValidationRules,validateRequest,[
+router.put("/:id",authenticateUser,factureValidationRules,validateRequest,[
 
 ], async (req, res) => {
   const { id } = req.params;
@@ -104,7 +112,7 @@ router.put("/:id",factureValidationRules,validateRequest,[
     numero
   } = req.body;
 
- 
+ const user_id = req.user.id;
 
   if (!id) {
     return res.status(400).json({ error: "ID de la facture manquant" });
@@ -123,12 +131,12 @@ router.put("/:id",factureValidationRules,validateRequest,[
       numero
     })
     .eq('id', id)
+    eq("user_id",user_id)
     .select();
 
-    console.log("🧾 Données Supabase:", data);
-    console.log("⚠️ Erreur Supabase:", error);
 
-    if (error) throw error;
+
+    if (error) return res.status(500).json({error:error.message});
 
     if (!data || data.length === 0) {
       return res.status(404).json({ error: "Facture non trouvée" });
@@ -152,8 +160,7 @@ router.delete("/:id", async (req, res) => {
       .eq("id", id)
       .select(); // 🔥 AJOUTER CECI
 
-    console.log("🧾 Données Supabase:", data);
-    console.log("⚠️ Erreur Supabase:", error);
+
     if (error) {
       console.error("Erreur Supabase:", error.message); // Ajouté
       throw error;

@@ -72,6 +72,9 @@ async function signOut() {
     throw error;
   }
   setUser(null);  // Correction ici
+
+   localStorage.removeItem('supabase_token'); // Ajoutez cette ligne
+  localStorage.removeItem('utilisateurConnecte'); // Nettoyage supplémentaire
   console.log("User logged out");
 }
 

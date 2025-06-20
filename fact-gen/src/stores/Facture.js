@@ -1,6 +1,7 @@
 // src/stores/factures.js
 import { defineStore } from 'pinia'
 import { getFacturesParClient,deleteFactures } from '../services/api'
+import { useAuthStore } from './auth'
 export const useFacturesStore = defineStore('factures', {
   state: () => ({
     factures: [],
@@ -16,6 +17,12 @@ export const useFacturesStore = defineStore('factures', {
       this.loading = true
       this.error = null
       try{
+        const auth = useAuthStore();
+        const userId = auth.user?.id;
+        if (!userId) {
+          throw new Error("Utilisateur non authentifier")
+          
+        }
         this.factures = await getFacturesParClient()
        
       }catch (error) {
