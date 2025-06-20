@@ -2,6 +2,7 @@
 import express from "express";
 import supabase from "../config/supabaseClient.js";
 import { authenticateUser } from "../middleware/auth.js";
+import { validateClient } from "../middleware/ValiderClient.js"
 const router = express.Router(); // Crée un routeur Express
 
 // Récupère tous les clients de l'utilisateur connecté
@@ -28,7 +29,7 @@ router.get("/",authenticateUser, async (req, res) => {
 });
 
 // Crée un nouveau client
-router.post("/", authenticateUser, async (req, res) => {
+router.post("/", authenticateUser,validateClient, async (req, res) => {
   try {
     const { nom, email, address, telephone } = req.body;
 

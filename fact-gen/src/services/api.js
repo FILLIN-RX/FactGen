@@ -91,39 +91,40 @@ export async function deleteFactures(factureId) {
 
 // 📌 Créer un nouveau client
 export async function creerClient(clientData) {
-  // Récupérez la session complète
-  const session = JSON.parse(localStorage.getItem('sb_session'));
-  
-  if (!session?.access_token) {
-    throw new Error("Session utilisateur invalide - veuillez vous reconnecter");
-  }
-
   try {
-    const res = await fetch(`${API_BASE_URL}/clients`, {
+    // 1. Vérifiez la session utilisateur
+    const session = JSON.parse(localStorage.getItem('sb_session'));
+    if (!session?.access_token) {
+      throw new Error("Session utilisateur invalide");
+    }
+
+    // 2. Validez les données avant envoi
+    if (!clientData.nom || !clientData.user_id) {
+      throw new Error("Nom du client et user_id sont obligatoires");
+    }
+
+    // 3. Envoyez la requête avec gestion d'erreur améliorée
+    const response = await fetch(`${API_BASE_URL}/clients`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.access_token}`
       },
-      body: JSON.stringify(clientData),
+      body: JSON.stringify(clientData)
     });
 
-    const data = await res.json();
-    
-    if (!res.ok) {
-      // Si erreur 401, le token est probablement expiré
-      if (res.status === 401) {
-        // Forcez une déconnexion
-        localStorage.removeItem('sb_session');
-        window.location.reload(); // Redirigez vers la page de login
-      }
-      throw new Error(data.error || "Erreur serveur");
+    // 4. Traitement des réponses non-OK
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Détails erreur serveur:", errorData);
+      throw new Error(errorData.message || "Erreur serveur");
     }
 
-    return data;
+    return await response.json();
+
   } catch (error) {
-    console.error("Erreur API:", error);
-    throw error;
+    console.error("Erreur dans creerClient:", error);
+    throw error; // Propagez l'erreur pour la gérer dans le composant
   }
 }
 // Recuper tous les clients

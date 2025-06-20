@@ -57,7 +57,7 @@
     <!-- Client Form Modal -->
     <ClientFormModal 
       v-model:open="clientStore.isFormOpen"
-      @submit="clientStore.addClient"
+      @submit="handleSubmit"
       v-model:form="clientStore.clientForm"
       @close="clientStore.closeForm"
     />
@@ -79,7 +79,23 @@ import ClientFormModal from '../components/client/ClientFormModal .vue';
 import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 
 const clientStore = useClientsStore();
+
 onMounted(() => {
   clientStore.charger();
 })
+const handleSubmit = async () => {
+  try {
+    await clientStore.addClient();
+    // Fermer le modal si succès
+    emit('update:open', false);
+  } catch (error) {
+    // Affichez un message d'erreur spécifique
+    if (error.message.includes("session")) {
+      alert("Votre session a expiré, veuillez vous reconnecter");
+      router.push('/login');
+    } else {
+      alert(`Erreur: ${error.message}`);
+    }
+  }
+};
 </script>

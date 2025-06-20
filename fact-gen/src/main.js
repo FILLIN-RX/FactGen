@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from 'pinia'
+import { supabase } from "./lib/supabase";
 import './style.css'
 import { Icon } from '@iconify/vue'
 

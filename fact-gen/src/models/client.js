@@ -1,8 +1,9 @@
 export default class Client {
-  constructor(nom, address, email,user_id=null) {
+  constructor(nom, address, email,telephone,user_id=null) {
     this.nom = nom;
     this.address = address;
     this.email = email;
+    this,telephone = telephone;
     this.user_id = user_id;
    
   }
@@ -12,6 +13,7 @@ export default class Client {
       nom: this.nom,
       address: this.address,
       email: this.email,
+      telephone:this.telephone,
       user_id:this.user_id
       
     };
@@ -26,14 +28,5 @@ export default class Client {
     alert('Client sauvegardé avec succès');
   }
     // Méthode statique pour charger tous les clients
-    static chargerTous() {
-      const data = JSON.parse(localStorage.getItem('clients')) || [];
-      return data.map(client => new Client(
-        client.nom,
-        client.address,
-        client.email,
-        client.user_id,
-        
-      ));
-    }
+    
 }

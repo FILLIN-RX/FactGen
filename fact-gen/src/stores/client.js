@@ -1,12 +1,12 @@
 // src/stores/clients.js
-import { defineStore } from 'pinia'
-import { getClients,deleteClient,creerClient } from '../services/api'
-import { useAuthStore } from './auth';
-import Client from '../models/client';
+import { defineStore } from "pinia";
+import { getClients, deleteClient, creerClient } from "../services/api";
+import { useAuthStore } from "./auth";
+import Client from "../models/client";
 
-export const useClientsStore = defineStore('client', {
+export const useClientsStore = defineStore("client", {
   state: () => ({
-    clients:  [],
+    clients: [],
     clientForm: {
       nom: "",
       email: "",
@@ -27,19 +27,20 @@ export const useClientsStore = defineStore('client', {
   getters: {
     filteredClients: (state) => {
       const searchLower = state.search.toLowerCase();
-      return state.clients.filter(client => 
-        client.nom.toLowerCase().includes(searchLower) ||
-        client.email.toLowerCase().includes(searchLower) ||
-        client.address.toLowerCase().includes(searchLower)
+      return state.clients.filter(
+        (client) =>
+          client.nom.toLowerCase().includes(searchLower) ||
+          client.email.toLowerCase().includes(searchLower) ||
+          client.address.toLowerCase().includes(searchLower)
       );
     },
-    
+
     paginatedClients: (state) => {
       const start = (state.page - 1) * state.pageSize;
       const end = start + state.pageSize;
       return state.filteredClients.slice(start, end);
     },
-    
+
     totalPages: (state) => {
       return Math.ceil(state.filteredClients.length / state.pageSize) || 1;
     },
@@ -47,62 +48,68 @@ export const useClientsStore = defineStore('client', {
 
   actions: {
     async charger() {
-      this.loading = true
-      this.error = null
+      this.loading = true;
+      this.error = null;
       try {
-        const auth= useAuthStore()
+        const auth = useAuthStore();
         const userId = auth.user?.id;
         if (!userId) {
-          throw new Error("Utilisateur non authentifier")
-          
+          throw new Error("Utilisateur non authentifier");
         }
-        this.clients = await getClients()
+        this.clients = await getClients();
       } catch (error) {
-        this.error = error.message
+        this.error = error.message;
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
     async addClient() {
-      const auth= useAuthStore()
-        const userId = auth.user?.id;
-        if (!userId) {
-          throw new Error("Utilisateur non authentifier")
-          
-        }
       try {
+        const auth = useAuthStore();
+
+        // 1. Vérifiez l'authentification
+        if (!auth.isAuthenticated) {
+          await auth.initialize();
+          if (!auth.isAuthenticated) {
+            throw new Error("Veuillez vous reconnecter");
+          }
+        }
+
+        // 2. Préparez les données avec user_id
         const clientData = {
           nom: this.clientForm.nom,
           address: this.clientForm.address,
           email: this.clientForm.email,
           telephone: this.clientForm.telephone,
-        
+          user_id: auth.user.id, // Essential pour RLS
         };
-        
-        // Appel API d'abord
-        const created = await creerClient(clientData);
-        // Ajoute dans le store local seulement si succès
-        this.clients.push(created);
+
+        // 3. Appel API avec gestion d'erreur
+        const createdClient = await creerClient(clientData);
+
+        // 4. Mise à jour du store si succès
+        this.clients.push(createdClient);
         this.sauvegarder();
         this.resetForm();
-        alert("Client ajouté avec succès !");
+
+        return createdClient;
       } catch (error) {
-        console.error("Erreur lors de l'ajout du client:", error);
-        alert("Erreur lors de l'ajout du client : " + error.message); 
+        console.error("Erreur dans addClient:", error);
+
+        // Affichez un message à l'utilisateur
+        alert(`Échec de la création : ${error.message}`);
+
+        throw error; // Propagez pour une gestion supplémentaire
       }
     },
-    sauvegarder() {
-      localStorage.setItem('clients', JSON.stringify(this.clients))
-    },
-   async deleteClient(index) {
-        const auth= useAuthStore()
-        const userId = auth.user?.id;
-        if (!userId) {
-          throw new Error("Utilisateur non authentifier")
-          
-        }
+    async deleteClient(index) {
+      const auth = useAuthStore();
+      const userId = auth.user?.id;
+      if (!userId) {
+        throw new Error("Utilisateur non authentifier");
+      }
       // Utilise l'index passé OU le selectedIndex si index est undefined
-      const idx = typeof index === 'number' ? index : this.selectedIndex;
+      const idx = typeof index === "number" ? index : this.selectedIndex;
       if (idx === null || idx === undefined) return;
 
       if (confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
@@ -116,42 +123,41 @@ export const useClientsStore = defineStore('client', {
         this.closeDetails();
       }
     },
-    
+
     selectClient(client, index) {
       this.selectedClient = client;
       this.selectedIndex = index;
       this.isDetailsOpen = true;
     },
-    
+
     resetForm() {
       this.clientForm = { nom: "", email: "", adresse: "", telephone: "" };
       this.isFormOpen = false;
     },
-    
+
     openForm() {
       this.isFormOpen = true;
     },
-    
+
     closeForm() {
       this.isFormOpen = false;
     },
-    
+
     openDetails() {
       this.isDetailsOpen = true;
     },
-    
+
     closeDetails() {
       this.isDetailsOpen = false;
     },
-    
+
     nextPage() {
       if (this.page < this.totalPages) this.page++;
     },
-    
+
     prevPage() {
       if (this.page > 1) this.page--;
     },
-    
   },
 });
 

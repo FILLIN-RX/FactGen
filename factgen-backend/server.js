@@ -11,6 +11,10 @@ import logger from './middleware/logger.js'
 dotenv.config();
 
 const app = express();
+app.use((req, res, next) => {
+  req.supabase = supabase;
+  next();
+});
 app.use(logger)
 app.use(express.json());
 app.use(

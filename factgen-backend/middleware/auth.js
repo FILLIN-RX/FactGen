@@ -1,26 +1,25 @@
-export async function authenticateUser(req, res, next) {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader) {
-    return res.status(401).json({ error: "Authorization header missing" });
-  }
+import supabase from '../config/supabaseClient.js';
 
-  const token = authHeader.split(' ')[1];
-  
+export async function authenticateUser(req, res, next) {
   try {
-    // Vérifiez ET rafraîchissez le token si nécessaire
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: "Authorization header missing" });
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: "Bearer token missing" });
+    }
+
+    // Utilisez l'API auth de Supabase
     const { data: { user }, error } = await supabase.auth.getUser(token);
     
-    if (error) {
-      console.error("Supabase auth error:", error.message);
-      return res.status(401).json({ error: "Token invalid or expired" });
+    if (error || !user) {
+      console.error("Auth error:", error?.message);
+      return res.status(401).json({ error: "Invalid token" });
     }
 
-    if (!user) {
-      return res.status(401).json({ error: "User not found" });
-    }
-
-    // Attachez l'utilisateur à la requête
     req.user = user;
     next();
   } catch (err) {
