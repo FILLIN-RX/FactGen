@@ -1,13 +1,3 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import supabase from './config/supabaseClient.js';
-dotenv.config();
-
-
-app.get('/test-error', (req, res, next) => {
-  const err = new Error("Erreur test middleware !");
-  next(err);  // envoie l'erreur au middleware de gestion d'erreur
-});
-
-
-export default test
+const { data, error } = await supabase.auth.getUser('eyJhbGciOiJIUzI1NiIsImtpZCI6IkZpSjE3NWNQeXdFZktLMDkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2p4bWdpcHVxd3lidmlvcGFmaWd1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJiMTliZjgyZC03OWNhLTQ0YjItYjJmNS1iNjZmZjUzZjYzZDAiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzUwNDQ4Mzc4LCJpYXQiOjE3NTA0NDQ3NzgsImVtYWlsIjoiZGpldXRjaG91cnV4ZWxAZ21haWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbCI6ImRqZXV0Y2hvdXJ1eGVsQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInN1YiI6ImIxOWJmODJkLTc5Y2EtNDRiMi1iMmY1LWI2NmZmNTNmNjNkMCJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzUwNDQ0Nzc4fV0sInNlc3Npb25faWQiOiI0NjEyM2M5OS0yMDhkLTRlODUtOTI2Zi0zY2Q3ZWZiY2FmODgiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.CHkht2VfgbSLc_Krdrbg4e2E2ihZkEuITjNJ21YiR9o');
+console.log(data, error);

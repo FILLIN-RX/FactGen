@@ -6,7 +6,11 @@ export async function authenticateUser(req, res, next){
   console.log("🛂 Middleware d'authentification exécuté");
 
    // Extrait le token JWT de l'en-tête
-  const token = req.headers.authorization?.split('Bearer')[1];
+ const authHeader = req.headers.authorization;
+if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  return res.status(401).json({error:"Token manquant" });
+}
+const token = authHeader.split(" ")[1];
 
   // Vérifie la présence et le format du token
   if (!token) {

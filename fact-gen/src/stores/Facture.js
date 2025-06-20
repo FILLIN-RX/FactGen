@@ -47,6 +47,12 @@ export const useFacturesStore = defineStore('factures', {
     },
 
  async deleteInvoice(index) {
+        const auth= useAuthStore()
+        const userId = auth.user?.id;
+        if (!userId) {
+          throw new Error("Utilisateur non authentifier")
+          
+        }
   if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
     const factureId = this.factures[index].id;
     const res = await deleteFactures(factureId); // Appel API pour supprimer côté backend

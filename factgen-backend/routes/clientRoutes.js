@@ -1,18 +1,19 @@
 // routes/clientRoutes.js
 import express from "express";
 import supabase from "../config/supabaseClient.js";
-
+import { authenticateUser } from "../middleware/auth.js";
 const router = express.Router(); // Crée un routeur Express
 
 // Récupère tous les clients de l'utilisateur connecté
-router.get("/", async (req, res) => {
+router.get("/",authenticateUser, async (req, res) => {
+  const user_id = req.user.id
   try {
     // Requête Supabase pour récupérer les clients
     const { data, error } = await supabase
       .from("clients") // Table clients
-      .select("*"); // Sélectionne toutes les colonnes
-    // .eq("user_id", req.user.id) // Filtre par user_id
-    //.order("nom", { ascending: true }); // Trie par nom ascendant
+      .select("*")// Sélectionne toutes les colonnes
+      .eq("user_id",user_id) // Filtre par user_id
+      .order("created_at", { ascending: true }); // Trie par nom ascendant
 
     if (error) throw error;
     res.json(data); // Renvoie les données
@@ -27,9 +28,10 @@ router.get("/", async (req, res) => {
 });
 
 // Crée un nouveau client
-router.post("/", async (req, res) => {
+router.post("/",authenticateUser, async (req, res) => {
   try {
     const { nom, email, address } = req.body;
+   
 
     if (!nom) {
       return res.status(400).json({ error: "Le nom est requis" });
@@ -43,6 +45,7 @@ router.post("/", async (req, res) => {
           nom,
           email,
           address,
+          user_id:req.user.id
         },
       ])
       .select(); // Retourne les données insérées
@@ -55,8 +58,9 @@ router.post("/", async (req, res) => {
   }
 });
 //verifie si le client existe
-router.post("/upsert", async (req, res) => {
+router.post("/upsert",authenticateUser, async (req, res) => {
   const { nom, email, address } = req.body;
+  const user_id = req.user.id
 
   if (!nom || !email || !address) {
     return res.status(400).json({ message: "Champs requis manquants" });
@@ -65,7 +69,7 @@ router.post("/upsert", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("clients")
-      .upsert([{ nom, email, address }], { onConflict: ["email"] })
+      .upsert([{ user_id , nom, email, address }], { onConflict: ["email"] })
       .select()
       .single();
 
@@ -79,12 +83,13 @@ router.post("/upsert", async (req, res) => {
 });
 
 
-//update client by id
+//update client by id 
 
 
-router.put("/:id", async (req, res) => {
+router.put("/:id",authenticateUser, async (req, res) => {
   const { id } = req.params;
   const { nom, email, address } = req.body;
+  const user_id =  req.user.id
 
   if (!id) {
     return res.status(400).json({ error: "ID du client manquant" });
@@ -96,6 +101,7 @@ router.put("/:id", async (req, res) => {
       .from("clients")
       .update({ nom, email, address })
       .eq("id", id)
+      .eq("user_id",user_id)
       .select(); // pour voir les données mises à jour
 
     console.log("🧾 Données Supabase:", data);
@@ -115,7 +121,7 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete client by id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authenticateUser, async (req, res) => {
   const  id  = req.params.id;
   if (!id) {
     return res.status(400).json({ error: "ID du client manquant" });
@@ -127,8 +133,7 @@ router.delete("/:id", async (req, res) => {
       .eq("id", id)
       .select(); 
 
-    console.log("🧾 Données Supabase:", data);
-    console.log("⚠️ Erreur Supabase:", error);
+   
     if (error) {
       console.error("Erreur Supabase:", error.message); // Ajouté
       throw error;

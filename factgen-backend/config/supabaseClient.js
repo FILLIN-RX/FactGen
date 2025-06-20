@@ -11,4 +11,5 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error("SUPABASE_URL ou SUPABASE_KEY manquant dans le fichier .env")
 }
 const supabase = createClient(supabaseUrl, supabaseKey)
+
 export default supabase

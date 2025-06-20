@@ -82,7 +82,7 @@ router.post("/",authenticateUser,factureValidationRules,validateRequest, async (
   const { data, error } = await supabase
     .from("facture")
     .insert([{
-      user_id,
+      
       client_id,
       client_data,
       produits,
@@ -90,6 +90,7 @@ router.post("/",authenticateUser,factureValidationRules,validateRequest, async (
       suplement,
       montant_total,
       numero,
+      user_id: req.user.id,
       created_at: new Date().toISOString()
     }])
     .select(); // Retourne les données insérées

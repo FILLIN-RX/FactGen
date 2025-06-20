@@ -1,7 +1,7 @@
 // src/stores/clients.js
 import { defineStore } from 'pinia'
 import { getClients,deleteClient,creerClient } from '../services/api'
-
+import { useAuthStore } from './auth';
 import Client from '../models/client';
 
 export const useClientsStore = defineStore('client', {
@@ -10,7 +10,7 @@ export const useClientsStore = defineStore('client', {
     clientForm: {
       nom: "",
       email: "",
-      adresse: "",
+      address: "",
       telephone: "",
     },
     search: "",
@@ -50,6 +50,12 @@ export const useClientsStore = defineStore('client', {
       this.loading = true
       this.error = null
       try {
+        const auth= useAuthStore()
+        const userId = auth.user?.id;
+        if (!userId) {
+          throw new Error("Utilisateur non authentifier")
+          
+        }
         this.clients = await getClients()
       } catch (error) {
         this.error = error.message
@@ -58,13 +64,21 @@ export const useClientsStore = defineStore('client', {
       }
     },
     async addClient() {
+      const auth= useAuthStore()
+        const userId = auth.user?.id;
+        if (!userId) {
+          throw new Error("Utilisateur non authentifier")
+          
+        }
       try {
         const clientData = {
           nom: this.clientForm.nom,
-          adresse: this.clientForm.adresse,
+          address: this.clientForm.address,
           email: this.clientForm.email,
           telephone: this.clientForm.telephone,
+        
         };
+        
         // Appel API d'abord
         const created = await creerClient(clientData);
         // Ajoute dans le store local seulement si succès
@@ -81,6 +95,12 @@ export const useClientsStore = defineStore('client', {
       localStorage.setItem('clients', JSON.stringify(this.clients))
     },
    async deleteClient(index) {
+        const auth= useAuthStore()
+        const userId = auth.user?.id;
+        if (!userId) {
+          throw new Error("Utilisateur non authentifier")
+          
+        }
       // Utilise l'index passé OU le selectedIndex si index est undefined
       const idx = typeof index === 'number' ? index : this.selectedIndex;
       if (idx === null || idx === undefined) return;

@@ -1,10 +1,13 @@
 import { useAuthStore } from "../stores/auth";
 const API_BASE_URL = "http://localhost:4000/api";
 export async function upsertClient(client) {
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("uilisateur non connecter");
   const response = await fetch(`${API_BASE_URL}/clients/upsert`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
     },
     body: JSON.stringify(client),
   });
@@ -38,13 +41,15 @@ export async function telechargerPDF(factureId) {
 
 // 📌 Créer une nouvelle facture
 export async function creerFacture(factureData) {
-  const auth = useAuthStore();
-  const token = localStorage.getItem("supabase_token")
-  if(!token) throw new Error("Utilisateur non connecter");
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("Utilisateur non connecter");
 
   const res = await fetch(`${API_BASE_URL}/factures`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization:`Bearer ${token}` },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(factureData),
   });
 
@@ -55,16 +60,27 @@ export async function creerFacture(factureData) {
 
 // 📌 Récupérer toutes les factures d’un client
 export async function getFacturesParClient() {
-  const res = await fetch(`${API_BASE_URL}/factures/`);
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("uilisateur non connecter");
+  const res = await fetch(`${API_BASE_URL}/factures/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Erreur lors du chargement");
   return data;
 }
 //supprime toute les factures
 
-export async function deleteFactures(factureId){
+export async function deleteFactures(factureId) {
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("uilisateur non connecter");
   const res = await fetch(`${API_BASE_URL}/factures/${factureId}`, {
     method: "DELETE",
+    headers: {
+      Authorization:`Bearer ${token}`
+    }
   });
   if (!res.ok) {
     const message = await res.text();
@@ -75,39 +91,52 @@ export async function deleteFactures(factureId){
 
 // 📌 Créer un nouveau client
 export async function creerClient(clientData) {
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("uilisateur non connecter");
   const res = await fetch(`${API_BASE_URL}/clients`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Authorization:`Bearer ${token}` },
     body: JSON.stringify(clientData),
   });
- 
+
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Erreur lors de la création du client");
+  if (!res.ok)
+    throw new Error(data.error || "Erreur lors de la création du client");
   return data;
 }
 
 // Recuper tous les clients
- export async function getClients() {
-    const res = await fetch(`${API_BASE_URL}/clients`);
-    if (!res.ok) {
-      const message = await res.text();
-      throw new Error("Erreur lors de la récupération des clients : " + message); 
+export async function getClients() {
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("uilisateur non connecter");
+  const res = await fetch(`${API_BASE_URL}/clients`,{
+    headers:{
+      Authorization:`Bearer ${token}`
     }
-    return await res.json();
+  });
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error("Erreur lors de la récupération des clients : " + message);
   }
- // Supprimer un client par son ID
- export async function deleteClient(clientId) {
+  return await res.json();
+}
+// Supprimer un client par son ID
+export async function deleteClient(clientId) {
+  const token = localStorage.getItem("supabase_token");
+  if (!token) throw new Error("uilisateur non connecter");
   const res = await fetch(`${API_BASE_URL}/clients/${clientId}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
   if (!res.ok) {
     const message = await res.text();
     throw new Error("Erreur lors de la suppression du client : " + message);
   }
   return await res.json(); // retourne un message de confirmation ou un objet vide
-  
- }
- export async function getFactureById(id) {
+}
+export async function getFactureById(id) {
   const res = await fetch(`${API_BASE_URL}/factures/${id}`);
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Erreur lors du chargement");
