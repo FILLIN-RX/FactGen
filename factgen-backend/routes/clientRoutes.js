@@ -7,14 +7,15 @@ const router = express.Router(); // Crée un routeur Express
 
 // Récupère tous les clients de l'utilisateur connecté
 router.get("/",authenticateUser, async (req, res) => {
+  console.log("🔐 Utilisateur connecté (ID):", req.user.id); // <--- ici
   const user_id = req.user.id
   try {
     // Requête Supabase pour récupérer les clients
     const { data, error } = await supabase
       .from("clients") // Table clients
       .select("*")// Sélectionne toutes les colonnes
-      .eq("user_id",user_id) // Filtre par user_id
-      .order("created_at", { ascending: true }); // Trie par nom ascendant
+     // .eq("user_id",user_id) // Filtre par user_id
+      //.order("created_at", { ascending: true }); // Trie par nom ascendant
 
     if (error) throw error;
     res.json(data); // Renvoie les données

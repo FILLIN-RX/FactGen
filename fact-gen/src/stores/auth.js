@@ -25,6 +25,8 @@ export const useAuthStore = defineStore("auth", () => {
     if (error) throw error;
     setUser(data.user);
     return data.user;
+    console.log("🔐 Token :", data.session.access_token);
+
   }
 
   // 🔄 Initialize (au démarrage de l'app)
