@@ -94,6 +94,7 @@ export async function creerClient(clientData) {
   try {
     // 1. Vérifiez la session utilisateur
     const session = JSON.parse(localStorage.getItem('sb_session'));
+    
     if (!session?.access_token) {
       throw new Error("Session utilisateur invalide");
     }

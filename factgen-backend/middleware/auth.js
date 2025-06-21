@@ -1,29 +1,27 @@
-import supabase from '../config/supabaseClient.js';
+import { createClient } from "@supabase/supabase-js";
+import { supabaseUrl, supabaseServiceRoleKey } from "../config/supabaseClient.js"; // attention : clé service role utilisée uniquement en interne
 
 export async function authenticateUser(req, res, next) {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ error: "Authorization header missing" });
-    }
+  const token = req.headers.authorization?.split(" ")[1];
 
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ error: "Bearer token missing" });
-    }
+  if (!token) return res.status(401).json({ error: "Token manquant" });
 
-    // Utilisez l'API auth de Supabase
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    
-    if (error || !user) {
-      console.error("Auth error:", error?.message);
-      return res.status(401).json({ error: "Invalid token" });
-    }
+  const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-    req.user = user;
-    next();
-  } catch (err) {
-    console.error("Auth middleware error:", err);
-    res.status(500).json({ error: "Internal server error" });
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+
+  if (error || !user) {
+    console.error("🚫 Token invalide:", error);
+    return res.status(401).json({ error: "Token invalide ou utilisateur non trouvé" });
   }
+
+  req.user = user;
+  req.supabase = supabase; // injecte un supabase contextuel avec token
+  next();
 }

@@ -29,23 +29,18 @@ router.get("/",authenticateUser, async (req, res) => {
 });
 
 // Crée un nouveau client
-router.post("/", authenticateUser,validateClient, async (req, res) => {
-  try {
-    const { nom, email, address, telephone } = req.body;
+router.post("/", authenticateUser, validateClient, async (req, res) => {
+  const { nom, email, address, telephone } = req.body;
+  const user_id = req.user.id;
 
+  try {
     if (!nom) {
       return res.status(400).json({ error: "Le nom est requis" });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await req.supabase // 👈 utilise celui avec contexte utilisateur
       .from("clients")
-      .insert([{
-        nom,
-        email,
-        address,
-        telephone,
-        user_id: req.user.id // Assurez-vous que ce champ existe dans votre table
-      }])
+      .insert([{ nom, email, address, telephone, user_id }])
       .select();
 
     if (error) {
@@ -56,12 +51,13 @@ router.post("/", authenticateUser,validateClient, async (req, res) => {
     res.status(201).json(data[0]);
   } catch (err) {
     console.error("Erreur:", err);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erreur lors de la création du client",
-      details: err.message 
+      details: err.message,
     });
   }
 });
+
 //verifie si le client existe
 router.post("/upsert",authenticateUser, async (req, res) => {
   const { nom, email, address } = req.body;

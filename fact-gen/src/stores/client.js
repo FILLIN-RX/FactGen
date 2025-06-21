@@ -138,7 +138,9 @@ export const useClientsStore = defineStore("client", {
     openForm() {
       this.isFormOpen = true;
     },
-
+    sauvegarder() {
+      localStorage.setItem("clients", JSON.stringify(this.clients));
+    },
     closeForm() {
       this.isFormOpen = false;
     },

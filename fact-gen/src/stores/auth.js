@@ -1,139 +1,81 @@
 import { defineStore } from "pinia";
 import { supabase } from "../lib/supabase";
-import { ref } from "vue";
-import { data } from "jquery";
+import { ref, watch } from "vue";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
   const isAuthenticated = ref(false);
-  //
-  //Etat: utilisateur courent
+
   function setUser(userData) {
     user.value = userData;
     isAuthenticated.value = !!userData;
-
- 
-  }
-  //utilisateur courent
-  async function getCurrentUser() {
-    const { data, error } = await supabase.auth.getUser();
-    if (error) {
-      console.error(
-        "Erreur lors de la récupération de l’utilisateur :",
-        error.message
-      );
-      return null;
-    }
-    setUser(data.user);
-    return data.user;
   }
 
-  //peut etre null si non authentifie
-  //Action: incription(email/password)
+  // 🔐 SignUp
   async function signUp({ email, password }) {
     const { data, error } = await supabase.auth.signUp({ email, password });
-
-    if (error) {
-      console.error("Sign up error:", error);
-      throw error;
-    }
-
+    if (error) throw error;
     setUser(data.user);
-
-    //supabase envoi l'email de confirmation
     return data.user;
   }
 
-  //action:connexion
-async function signIn({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    console.error("Sign in error:", error);
-    throw error;
+  // 🔐 SignIn
+  async function signIn({ email, password }) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    setUser(data.user);
+    return data.user;
   }
 
-  setUser(data.user);
-  
-  // Stockez TOUTE la session, pas juste le token
-  localStorage.setItem('sb_session', JSON.stringify(data.session));
-  
-  return data.user;
-}
-
-async function initialize() {
-  // Récupérez toute la session depuis le stockage local
-  const savedSession = JSON.parse(localStorage.getItem('sb_session'));
-  
-  if (savedSession) {
-    // Vérifiez si le token est encore valide
-    const { data, error } = await supabase.auth.setSession(savedSession);
-    
-    if (!error && data?.session?.user) {
-      setUser(data.session.user);
-      return;
-    }
-  }
-  
-  // Si aucune session valide, déconnectez
-  setUser(null);
-  localStorage.removeItem('sb_session');
-}
-
-    
-  
-  // 4. Action : déconnexion
-async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("Sign out error:", error);
-    throw error;
-  }
-  setUser(null);  // Correction ici
-
-   localStorage.removeItem('supabase_token'); // Ajoutez cette ligne
-  localStorage.removeItem('utilisateurConnecte'); // Nettoyage supplémentaire
-  console.log("User logged out");
-}
-
-
-  //Purpose: Runs when the app starts to check for an active session.
-
-  //supabase.auth.getSession(): Checks for an existing Supabase session.
-
-  //If a session exists: Updates the store with the user.
+  // 🔄 Initialize (au démarrage de l'app)
   async function initialize() {
-    const { data } = await supabase.auth.getSession();
-    if (data.session?.user) {
+    const { data, error } = await supabase.auth.getSession();
+    if (data?.session?.user) {
       setUser(data.session.user);
-    }else {
+    } else {
       setUser(null);
     }
   }
-//signe up with google
-async function signInWithGoogle() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin // or your custom redirect URL
+
+  // 🔓 SignOut
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    setUser(null);
+    localStorage.removeItem("supabase_token"); // nettoyage
+  }
+
+  // 🔁 Garde le token à jour
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+      localStorage.setItem("supabase_token", session?.access_token);
     }
-  })
-  
-  if (error) throw error
-  return data
-}
- return {
-  user,
-  isAuthenticated,
-  getCurrentUser,
-  setUser,
-  signUp,
-  signIn,
-  signOut,
-  initialize,
-  signInWithGoogle
-};
+    if (event === "SIGNED_OUT") {
+      localStorage.removeItem("supabase_token");
+    }
+  });
+
+  // 🔐 Google
+  async function signInWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+    if (error) throw error;
+    return data;
+  }
+
+  return {
+    user,
+    isAuthenticated,
+    setUser,
+    getCurrentUser: initialize,
+    signUp,
+    signIn,
+    signOut,
+    initialize,
+    signInWithGoogle,
+  };
 });
