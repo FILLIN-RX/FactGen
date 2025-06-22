@@ -11,10 +11,11 @@ router.get("/",authenticateUser, async (req, res) => {
   const user_id = req.user.id
   try {
     // Requête Supabase pour récupérer les clients
-    const { data, error } = await supabase
+    const { data, error } = await req.supabase
+
       .from("clients") // Table clients
       .select("*")// Sélectionne toutes les colonnes
-     // .eq("user_id",user_id) // Filtre par user_id
+      .eq("user_id",user_id) // Filtre par user_id
       //.order("created_at", { ascending: true }); // Trie par nom ascendant
 
     if (error) throw error;
@@ -69,7 +70,7 @@ router.post("/upsert",authenticateUser, async (req, res) => {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await req.supabase
       .from("clients")
       .upsert([{ user_id , nom, email, address }], { onConflict: ["email"] })
       .select()
@@ -99,7 +100,7 @@ router.put("/:id",authenticateUser, async (req, res) => {
 
   try {
     // Mise à jour du client dans Supabase
-    const { data, error } = await supabase
+    const { data, error } = await req.supabase
       .from("clients")
       .update({ nom, email, address })
       .eq("id", id)
@@ -129,10 +130,12 @@ router.delete("/:id",authenticateUser, async (req, res) => {
     return res.status(400).json({ error: "ID du client manquant" });
   }
   try {
-    const { data, error } = await supabase
+    const { data, error } = await req.supabase
       .from("clients")
       .delete()
       .eq("id", id)
+      .eq("user_id", req.user.id) // 🔒 très important
+
       .select(); 
 
    
