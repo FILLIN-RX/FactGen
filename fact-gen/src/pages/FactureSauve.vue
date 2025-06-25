@@ -16,7 +16,10 @@
         </option>
       </select>
     </div>
-
+    <button @click="creer" class="p-4 bg-green-300 text-stone-500">Creer une facture</button>
+    <div v-if="open">
+        <FactureTemp/>
+    </div>
     <h1 class="text-2xl text-blue-600 font-bold mb-4">
       📄 Liste des factures sauvegardées
     </h1>
@@ -52,6 +55,7 @@ import { useFacturesStore } from "../stores/Facture";
 import InvoiceListItem from "../components/factures/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/factures/InvoiceDetailModal.vue";
 import { telechargerPDF } from "@/services/api";
+import FactureTemp from "../components/FactureTemp.vue";
 const searchTerm = ref("");
 const selectedClient = ref(""); // par défaut tous les clients
 const clients = ref([]);
@@ -71,7 +75,7 @@ onMounted(async() => {
 
 
 });
-
+const open= ref(false)
 const telecharger = async () => {
   try {
     isDownloading.value = true;
@@ -82,6 +86,9 @@ const telecharger = async () => {
     isDownloading.value = false;
   }
 };
+function creer(){
+  open.value=!open.value
+}
 
 // Liste filtrée des factures
 const facturesFiltrees = computed(() => {
