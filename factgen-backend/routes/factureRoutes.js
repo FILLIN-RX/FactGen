@@ -66,12 +66,14 @@ router.post(
       suplement,
       montant_total,
       numero,
+      date_emission,
+      date_echeance,
     } = req.body;
-   
+
     console.log("✅ REQUÊTE /factures autorisée");
 
     // Insère la nouvelle facture dans la base de données
-    const { data, error } =await req.supabase
+    const { data, error } = await req.supabase
       .from("facture")
       .insert([
         {
@@ -82,6 +84,8 @@ router.post(
           suplement,
           montant_total,
           numero,
+          date_emission,
+          date_echeance,
           user_id: req.user.id,
           created_at: new Date().toISOString(),
         },
@@ -90,8 +94,13 @@ router.post(
 
     if (error) return res.status(500).json({ error: error.message });
     if (!data || data.length === 0) {
-  return res.status(500).json({ error: "Erreur lors de la création de la facture (aucune donnée retournée)" });
-}
+      return res
+        .status(500)
+        .json({
+          error:
+            "Erreur lors de la création de la facture (aucune donnée retournée)",
+        });
+    }
     res.status(201).json(data[0]); // Renvoie la facture créée avec statut 201
   }
 );
@@ -112,6 +121,8 @@ router.put(
       suplement,
       montant_total,
       numero,
+      date_emission,
+      date_echeance,
     } = req.body;
 
     const user_id = req.user.id;
@@ -131,6 +142,8 @@ router.put(
           suplement,
           montant_total,
           numero,
+          date_emission,
+          date_echeance,
         })
         .eq("id", id)
         .eq("user_id", user_id)
@@ -158,7 +171,6 @@ router.put(
 
 // DELETE /api/factures/:id
 router.delete("/:id", authenticateUser, async (req, res) => {
-
   const id = req.params.id;
 
   try {

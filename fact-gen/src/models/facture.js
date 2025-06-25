@@ -1,13 +1,15 @@
 export default class Facture {
-  constructor(societer, client, produits, reduction = null, suplement = null,user_id = null) {
+  constructor(societer, client, produits, reduction = null, suplement = null,user_id = null,date_emission,date_echeance) {
     this.numero = this.genererNumero();
     this.client = client;
     this.societer = societer;
     this.produits = produits || {}; // objet produit
     this.reduction = reduction;
     this.suplement = suplement;
-    this.date = new Date().toISOString();
+ 
     this.user_id = user_id;
+    this.date= date_emission;
+    this.date_echeance=date_echeance
   }
 
   getTotalHT() {
@@ -95,6 +97,8 @@ export default class Facture {
       suplement: this.suplement || {},
       montant_total: this.totalTTC,
       created_at: new Date().toISOString(),
+      date_emission:this.date,
+      date_echeance:this.client
     };
   }
 
