@@ -20,14 +20,19 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   // 🔐 SignIn
-  async function signIn({ email, password }) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+ async function signIn({ email, password }) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  
+  // Stocker le token pour les requêtes API
+  if (data.session) {
+    localStorage.setItem("supabase_token", data.session.access_token);
     setUser(data.user);
+    console.log("🔐 Token stocké:", data.session.access_token);
     return data.user;
-    console.log("🔐 Token :", data.session.access_token);
-
   }
+  throw new Error("Aucune session retournée par Supabase");
+}
 
   // 🔄 Initialize (au démarrage de l'app)
   async function initialize() {

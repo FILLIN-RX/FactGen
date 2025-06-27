@@ -1,6 +1,14 @@
 // src/stores/stats.js
 import { defineStore } from "pinia";
 import API from "../api/axios";
+import { supabase } from "../lib/supabase";
+import { useAuthStore } from "./auth";
+
+// move router outside the store, to be passed in
+let routerInstance = null;
+export function injectRouter(router) {
+  routerInstance = router;
+}
 
 export const useStatsStore = defineStore("statistiques", {
   state: () => ({
@@ -20,45 +28,81 @@ export const useStatsStore = defineStore("statistiques", {
       this.error = null;
 
       try {
-        // ✅ Récupération des stats globales
-        const [globalRes, moisRes] = await Promise.all([
+        const authStore = useAuthStore();
+        await authStore.initialize();
+
+        // Ensure session is valid or refreshed
+        let { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (!session || sessionError) {
+          const { data: refreshedData, error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError || !refreshedData.session) {
+            throw new Error(refreshError?.message || "Session utilisateur invalide");
+          }
+          session = refreshedData.session;
+        }
+
+        // Use API without manually injecting headers (interceptor will handle it)
+        const [statsRes, revenusRes] = await Promise.all([
           API.get("/statistiques"),
           API.get("/statistiques/revenusmois")
         ]);
 
-        const global = globalRes.data;
-        const revenusMois = moisRes.data.revenusParMois;
-
-        this.totalClients = global.totalClients ?? 0;
-        this.totalFactures = global.totalFactures ?? 0;
-        this.totalRevenu = global.totalRevenu ?? 0;
-        this.totalReductions = global.totalReductions ?? 0;
-
-        // ✅ Génération des 12 mois de l’année en cours (ou fixe si tu veux)
-        const currentYear = new Date().getFullYear();
-        const moisLabels = [
-          "janvier", "février", "mars", "avril", "mai", "juin",
-          "juillet", "août", "septembre", "octobre", "novembre", "décembre"
-        ];
-        const moisComplets = moisLabels.map((mois, i) => `${mois} ${currentYear}`);
-
-        // ✅ Transforme les données de l’API en dictionnaire
-        const revenusMap = {};
-        for (const item of revenusMois) {
-          const date = new Date(item.mois + "-01");
-          const label = `${moisLabels[date.getMonth()]} ${date.getFullYear()}`;
-          revenusMap[label] = item.total_revenu ?? 0;
+        if (!statsRes.data || !revenusRes.data) {
+          throw new Error("Données manquantes dans la réponse");
         }
 
-        // ✅ Mise à jour de l’état
-        this.mois = moisComplets;
-        this.revenusParMois = moisComplets.map(label => revenusMap[label] || 0);
+        this.updateGlobalStats(statsRes.data);
+        this.processMonthlyRevenue(revenusRes.data.revenusParMois);
 
       } catch (err) {
-        console.error("Erreur lors du chargement des statistiques:", err);
-        this.error = err?.message || "Erreur inconnue";
+        this.handleError(err);
       } finally {
         this.isLoading = false;
+      }
+    },
+
+    updateGlobalStats(data) {
+      this.totalClients = data.totalClients ?? 0;
+      this.totalFactures = data.totalFactures ?? 0;
+      this.totalRevenu = data.totalRevenu ?? 0;
+      this.totalReductions = data.totalReductions ?? 0;
+    },
+
+    processMonthlyRevenue(revenusData) {
+      const moisLabels = [
+        "janvier", "février", "mars", "avril", "mai", "juin",
+        "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+      ];
+
+      const revenusMap = {};
+      const moisSet = new Set();
+
+      revenusData.forEach(item => {
+        const [year, month] = item.mois.split("-");
+        const moisIndex = parseInt(month, 10) - 1;
+        const label = `${moisLabels[moisIndex]} ${year}`;
+        revenusMap[label] = item.total_revenu ?? 0;
+        moisSet.add(label);
+      });
+
+      const sortedMois = Array.from(moisSet).sort((a, b) => {
+        const [ma, ya] = a.split(" ");
+        const [mb, yb] = b.split(" ");
+        const iA = moisLabels.indexOf(ma), iB = moisLabels.indexOf(mb);
+        return ya - yb || iA - iB;
+      });
+
+      this.mois = sortedMois;
+      this.revenusParMois = sortedMois.map(label => revenusMap[label] || 0);
+    },
+
+    handleError(error) {
+      console.error("Erreur stats:", error);
+      this.error = error.response?.data?.error || error.message;
+
+      if (error.response?.status === 401 && routerInstance) {
+        routerInstance.push("/login");
       }
     }
   }

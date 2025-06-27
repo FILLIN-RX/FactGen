@@ -1,17 +1,20 @@
 // controllers/statistiquesController.js
-import  supabase  from '../config/supabaseClient.js';
-import { getRevenusParMois } from '../service/totalMois.js';
+import supabase from "../config/supabaseClient.js";
+import { getRevenusParMois } from "../service/totalMois.js";
 export const getStatistiques = async (req, res) => {
   try {
+    const user_id = req.user?.id;
+    if (!user_id) throw new Error("Utilisateur non authentifié");
     const { count: totalClients } = await supabase
-      .from('clients')
-      .select('*', { count: 'exact', head: true });
-
-    const { data: factures, error } = await supabase
-      .from('facture')
-      .select('montant_total, reduction');
-
-    if (error) throw error;
+      .from("clients")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user_id);
+    if (err1) throw err1;
+    const { data: factures, error:err2 } = await supabase
+      .from("facture")
+      .select("montant_total, reduction")
+      .eq("user_id", user_id);
+    if (err2) throw err2;
 
     let totalRevenu = 0;
     let totalReductions = 0;
@@ -29,10 +32,10 @@ export const getStatistiques = async (req, res) => {
       totalClients,
       totalFactures: factures.length,
       totalRevenu,
-      totalReductions
+      totalReductions,
     });
   } catch (err) {
-    console.error('Erreur stats :', err.message);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error("Erreur stats :", err.message);
+    res.status(500).json({ error: "Erreur serveur" });
   }
 };

@@ -24,7 +24,31 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   })
 );
+app.get('/api/health', async (req, res) => {
+  const healthCheck = {
+    status: 'OK',
+    timestamp: Date.now(),
+    supabase: {
+      connected: false,
+      error: null,
+      latency: null
+    }
+  };
 
+  try {
+    const start = Date.now();
+    const { success, error } = await testSupabaseConnection();
+    healthCheck.supabase = {
+      connected: success,
+      error,
+      latency: Date.now() - start
+    };
+  } catch (err) {
+    healthCheck.supabase.error = err.message;
+  }
+
+  res.status(healthCheck.supabase.connected ? 200 : 503).json(healthCheck);
+});
 app.use("/api/clients", clientRoutes);
 app.use("/api/factures", factureRoutes);
 app.use("/api/statistiques", statisticRoutes);
