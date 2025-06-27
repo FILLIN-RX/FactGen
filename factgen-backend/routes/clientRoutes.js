@@ -6,27 +6,32 @@ import { validateClient } from "../middleware/ValiderClient.js"
 const router = express.Router(); // Crée un routeur Express
 
 // Récupère tous les clients de l'utilisateur connecté
-router.get("/",authenticateUser, async (req, res) => {
-  console.log("🔐 Utilisateur connecté (ID):", req.user.id); // <--- ici
-  const user_id = req.user.id
+router.get('/', authenticateUser, async (req, res) => {
   try {
-    // Requête Supabase pour récupérer les clients
-    const { data, error } = await req.supabase
+    // Utilisez l'instance supabase injectée par le middleware
+    const supabase = req.supabase;
+    
+    // Ajoutez un timeout pour éviter les blocages
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error("Timeout Supabase")), 10000)
+    );
 
-      .from("clients") // Table clients
-      .select("*")// Sélectionne toutes les colonnes
-      .eq("user_id",user_id) // Filtre par user_id
-      //.order("created_at", { ascending: true }); // Trie par nom ascendant
+    const fetchPromise = supabase
+      .from('clients')
+      .select('*')
+      .eq('user_id', req.user.id);
+
+    const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (error) throw error;
-    res.json(data); // Renvoie les données
-    console.log(data);
+
+    res.json(data);
   } catch (err) {
-    console.error("Erreur:", err);
-    console.log(error);
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la récupération des clients" });
+    console.error('Erreur dans /api/clients:', err);
+    res.status(500).json({ 
+      error: 'Erreur serveur',
+      details: err.message 
+    });
   }
 });
 

@@ -34,7 +34,7 @@ const factureValidationRules = [
 ];
 // Récupère toutes les factures de l'utilisateur connecté
 router.get("/", authenticateUser, async (req, res) => {
-  const user_id = req.user.id;
+ // const user_id = req.user.id;
 
   console.log("✅ REQUÊTE /factures autorisée");
 

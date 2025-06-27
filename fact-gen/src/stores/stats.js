@@ -1,5 +1,6 @@
+// src/stores/stats.js
 import { defineStore } from "pinia";
-import axiosapi from "../api/axios";
+import API from "../api/axios";
 
 export const useStatsStore = defineStore("statistiques", {
   state: () => ({
@@ -16,47 +17,49 @@ export const useStatsStore = defineStore("statistiques", {
   actions: {
     async fetchStatistiques() {
       this.isLoading = true;
+      this.error = null;
+
       try {
-        // Statistiques globales
-        const { data } = await axiosapi.get("/api/statistiques");
-        this.totalClients = data.totalClients;
-        this.totalFactures = data.totalFactures;
-        this.totalRevenu = data.totalRevenu;
-        this.totalReductions = data.totalReductions;
+        // ✅ Récupération des stats globales
+        const [globalRes, moisRes] = await Promise.all([
+          API.get("/statistiques"),
+          API.get("/statistiques/revenusmois")
+        ]);
 
-        // Statistiques mensuelles
-        const { data: revenusData } = await axiosapi.get("/api/statistiques/revenusmois");
+        const global = globalRes.data;
+        const revenusMois = moisRes.data.revenusParMois;
 
-        // Liste fixe des 12 mois (année 2025)
-        const moisFixes = [
-          "janvier 2025", "février 2025", "mars 2025", "avril 2025",
-          "mai 2025", "juin 2025", "juillet 2025", "août 2025",
-          "septembre 2025", "octobre 2025", "novembre 2025", "décembre 2025"
+        this.totalClients = global.totalClients ?? 0;
+        this.totalFactures = global.totalFactures ?? 0;
+        this.totalRevenu = global.totalRevenu ?? 0;
+        this.totalReductions = global.totalReductions ?? 0;
+
+        // ✅ Génération des 12 mois de l’année en cours (ou fixe si tu veux)
+        const currentYear = new Date().getFullYear();
+        const moisLabels = [
+          "janvier", "février", "mars", "avril", "mai", "juin",
+          "juillet", "août", "septembre", "octobre", "novembre", "décembre"
         ];
+        const moisComplets = moisLabels.map((mois, i) => `${mois} ${currentYear}`);
 
-        // Crée un dictionnaire { "juin 2025": montant }
-        const moisNomParIndex = [
-          'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-          'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
-        ];
-
+        // ✅ Transforme les données de l’API en dictionnaire
         const revenusMap = {};
-        revenusData.revenusParMois.forEach(item => {
-          const date = new Date(item.mois + "-01"); // item.mois = "2025-06"
-          const label = `${moisNomParIndex[date.getMonth()]} ${date.getFullYear()}`; // "juin 2025"
-          revenusMap[label] = item.total_revenu;
-        });
+        for (const item of revenusMois) {
+          const date = new Date(item.mois + "-01");
+          const label = `${moisLabels[date.getMonth()]} ${date.getFullYear()}`;
+          revenusMap[label] = item.total_revenu ?? 0;
+        }
 
-        // Remplissage final
-        this.mois = moisFixes;
-        this.revenusParMois = moisFixes.map(mois => revenusMap[mois] || 0);
+        // ✅ Mise à jour de l’état
+        this.mois = moisComplets;
+        this.revenusParMois = moisComplets.map(label => revenusMap[label] || 0);
 
-        this.error = null;
       } catch (err) {
-        this.error = err.message;
+        console.error("Erreur lors du chargement des statistiques:", err);
+        this.error = err?.message || "Erreur inconnue";
       } finally {
         this.isLoading = false;
       }
-    },
-  },
+    }
+  }
 });
