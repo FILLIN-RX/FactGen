@@ -1,11 +1,15 @@
 <template>
   <div
     v-if="facture"
-    class="bg-white p-6 mt-6  facture-container rounded-xl shadow-lg mx-auto font-sans"
+    class="bg-white p-6 mt-6 facture-container rounded-xl shadow-lg mx-auto font-sans"
   >
     <div class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
       <h2 class="font-bold text-2xl mb-6 text-center text-gray-700">
         Aperçu de la facture
+      </h2>
+      <h2 class="text-underline">
+        date:
+        {{ facture?.date_emission ? formatDate(facture.date_emission) : "" }}
       </h2>
 
       <!-- En-tête -->
@@ -88,12 +92,12 @@
   <div v-else>Chargement de la facture...</div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import axios from 'axios'
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
 
-const route = useRoute()
-const facture = ref(null)
+const route = useRoute();
+const facture = ref(null);
 
 // Style spécifique pour l'impression
 const style = `
@@ -114,7 +118,7 @@ const style = `
     }
   }
 
-`
+`;
 const invoiceStore = useFacturesStore();
 
 defineProps({
@@ -131,13 +135,17 @@ function formatDate(date) {
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`http://localhost:4000/api/factures/${route.params.id}`)
-    facture.value = response.data
+    const response = await axios.get(
+      `http://localhost:4000/api/factures/${route.params.id}`
+    );
+    facture.value = response.data;
+    console.log("Facture reçue :", response.data);
+
   } catch (error) {
-    console.error("Erreur:", error)
+    console.error("Erreur:", error);
   }
-  invoiceStore.charger()
-})
+  invoiceStore.charger();
+});
 </script>
 
 <style scoped>
@@ -159,11 +167,10 @@ onMounted(async () => {
   page-break-inside: avoid !important;
 }
 .facture-container {
-  width: 794px;      /* largeur A4 */
+  width: 794px; /* largeur A4 */
   min-height: 1123px; /* hauteur A4 */
   box-sizing: border-box;
   margin: 0 auto;
   padding: 20px; /* Ajuste si besoin */
 }
-
 </style>

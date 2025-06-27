@@ -4,7 +4,11 @@ import { supabaseUrl, supabaseServiceRoleKey } from "../config/supabaseClient.js
 export async function authenticateUser(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
 
-  if (!token) return res.status(401).json({ error: "Token manquant" });
+  if (!token) {
+    console.log("Aucun token fourni");
+    return res.status(401).json({ error: "Token manquant" });
+  }
+console.log("🔑 Token reçu :", token);
 
   const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
     global: {

@@ -13,5 +13,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+if (!supabase) {
+  console.log("supabase connecter")
+}else{
+  console.log("supabase  connecter")
+}
 export default supabase;

@@ -349,6 +349,7 @@ export default {
           this.produits,
           this.utiliseReduction === "oui" ? this.reduction : null,
           this.suplement,
+          null,
           this.date_emission,
           this.date_echeance
         );

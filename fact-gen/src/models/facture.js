@@ -1,15 +1,23 @@
 export default class Facture {
-  constructor(societer, client, produits, reduction = null, suplement = null,user_id = null,date_emission,date_echeance) {
+  constructor(
+    societer,
+    client,
+    produits,
+    reduction = null,
+    suplement = null,
+    user_id = null,
+    date_emission,
+    date_echeance
+  ) {
     this.numero = this.genererNumero();
     this.client = client;
     this.societer = societer;
     this.produits = produits || {}; // objet produit
     this.reduction = reduction;
     this.suplement = suplement;
- 
     this.user_id = user_id;
-    this.date= date_emission;
-    this.date_echeance=date_echeance
+    this.date_emission = date_emission;
+    this.date_echeance = date_echeance;
   }
 
   getTotalHT() {
@@ -25,27 +33,26 @@ export default class Facture {
       return this.reduction.valeur;
     } else if (this.reduction.type === "pourcentage") {
       const total = this.getTotalHT();
-      
+
       return total * (this.reduction.valeur / 100);
     }
     return 0;
   }
   getReductionFinale() {
-  if (!this.reduction || this.reduction.valeur === 0) return null;
+    if (!this.reduction || this.reduction.valeur === 0) return null;
 
-  const total = this.getTotalHT();
+    const total = this.getTotalHT();
 
-  return {
-    type: this.reduction.type,
-    valeurOriginale: this.reduction.valeur,
-    valeurCalculee:
-      this.reduction.type === "montant"
-        ? this.reduction.valeur
-        : total * (this.reduction.valeur / 100),
-    base: total
-  };
-}
-
+    return {
+      type: this.reduction.type,
+      valeurOriginale: this.reduction.valeur,
+      valeurCalculee:
+        this.reduction.type === "montant"
+          ? this.reduction.valeur
+          : total * (this.reduction.valeur / 100),
+      base: total,
+    };
+  }
 
   getTotalTTC() {
     return this.getTotalHT() - this.getMontantReduction();
@@ -77,6 +84,15 @@ export default class Facture {
     if (!this.produits || this.produits.length === 0) {
       throw new Error("Au moins un produit est requis");
     }
+    if (!this.date_emission) {
+      throw new Error("La date d'émission est requise.");
+    }
+    if (this.date_echeance < this.date_emission) {
+      throw new Error(
+        "La date d'échéance ne peut pas être antérieure à la date d'émission."
+      );
+    }
+
     return true;
   }
   toJSON() {
@@ -97,8 +113,8 @@ export default class Facture {
       suplement: this.suplement || {},
       montant_total: this.totalTTC,
       created_at: new Date().toISOString(),
-      date_emission:this.date,
-      date_echeance:this.client
+      date_emission: this.date_emission,
+      date_echeance: this.date_echeance,
     };
   }
 
