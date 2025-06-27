@@ -10,7 +10,6 @@ export async function authenticateUser(req, res, next) {
   }
 
   try {
-    // Configuration robuste du client Supabase
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
       auth: {
         persistSession: false,
@@ -20,9 +19,8 @@ export async function authenticateUser(req, res, next) {
       global: {
         headers: { Authorization: `Bearer ${token}` },
         fetch: (url, options) => {
-          // Augmentez le timeout par défaut
           const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+          const timeout = setTimeout(() => controller.abort(), 15000);
           
           return fetch(url, {
             ...options,
@@ -34,11 +32,21 @@ export async function authenticateUser(req, res, next) {
 
     const { data: { user }, error } = await supabase.auth.getUser(token);
     
-    if (error || !user) {
+    // 🔧 AMÉLIORATION: Gestion d'erreurs plus précise
+    if (error) {
       console.error("Erreur d'authentification:", error);
       return res.status(401).json({ 
-        error: error?.message || "Utilisateur non trouvé",
-        type: "auth_error"
+        error: "Token invalide",
+        type: "auth_error",
+        details: error.message
+      });
+    }
+
+    if (!user) {
+      console.error("Utilisateur non trouvé");
+      return res.status(401).json({ 
+        error: "Utilisateur non trouvé",
+        type: "user_not_found"
       });
     }
 

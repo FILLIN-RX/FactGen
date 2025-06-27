@@ -1,10 +1,12 @@
-// routes/factureRoutes.js
+
+// ===== 2. routes/factureRoutes.js (CORRIGÉ) =====
 import supabase from "../config/supabaseClient.js";
 import express from "express";
 import { authenticateUser } from "../middleware/auth.js";
 import { body, validationResult } from "express-validator";
 
-const router = express.Router(); // Crée un routeur Express
+const router = express.Router();
+
 function validateRequest(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -32,23 +34,33 @@ const factureValidationRules = [
     .isFloat({ min: 0 })
     .withMessage("Montant total invalide"),
 ];
+
 // Récupère toutes les factures de l'utilisateur connecté
 router.get("/", authenticateUser, async (req, res) => {
- // const user_id = req.user.id;
+  // 🔧 CORRECTION: Décommentation de la variable user_id
+  const user_id = req.user.id;
 
   console.log("✅ REQUÊTE /factures autorisée");
 
-  // Requête Supabase pour récupérer les factures
-  const { data, error } = await req.supabase
-    .from("facture") // Table facture
-    .select("*") // Sélectionne toutes les colonnes
-    .eq("user_id", user_id) //filtre uniquement les facture de l'utilisateur
-    .order("created_at", { ascending: false });
+  try {
+    const { data, error } = await req.supabase
+      .from("facture")
+      .select("*")
+      .eq("user_id", user_id)
+      .order("created_at", { ascending: false });
 
-  console.log("📦 Résultat Supabase:", data);
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data); // Renvoie les factures
-  console.log(data);
+    console.log("📦 Résultat Supabase:", data);
+    
+    if (error) {
+      console.error("Erreur Supabase:", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error("Erreur dans GET /factures:", err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
 });
 
 // Crée une nouvelle facture
@@ -70,47 +82,54 @@ router.post(
       date_echeance,
     } = req.body;
 
-    console.log("✅ REQUÊTE /factures autorisée");
+    console.log("✅ REQUÊTE POST /factures autorisée");
 
-    // Insère la nouvelle facture dans la base de données
-    const { data, error } = await req.supabase
-      .from("facture")
-      .insert([
-        {
-          client_id,
-          client_data,
-          produits,
-          reduction,
-          suplement,
-          montant_total,
-          numero,
-          date_emission,
-          date_echeance,
-          user_id: req.user.id,
-          created_at: new Date().toISOString(),
-        },
-      ])
-      .select(); // Retourne les données insérées
+    try {
+      const { data, error } = await req.supabase
+        .from("facture")
+        .insert([
+          {
+            client_id,
+            client_data,
+            produits,
+            reduction,
+            suplement,
+            montant_total,
+            numero,
+            date_emission,
+            date_echeance,
+            user_id: req.user.id,
+            created_at: new Date().toISOString(),
+          },
+        ])
+        .select();
 
-    if (error) return res.status(500).json({ error: error.message });
-    if (!data || data.length === 0) {
-      return res
-        .status(500)
-        .json({
-          error:
-            "Erreur lors de la création de la facture (aucune donnée retournée)",
+      if (error) {
+        console.error("Erreur création facture:", error);
+        return res.status(500).json({ error: error.message });
+      }
+
+      if (!data || data.length === 0) {
+        return res.status(500).json({
+          error: "Erreur lors de la création de la facture (aucune donnée retournée)",
         });
+      }
+
+      res.status(201).json(data[0]);
+    } catch (err) {
+      console.error("Erreur dans POST /factures:", err);
+      res.status(500).json({ error: "Erreur serveur" });
     }
-    res.status(201).json(data[0]); // Renvoie la facture créée avec statut 201
   }
 );
+
 // Met à jour une facture par son ID
 router.put(
   "/:id",
   authenticateUser,
   factureValidationRules,
   validateRequest,
-  [],
+  // 🔧 CORRECTION: Suppression du tableau vide inutile
   async (req, res) => {
     const { id } = req.params;
     const {
@@ -132,7 +151,7 @@ router.put(
     }
 
     try {
-      const { data, error } = req.supabase
+      const { data, error } = await req.supabase
         .from("facture")
         .update({
           client_id,
@@ -147,10 +166,12 @@ router.put(
         })
         .eq("id", id)
         .eq("user_id", user_id)
-
         .select();
 
-      if (error) return res.status(500).json({ error: error.message });
+      if (error) {
+        console.error("Erreur mise à jour facture:", error);
+        return res.status(500).json({ error: error.message });
+      }
 
       if (!data || data.length === 0) {
         return res.status(404).json({ error: "Facture non trouvée" });
@@ -161,10 +182,8 @@ router.put(
         facture: data[0],
       });
     } catch (err) {
-      console.error("Erreur:", err);
-      res
-        .status(500)
-        .json({ error: "Erreur lors de la mise à jour de la facture" });
+      console.error("Erreur dans PUT /factures:", err);
+      res.status(500).json({ error: "Erreur lors de la mise à jour de la facture" });
     }
   }
 );
@@ -172,34 +191,32 @@ router.put(
 // DELETE /api/factures/:id
 router.delete("/:id", authenticateUser, async (req, res) => {
   const id = req.params.id;
+  const user_id = req.user.id; // 🔧 AMÉLIORATION: Sécurité renforcée
 
   try {
-    const { data, error } = req.supabase
+    const { data, error } = await req.supabase
       .from("facture")
       .delete()
       .eq("id", id)
-      .select(); // 🔥 AJOUTER CECI
+      .eq("user_id", user_id) // 🔧 AMÉLIORATION: Vérification utilisateur
+      .select();
 
     if (error) {
-      console.error("Erreur Supabase:", error.message); // Ajouté
+      console.error("Erreur Supabase:", error.message);
       throw error;
     }
 
-    if (!data) {
-      return res.status(404).json({ error: "facture non trouvé" });
-    } else if (data.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "Aucun facture trouvé avec cet ID" });
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Facture non trouvée ou non autorisée" });
     }
 
-    res.status(200).json({ message: "facture supprimé avec succès", data });
+    res.status(200).json({ 
+      message: "Facture supprimée avec succès", 
+      data: data[0] 
+    });
   } catch (err) {
-    console.error("Erreur attrapée:", err.message); // Ajouté
-    console.log(err.message);
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la suppression de la facture" });
+    console.error("Erreur dans DELETE /factures:", err);
+    res.status(500).json({ error: "Erreur lors de la suppression de la facture" });
   }
 });
 

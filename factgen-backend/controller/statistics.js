@@ -1,19 +1,25 @@
-// controllers/statistiquesController.js
+// ===== 1. controller/statistics.js (CORRIGÉ) =====
 import supabase from "../config/supabaseClient.js";
 import { getRevenusParMois } from "../service/totalMois.js";
+
 export const getStatistiques = async (req, res) => {
   try {
     const user_id = req.user?.id;
     if (!user_id) throw new Error("Utilisateur non authentifié");
-    const { count: totalClients } = await supabase
+
+    // 🔧 CORRECTION: Déclaration correcte des variables d'erreur
+    const { count: totalClients, error: err1 } = await supabase
       .from("clients")
       .select("*", { count: "exact", head: true })
       .eq("user_id", user_id);
+
     if (err1) throw err1;
-    const { data: factures, error:err2 } = await supabase
+
+    const { data: factures, error: err2 } = await supabase
       .from("facture")
       .select("montant_total, reduction")
       .eq("user_id", user_id);
+
     if (err2) throw err2;
 
     let totalRevenu = 0;

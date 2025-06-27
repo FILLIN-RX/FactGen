@@ -1,21 +1,24 @@
 import express from "express";
 import cors from "cors";
-import supabase from "./config/supabaseClient.js";
+import supabase, { testSupabaseConnection } from "./config/supabaseClient.js"; // 🔧 CORRECTION: Import ajouté
 import clientRoutes from "./routes/clientRoutes.js";
 import factureRoutes from "./routes/factureRoutes.js";
 import statisticRoutes from "./routes/statisticRoutes.js";
 import dotenv from "dotenv";
 import pdfRoutes from "./routes/pdf.js";
+import logger from './middleware/logger.js';
 
-import logger from './middleware/logger.js'
 dotenv.config();
 
 const app = express();
+
+// Middleware global pour injecter supabase
 app.use((req, res, next) => {
   req.supabase = supabase;
   next();
 });
-app.use(logger)
+
+app.use(logger);
 app.use(express.json());
 app.use(
   cors({
@@ -24,6 +27,8 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   })
 );
+
+// Route de santé avec test Supabase
 app.get('/api/health', async (req, res) => {
   const healthCheck = {
     status: 'OK',
@@ -47,22 +52,32 @@ app.get('/api/health', async (req, res) => {
     healthCheck.supabase.error = err.message;
   }
 
-  res.status(healthCheck.supabase.connected ? 200 : 503).json(healthCheck);
+  const statusCode = healthCheck.supabase.connected ? 200 : 503;
+  res.status(statusCode).json(healthCheck);
 });
+
+// Routes principales
 app.use("/api/clients", clientRoutes);
 app.use("/api/factures", factureRoutes);
 app.use("/api/statistiques", statisticRoutes);
 app.use("/api/pdf", pdfRoutes);
+
+// Middleware 404
 app.use((req, res, next) => {
   res.status(404).json({ error: "Route non trouvée" });
 });
 
+// Middleware de gestion d'erreurs globales
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Erreur interne du serveur" });
+  console.error("Erreur globale:", err.stack);
+  res.status(500).json({ 
+    error: "Erreur interne du serveur",
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
-// Lancer le serveur
-app.listen(4000, () => {
-  console.log("✅ Serveur Express démarré sur http://localhost:4000");
+// Démarrage du serveur
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`✅ Serveur Express démarré sur http://localhost:${PORT}`);
 });

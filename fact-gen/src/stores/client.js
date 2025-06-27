@@ -1,15 +1,14 @@
-// src/stores/clients.js
 import { defineStore } from "pinia";
-import { getClients, deleteClient, creerClient } from "../services/api";
+import API  from "../api/axios";
 import { useAuthStore } from "./auth";
 
-export const useClientsStore = defineStore("client", {
+export const useClientsStore = defineStore("clients", {
   state: () => ({
     clients: [],
     clientForm: {
       nom: "",
       email: "",
-      adresse: "", // ✔ corrige "address" → "adresse"
+      adresse: "",
       telephone: "",
     },
     search: "",
@@ -25,12 +24,14 @@ export const useClientsStore = defineStore("client", {
 
   getters: {
     filteredClients: (state) => {
+      if (!state.search) return state.clients;
+      
       const searchLower = state.search.toLowerCase();
-      return state.clients.filter(
-        (client) =>
-          client.nom.toLowerCase().includes(searchLower) ||
-          client.email.toLowerCase().includes(searchLower) ||
-          client.adresse.toLowerCase().includes(searchLower) // ✔ idem ici
+      return state.clients.filter((client) =>
+        client.nom?.toLowerCase().includes(searchLower) ||
+        client.email?.toLowerCase().includes(searchLower) ||
+        client.adresse?.toLowerCase().includes(searchLower) ||
+        client.telephone?.toLowerCase().includes(searchLower)
       );
     },
 
@@ -42,20 +43,23 @@ export const useClientsStore = defineStore("client", {
     totalPages: (state) => {
       return Math.ceil(state.filteredClients.length / state.pageSize) || 1;
     },
+
+    hasClients: (state) => state.clients.length > 0,
   },
 
   actions: {
-    async charger() {
+    async chargerClients() {
       this.loading = true;
       this.error = null;
+      
       try {
-        const auth = useAuthStore();
-        const userId = auth.user?.id;
-        if (!userId) throw new Error("Utilisateur non authentifié");
+        const authStore = useAuthStore();
+        if (!authStore.isAuthenticated) {
+          throw new Error("Utilisateur non authentifié");
+        }
 
-        const clients = await getClients();
-        this.clients = clients;
-        this.sauvegarder();
+        const clients = await API.lister();
+        this.clients = clients || [];
       } catch (error) {
         this.error = error.message;
         console.error("Erreur lors du chargement des clients:", error);
@@ -64,60 +68,63 @@ export const useClientsStore = defineStore("client", {
       }
     },
 
-    async addClient() {
+    async ajouterClient() {
+      this.loading = true;
+      this.error = null;
+      
       try {
-        const auth = useAuthStore();
-        if (!auth.isAuthenticated) {
-          await auth.initialize();
-          if (!auth.isAuthenticated) throw new Error("Veuillez vous reconnecter");
+        const authStore = useAuthStore();
+        if (!authStore.isAuthenticated) {
+          throw new Error("Utilisateur non authentifié");
         }
 
         const clientData = {
-          nom: this.clientForm.nom,
-          adresse: this.clientForm.adresse,
-          email: this.clientForm.email,
-          telephone: this.clientForm.telephone,
-          user_id: auth.user.id,
+          ...this.clientForm,
+          user_id: authStore.userId,
         };
 
-        const createdClient = await creerClient(clientData);
-        this.clients.push(createdClient);
-        this.sauvegarder();
+        const nouveauClient = await API.creer(clientData);
+        this.clients.push(nouveauClient);
         this.resetForm();
-
-        return createdClient;
-      } catch (error) {
-        console.error("Erreur dans addClient:", error);
-        alert(`Échec de la création : ${error.message}`);
-        throw error;
-      }
-    },
-
-    async deleteClient(index) {
-      try {
-        const auth = useAuthStore();
-        const userId = auth.user?.id;
-        if (!userId) throw new Error("Utilisateur non authentifié");
-
-        const idx = typeof index === "number" ? index : this.selectedIndex;
-        if (idx === null || idx === undefined) return;
-
-        if (confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
-          const client = this.clients[idx];
-          if (!client) return;
-
-          await deleteClient(client.id);
-          this.clients.splice(idx, 1);
-          this.sauvegarder();
-          this.closeDetails();
-        }
+        
+        return nouveauClient;
       } catch (error) {
         this.error = error.message;
-        console.error("Erreur suppression client:", error);
+        console.error("Erreur lors de l'ajout du client:", error);
+        throw error;
+      } finally {
+        this.loading = false;
       }
     },
 
-    selectClient(client, index) {
+    async supprimerClient(index = null) {
+      const idx = index !== null ? index : this.selectedIndex;
+      if (idx === null || idx === undefined) return;
+
+      const client = this.clients[idx];
+      if (!client) return;
+
+      if (!confirm(`Êtes-vous sûr de vouloir supprimer le client "${client.nom}" ?`)) {
+        return;
+      }
+
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        await API.supprimer(client.id);
+        this.clients.splice(idx, 1);
+        this.fermerDetails();
+      } catch (error) {
+        this.error = error.message;
+        console.error("Erreur lors de la suppression du client:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    // Actions UI
+    selectionnerClient(client, index) {
       this.selectedClient = client;
       this.selectedIndex = index;
       this.isDetailsOpen = true;
@@ -133,28 +140,38 @@ export const useClientsStore = defineStore("client", {
       this.isFormOpen = false;
     },
 
-    sauvegarder() {
-      localStorage.setItem("clients", JSON.stringify(this.clients));
-    },
-
-    openForm() {
+    ouvrirFormulaire() {
       this.isFormOpen = true;
     },
-    closeForm() {
+
+    fermerFormulaire() {
       this.isFormOpen = false;
-    },
-    openDetails() {
-      this.isDetailsOpen = true;
-    },
-    closeDetails() {
-      this.isDetailsOpen = false;
+      this.resetForm();
     },
 
-    nextPage() {
+    ouvrirDetails() {
+      this.isDetailsOpen = true;
+    },
+
+    fermerDetails() {
+      this.isDetailsOpen = false;
+      this.selectedClient = null;
+      this.selectedIndex = null;
+    },
+
+    // Pagination
+    pageSuivante() {
       if (this.page < this.totalPages) this.page++;
     },
-    prevPage() {
+
+    pagePrecedente() {
       if (this.page > 1) this.page--;
+    },
+
+    allerALaPage(page) {
+      if (page >= 1 && page <= this.totalPages) {
+        this.page = page;
+      }
     },
   },
 });

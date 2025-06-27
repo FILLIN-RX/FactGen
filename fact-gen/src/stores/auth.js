@@ -1,88 +1,155 @@
+// ==================== AUTH STORE ====================
+// src/stores/auth.js
 import { defineStore } from "pinia";
 import { supabase } from "../lib/supabase";
-import { ref, watch } from "vue";
 
-export const useAuthStore = defineStore("auth", () => {
-  const user = ref(null);
-  const isAuthenticated = ref(false);
+export const useAuthStore = defineStore("auth", {
+  state: () => ({
+    user: null,
+    session: null,
+    isAuthenticated: false,
+    isLoading: false,
+    error: null,
+  }),
 
-  function setUser(userData) {
-    user.value = userData;
-    isAuthenticated.value = !!userData;
-  }
+  getters: {
+    userId: (state) => state.user?.id,
+    userEmail: (state) => state.user?.email,
+    accessToken: (state) => state.session?.access_token,
+  },
 
-  // 🔐 SignUp
-  async function signUp({ email, password }) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-    setUser(data.user);
-    return data.user;
-  }
+  actions: {
+    setUser(userData, sessionData = null) {
+      this.user = userData;
+      this.session = sessionData;
+      this.isAuthenticated = !!userData;
+      this.error = null;
+      
+      // Stocker le token pour les requêtes API
+      if (sessionData?.access_token) {
+        localStorage.setItem("supabase_token", sessionData.access_token);
+      }
+    },
 
-  // 🔐 SignIn
- async function signIn({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  
-  // Stocker le token pour les requêtes API
-  if (data.session) {
-    localStorage.setItem("supabase_token", data.session.access_token);
-    setUser(data.user);
-    console.log("🔐 Token stocké:", data.session.access_token);
-    return data.user;
-  }
-  throw new Error("Aucune session retournée par Supabase");
-}
-
-  // 🔄 Initialize (au démarrage de l'app)
-  async function initialize() {
-    const { data, error } = await supabase.auth.getSession();
-    if (data?.session?.user) {
-      setUser(data.session.user);
-    } else {
-      setUser(null);
-    }
-  }
-
-  // 🔓 SignOut
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    setUser(null);
-    localStorage.removeItem("supabase_token"); // nettoyage
-  }
-
-  // 🔁 Garde le token à jour
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-      localStorage.setItem("supabase_token", session?.access_token);
-    }
-    if (event === "SIGNED_OUT") {
+    clearAuth() {
+      this.user = null;
+      this.session = null;
+      this.isAuthenticated = false;
       localStorage.removeItem("supabase_token");
-    }
-  });
+    },
 
-  // 🔐 Google
-  async function signInWithGoogle() {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
-    if (error) throw error;
-    return data;
-  }
+    async signUp({ email, password }) {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+        this.setUser(data.user, data.session);
+        return data.user;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
 
-  return {
-    user,
-    isAuthenticated,
-    setUser,
-    getCurrentUser: initialize,
-    signUp,
-    signIn,
-    signOut,
-    initialize,
-    signInWithGoogle,
-  };
+    async signIn({ email, password }) {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        
+        if (!data.session) {
+          throw new Error("Aucune session retournée par Supabase");
+        }
+        
+        this.setUser(data.user, data.session);
+        return data.user;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async signInWithGoogle() {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: window.location.origin,
+          },
+        });
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async signOut() {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        this.clearAuth();
+      } catch (error) {
+        this.error = error.message;
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async initialize() {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        
+        if (data?.session?.user) {
+          this.setUser(data.session.user, data.session);
+        } else {
+          this.clearAuth();
+        }
+      } catch (error) {
+        this.error = error.message;
+        this.clearAuth();
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    // Écouter les changements d'état d'authentification
+    setupAuthListener() {
+      supabase.auth.onAuthStateChange((event, session) => {
+        switch (event) {
+          case "SIGNED_IN":
+          case "TOKEN_REFRESHED":
+            if (session?.user) {
+              this.setUser(session.user, session);
+            }
+            break;
+          case "SIGNED_OUT":
+            this.clearAuth();
+            break;
+        }
+      });
+    },
+  },
 });

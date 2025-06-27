@@ -1,90 +1,147 @@
-// src/stores/factures.js
 import { defineStore } from "pinia";
-import { getFacturesParClient, deleteFactures } from "../services/api";
+import  API  from "../api/axios";
 import { useAuthStore } from "./auth";
+
 export const useFacturesStore = defineStore("factures", {
   state: () => ({
     factures: [],
+    selectedFacture: null,
+    selectedIndex: null,
     loading: false,
     error: null,
-    revenusParMois: Array(12).fill(0),
-    selectedInvoice: null,
-    selectedIndex: null,
   }),
 
+  getters: {
+    hasFactures: (state) => state.factures.length > 0,
+    
+    factureParId: (state) => (id) => 
+      state.factures.find((f) => f.id === id),
+    
+    totalRevenu: (state) => 
+      state.factures.reduce((total, facture) => total + (facture.montant || 0), 0),
+    
+    revenusParMois: (state) => {
+      const revenus = Array(12).fill(0);
+      state.factures.forEach((facture) => {
+        if (facture.date && facture.montant) {
+          const mois = new Date(facture.date).getMonth();
+          revenus[mois] += facture.montant;
+        }
+      });
+      return revenus;
+    },
+
+    facturesParStatut: (state) => (statut) =>
+      state.factures.filter((f) => f.statut === statut),
+  },
+
   actions: {
-    async charger() {
+    async chargerFactures() {
       this.loading = true;
       this.error = null;
+      
       try {
-        const auth = useAuthStore();
-        const userId = auth.user?.id;
-        if (!userId) {
-          throw new Error("Utilisateur non authentifier");
+        const authStore = useAuthStore();
+        if (!authStore.isAuthenticated) {
+          throw new Error("Utilisateur non authentifié");
         }
-        this.factures = await getFacturesParClient();
-        this.factures = factures;
-        // Recalcule les revenus par mois
-        this.revenusParMois = Array(12).fill(0);
-        for (const f of factures) {
-          const mois = new Date(f.date).getMonth();
-          this.revenusParMois[mois] += f.montant;
-        }
-        this.sauvegarder();
+
+        const factures = await 
+    API.lister();
+        this.factures = factures || [];
       } catch (error) {
         this.error = error.message;
+        console.error("Erreur lors du chargement des factures:", error);
       } finally {
         this.loading = false;
       }
     },
-    sauvegarder() {
-      localStorage.setItem("factures", JSON.stringify(this.factures));
+
+    async ajouterFacture(factureData) {
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        const authStore = useAuthStore();
+        if (!authStore.isAuthenticated) {
+          throw new Error("Utilisateur non authentifié");
+        }
+
+        const nouvelleFacture = await 
+    API.creer({
+          ...factureData,
+          user_id: authStore.userId,
+        });
+        
+        this.factures.push(nouvelleFacture);
+        return nouvelleFacture;
+      } catch (error) {
+        this.error = error.message;
+        console.error("Erreur lors de l'ajout de la facture:", error);
+        throw error;
+      } finally {
+        this.loading = false;
+      }
     },
-    ajouter(facture) {
-      this.factures.push(facture);
-      const mois = new Date(facture.date).getMonth();
-      this.revenusParMois[mois] += facture.montant;
-      this.sauvegarder();
+
+    async supprimerFacture(index = null) {
+      const idx = index !== null ? index : this.selectedIndex;
+      if (idx === null || idx === undefined) return;
+
+      const facture = this.factures[idx];
+      if (!facture) return;
+
+      if (!confirm("Êtes-vous sûr de vouloir supprimer cette facture ?")) {
+        return;
+      }
+
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        await 
+    API.supprimer(facture.id);
+        this.factures.splice(idx, 1);
+        this.clearSelection();
+      } catch (error) {
+        this.error = error.message;
+        console.error("Erreur lors de la suppression de la facture:", error);
+      } finally {
+        this.loading = false;
+      }
     },
-    selectInvoice(facture, index) {
-      this.selectedInvoice = facture;
+
+    async mettreAJourFacture(id, donnees) {
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        const factureModifiee = await 
+    API.mettreAJour(id, donnees);
+        const index = this.factures.findIndex((f) => f.id === id);
+        
+        if (index !== -1) {
+          this.factures[index] = factureModifiee;
+        }
+        
+        return factureModifiee;
+      } catch (error) {
+        this.error = error.message;
+        console.error("Erreur lors de la mise à jour de la facture:", error);
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    selectionnerFacture(facture, index) {
+      this.selectedFacture = facture;
       this.selectedIndex = index;
     },
 
-    async deleteInvoice(index) {
-      try{
-      const auth = useAuthStore();
-      const userId = auth.user?.id;
-      if (!userId) {
-        throw new Error("Utilisateur non authentifier");
-      }
-      if (confirm("Êtes-vous sûr de vouloir supprimer cette facture ?")) {
-        const factureId = this.factures[index].id;
-         await deleteFactures(factureId)// Appel API pour supprimer côté backend
-          // Mise à jour des revenus par mois
-         // const mois = new Date(this.factures[index].date).getMonth()
-         // this.revenusParMois[mois] -= this.factures[index].montant
-
-        // Si la suppression a réussi côté backend, retire localement :
-        this.factures.splice(index, 1);
-        this.sauvegarder();
-        this.clearSelection();
-      }
-    }catch(error){
-      this.error = error.message
-      console.error("Erreur suppression facture:", error)
-    }
-    },
-
     clearSelection() {
-      this.selectedInvoice = null;
+      this.selectedFacture = null;
       this.selectedIndex = null;
     },
   },
-
- getters: {
-    hasInvoices: (state) => state.factures.length > 0,
-    getFactureParId: (state) => (id) =>
-      state.factures.find((f) => f.id === id),
-  }
 });

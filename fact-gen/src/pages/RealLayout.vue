@@ -11,18 +11,17 @@
 
         <!-- Activité récente -->
         <div class="w-full border rounded-lg p-4 shadow">
-          <RecentActivity />
+          
         </div>
       
         
       </section>
 </template>
 <script>
-import AccountExpand from "../components/AcountExpend.vue"; // ⚠️ Vérifie l'orthographe
 
-import BarChart from "../components/BarChart.vue";
 import RecentActivity from "../components/RecentActivity.vue";
 import StatisTics from "../components/StatisTics.vue";
+import BarChart from "../components/BarChart.vue";
 
 // Exemple avec fetch dans un composant Vue
 
@@ -31,8 +30,7 @@ export default {
 
   components: {
     
-    AccountExpand,
-    BarChart,
+ BarChart,
     RecentActivity,
     StatisTics,
   },
