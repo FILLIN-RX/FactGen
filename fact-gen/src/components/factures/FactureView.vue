@@ -8,8 +8,7 @@
         Aperçu de la facture
       </h2>
       <h2 class="text-underline">
-        date:
-        {{ facture?.date_emission ? formatDate(facture.date_emission) : "" }}
+        Date: {{ facture?.date_emission ? formatDate(facture.date_emission) : "" }}
       </h2>
 
       <!-- En-tête -->
@@ -25,10 +24,10 @@
               class="h-full w-full object-cover"
             />
           </div>
-          <div>
-            <h3 class="text-xl font-semibold">{{ societer.nom }}</h3>
-            <p class="text-sm text-gray-600">{{ societer.email }}</p>
-            <p class="text-sm text-gray-600">{{ societer.adresse }}</p>
+          <div v-if="facture.societer">
+            <h3 class="text-xl font-semibold">{{ facture.societer.nom }}</h3>
+            <p class="text-sm text-gray-600">{{ facture.societer.email }}</p>
+            <p class="text-sm text-gray-600">{{ facture.societer.adresse }}</p>
           </div>
         </div>
       </div>
@@ -36,13 +35,15 @@
       <!-- Informations client -->
       <div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <h4 class="font-semibold mb-2 text-gray-800">Client :</h4>
-        <p><strong>Nom :</strong> {{ client.nom }}</p>
-        <p><strong>Email :</strong> {{ client.email }}</p>
-        <p><strong>Adresse :</strong> {{ client.adresse }}</p>
+        <div v-if="facture.client_data">
+          <p><strong>Nom :</strong> {{ facture.client_data.nom }}</p>
+          <p><strong>Email :</strong> {{ facture.client_data.email }}</p>
+          <p><strong>Adresse :</strong> {{ facture.client_data.adresse }}</p>
+        </div>
       </div>
 
       <!-- Produits -->
-      <div class="mb-8">
+      <div class="mb-8" v-if="facture.produits && facture.produits.length > 0">
         <div
           class="grid grid-cols-4 gap-2 bg-gray-100 font-semibold text-gray-700 p-3 text-sm border-b border-gray-300"
         >
@@ -52,7 +53,7 @@
           <div class="text-right">Prix total</div>
         </div>
         <div
-          v-for="(p, i) in produits"
+          v-for="(p, i) in facture.produits"
           :key="i"
           class="grid grid-cols-4 p-3 border-b text-sm text-gray-800"
         >
@@ -61,90 +62,106 @@
           >
             {{ p.nom }}
           </div>
-
           <div class="text-center">{{ p.quantite }}</div>
-          <div class="text-center">{{ p.prix.toFixed(2) }} €</div>
-          <div class="text-right">{{ (p.prix * p.quantite).toFixed(2) }} €</div>
+          <div class="text-center">{{ formatPrice(p.prix) }} €</div>
+          <div class="text-right">{{ formatPrice(p.prix * p.quantite) }} €</div>
         </div>
       </div>
 
       <!-- Totaux -->
-      <!-- Totaux -->
       <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
         <p><strong>Total HT :</strong></p>
-        <p>{{ totalHT.toFixed(2) }} €</p>
+        <p>{{ formatPrice(totalHT) }} €</p>
 
         <template v-if="montantReduction > 0">
           <p class="text-red-500"><strong>Réduction :</strong></p>
-          <p class="text-red-500">-{{ montantReduction.toFixed(2) }} €</p>
+          <p class="text-red-500">-{{ formatPrice(montantReduction) }} €</p>
         </template>
 
         <p class="text-lg font-bold">Total TTC :</p>
-        <p class="text-lg font-bold">{{ totalTTC.toFixed(2) }} €</p>
+        <p class="text-lg font-bold">{{ formatPrice(totalTTC) }} €</p>
       </div>
 
       <!-- Supplément -->
-      <div class="text-sm text-gray-600 italic">
-        {{ suplement }}
+      <div class="text-sm text-gray-600 italic" v-if="facture.suplement">
+        {{ facture.suplement }}
       </div>
     </div>
   </div>
-  <div v-else>Chargement de la facture...</div>
+  <div v-else class="text-center p-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Chargement de la facture...</p>
+  </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
 const route = useRoute();
 const facture = ref(null);
+const loading = ref(true);
+const error = ref(null);
 
-// Style spécifique pour l'impression
-const style = `
-  @media print {
-    body * {
-      visibility: hidden;
-    }
-    .facture-container, .facture-container * {
-      visibility: visible;
-    }
-    .facture-container {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  }
-
-`;
-const invoiceStore = useFacturesStore();
-
-defineProps({
+const props = defineProps({
   invoice: Object,
   logoDataUrl: String,
   isDownloading: Boolean,
 });
 
-defineEmits(["close", "download", "delete"]);
+const emit = defineEmits(["close", "download", "delete"]);
+
+// Fonctions utilitaires
 function formatDate(date) {
   if (!date) return "";
-  return new Date(date).toLocaleDateString();
+  return new Date(date).toLocaleDateString('fr-FR');
 }
 
+function formatPrice(price) {
+  if (typeof price !== 'number' || isNaN(price)) return '0.00';
+  return price.toFixed(2);
+}
+
+// Calculs des totaux
+const totalHT = computed(() => {
+  if (!facture.value?.produits) return 0;
+  return facture.value.produits.reduce((total, produit) => {
+    return total + (produit.prix * produit.quantite);
+  }, 0);
+});
+
+const montantReduction = computed(() => {
+  if (!facture.value?.reduction) return 0;
+  
+  const reduction = facture.value.reduction;
+  if (reduction.type === 'montant') {
+    return reduction.valeur;
+  } else if (reduction.type === 'pourcentage') {
+    return totalHT.value * (reduction.valeur / 100);
+  }
+  return 0;
+});
+
+const totalTTC = computed(() => {
+  return totalHT.value - montantReduction.value;
+});
+
+// Chargement des données
 onMounted(async () => {
   try {
+    loading.value = true;
     const response = await axios.get(
       `http://localhost:4000/api/factures/${route.params.id}`
     );
     facture.value = response.data;
     console.log("Facture reçue :", response.data);
-
-  } catch (error) {
-    console.error("Erreur:", error);
+  } catch (err) {
+    console.error("Erreur lors du chargement de la facture:", err);
+    error.value = "Erreur lors du chargement de la facture";
+  } finally {
+    loading.value = false;
   }
-  invoiceStore.charger();
 });
 </script>
 
@@ -163,14 +180,13 @@ onMounted(async () => {
     page-break-inside: avoid;
   }
 }
+
 .facture-container {
   page-break-inside: avoid !important;
-}
-.facture-container {
   width: 794px; /* largeur A4 */
   min-height: 1123px; /* hauteur A4 */
   box-sizing: border-box;
   margin: 0 auto;
-  padding: 20px; /* Ajuste si besoin */
+  padding: 20px;
 }
 </style>

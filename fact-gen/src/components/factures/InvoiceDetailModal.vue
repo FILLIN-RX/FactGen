@@ -67,22 +67,34 @@
         >
           <div class="truncate">{{ product.nom }}</div>
           <div class="text-center">{{ product.quantite }}</div>
-          <div class="text-center">{{ product.prix }} €</div>
+          <div class="text-center">{{ formatPrice(product.prix) }} €</div>
           <div class="text-right">
-            {{ formatPrice(product.quantite * product.prix) }} €
+            {{ formatPrice(calculateProductTotal(product)) }} €
           </div>
         </div>
       </div>
 
       <!-- Totals -->
-      <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
-        <p><strong>Total HT :</strong> {{ totalHt.toFixed(2) }} €</p>
-        <p v-if="invoice.reduction" class="text-red-500">
-          <strong>Réduction :</strong> -{{ invoice.reduction.valeur }} {{ invoice.reduction.type }} €
-        </p>
-        <p class="col-span-2 font-bold text-lg">
-          Total TTC : {{ invoice.montant_total }} €
-        </p>
+      <div class="text-right text-gray-800 mb-4 space-y-2">
+        <div class="flex justify-between">
+          <span>Sous-total HT :</span>
+          <span>{{ formatPrice(sousTotal) }} €</span>
+        </div>
+        
+        <div v-if="invoice.reduction" class="flex justify-between text-red-500">
+          <span>Réduction :</span>
+          <span>-{{ formatReduction() }}</span>
+        </div>
+        
+        <div class="flex justify-between">
+          <span><strong>Total HT :</strong></span>
+          <span><strong>{{ formatPrice(totalHt) }} €</strong></span>
+        </div>
+        
+        <div class="flex justify-between font-bold text-lg border-t pt-2">
+          <span>Total TTC :</span>
+          <span>{{ formatPrice(invoice.montant_total) }} €</span>
+        </div>
       </div>
 
       <!-- Additional Info -->
@@ -112,39 +124,69 @@
 </template>
 
 <script setup>
-import Facture from '../../models/facture';
-
-//import { formatDate, formatPrice } from '@/utils/formatters';
+import { computed } from 'vue'
 
 const props = defineProps({
   invoice: Object,
   logoDataUrl: String,
   isDownloading: Boolean,
 });
+
 defineEmits(["close", "download", "delete"]);
+
 function formatDate(date) {
   if (!date) return "";
   return new Date(date).toLocaleDateString();
 }
 
 function formatPrice(val) {
-  if (typeof val !== "number") return "";
+  if (typeof val !== "number" || isNaN(val)) return "0.00";
   return val.toFixed(2);
 }
 
-const totalTTc = props.invoice.montant_total;
-let totalHt = totalTTc;
-
-if (props.invoice.reduction) {
-  if (props.invoice.reduction.type === 'montant') {
-    totalHt = totalTTc + props.invoice.reduction.valeur;
-  } else if (props.invoice.reduction.type === 'pourcentage') {
-    totalHt = totalTTc /(1 - props.invoice.reduction.valeur / 100);
-  }
+function calculateProductTotal(product) {
+  const quantite = parseFloat(product.quantite) || 0;
+  const prix = parseFloat(product.prix) || 0;
+  return quantite * prix;
 }
 
+// Calcul du sous-total des produits
+const sousTotal = computed(() => {
+  if (!props.invoice?.produits) return 0;
+  return props.invoice.produits.reduce((total, product) => {
+    return total + calculateProductTotal(product);
+  }, 0);
+});
 
+// Calcul du montant de la réduction
+const montantReduction = computed(() => {
+  if (!props.invoice?.reduction) return 0;
+  
+  const reduction = props.invoice.reduction;
+  if (reduction.type === 'montant') {
+    return parseFloat(reduction.valeur) || 0;
+  } else if (reduction.type === 'pourcentage') {
+    const pourcentage = parseFloat(reduction.valeur) || 0;
+    return sousTotal.value * (pourcentage / 100);
+  }
+  return 0;
+});
 
+// Calcul du total HT (après réduction)
+const totalHt = computed(() => {
+  return sousTotal.value - montantReduction.value;
+});
 
-
+// Formatage de l'affichage de la réduction
+function formatReduction() {
+  if (!props.invoice?.reduction) return "";
+  
+  const reduction = props.invoice.reduction;
+  if (reduction.type === 'montant') {
+    return `${formatPrice(reduction.valeur)} €`;
+  } else if (reduction.type === 'pourcentage') {
+    return `${reduction.valeur}% (${formatPrice(montantReduction.value)} €)`;
+  }
+  return "";
+}
 </script>
