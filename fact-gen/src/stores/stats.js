@@ -39,10 +39,13 @@ export const useStatsStore = defineStore("stats", {
 
   actions: {
     async chargerStatistiques(forceRefresh = false) {
+      console.log("🚀 Début chargement statistiques, forceRefresh:", forceRefresh);
+      
       // Éviter les rechargements inutiles
       if (!forceRefresh && this.lastUpdated) {
         const unMinute = 60 * 1000;
         if (Date.now() - this.lastUpdated < unMinute) {
+          console.log("⏭️ Cache encore valide, skip");
           return;
         }
       }
@@ -51,50 +54,62 @@ export const useStatsStore = defineStore("stats", {
       this.error = null;
 
       try {
-      
+        console.log("📡 Envoi des requêtes API...");
 
         const [statsRes, revenusRes] = await Promise.all([
           API.get("/statistiques"),
           API.get("/statistiques/revenusmois"),
         ]);
 
+        console.log("📊 Réponse statistiques:", statsRes.data);
+        console.log("💰 Réponse revenus:", revenusRes.data);
+
         this.mettreAJourStatistiquesGlobales(statsRes.data);
         this.traiterRevenusParMois(revenusRes.data.revenusParMois || []);
         this.lastUpdated = Date.now();
+        
+        console.log("✅ Statistiques mises à jour avec succès");
+        console.log("📈 État final:", {
+          totalClients: this.totalClients,
+          totalFactures: this.totalFactures,
+          totalRevenu: this.totalRevenu,
+          totalReductions: this.totalReductions
+        });
+
       } catch (err) {
+        console.error("❌ Erreur lors du chargement:", err);
+        console.error("📄 Détails erreur:", {
+          message: err.message,
+          response: err.response?.data,
+          status: err.response?.status,
+          config: err.config
+        });
         this.gererErreur(err);
       } finally {
         this.isLoading = false;
+        console.log("🏁 Fin chargement statistiques");
       }
     },
 
     mettreAJourStatistiquesGlobales(data) {
+      console.log("🔄 Mise à jour données globales:", data);
       this.totalClients = data.totalClients ?? 0;
       this.totalFactures = data.totalFactures ?? 0;
       this.totalRevenu = data.totalRevenu ?? 0;
       this.totalReductions = data.totalReductions ?? 0;
       this.lastUpdated = data.lastUpdated;
-
     },
 
     traiterRevenusParMois(revenusData) {
+      console.log("📅 Traitement revenus par mois:", revenusData);
+      
       const moisLabels = [
-        "janvier",
-        "février",
-        "mars",
-        "avril",
-        "mai",
-        "juin",
-        "juillet",
-        "août",
-        "septembre",
-        "octobre",
-        "novembre",
-        "décembre",
+        "janvier", "février", "mars", "avril", "mai", "juin",
+        "juillet", "août", "septembre", "octobre", "novembre", "décembre",
       ];
 
       if (!Array.isArray(revenusData)) {
-        console.warn("Données de revenus invalides:", revenusData);
+        console.warn("⚠️ Données de revenus invalides:", revenusData);
         return;
       }
 
@@ -120,18 +135,24 @@ export const useStatsStore = defineStore("stats", {
         const iB = moisLabels.indexOf(mb);
         return parseInt(ya) - parseInt(yb) || iA - iB;
       });
-      console.log("📊 Données de revenus reçues :", revenusData);
+
       this.mois = sortedEntries.map(([label]) => label);
       this.revenusParMois = sortedEntries.map(([, revenu]) => revenu);
+      
+      console.log("📈 Revenus traités:", {
+        mois: this.mois,
+        revenues: this.revenusParMois
+      });
     },
 
     gererErreur(error) {
-      console.error("Erreur lors du chargement des statistiques:", error);
-      this.error =
-        error.response?.data?.error || error.message || "Erreur inconnue";
+      const errorMessage = error.response?.data?.error || error.message || "Erreur inconnue";
+      console.error("🚨 Erreur gérée:", errorMessage);
+      this.error = errorMessage;
     },
 
     reinitialiser() {
+      console.log("🔄 Réinitialisation du store stats");
       this.totalClients = 0;
       this.totalFactures = 0;
       this.totalRevenu = 0;
