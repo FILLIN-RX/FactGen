@@ -77,6 +77,8 @@ import { onMounted } from 'vue';
 import { useClientsStore } from '../stores/client';
 import ClientFormModal from '../components/client/ClientFormModal .vue';
 import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 const clientStore = useClientsStore();
 
@@ -88,13 +90,16 @@ const handleSubmit = async () => {
     await clientStore.addClient();
     // Fermer le modal si succès
     emit('update:open', false);
+    toast.success("clients enregistrée avec succès !");
+
   } catch (error) {
     // Affichez un message d'erreur spécifique
     if (error.message.includes("session")) {
       alert("Votre session a expiré, veuillez vous reconnecter");
       router.push('/login');
     } else {
-      alert(`Erreur: ${error.message}`);
+      toast.error("Erreur lors de la création du client");
+
     }
   }
 };

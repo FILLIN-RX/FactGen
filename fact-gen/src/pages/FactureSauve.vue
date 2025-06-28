@@ -148,7 +148,8 @@ import InvoiceListItem from "../components/factures/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/factures/InvoiceDetailModal.vue";
 import { telechargerPDF } from "@/services/api";
 import FactureTemp from "../components/FactureTemp.vue";
-
+import { useToast } from "vue-toastification";
+const toast = useToast();
 // Variables réactives
 const searchTerm = ref("");
 const selectedClient = ref("");
@@ -209,8 +210,9 @@ async function supprimerFacture() {
     await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
     showDeleteConfirm.value = false;
     invoiceStore.clearSelection();
+    toast.success("Facture supprimer avec succès !");
   } catch (error) {
-    console.error("Erreur lors de la suppression:", error);
+   toast.error("Erreur lors de la suppression de la facture");
   }
 }
 
@@ -219,8 +221,10 @@ const telecharger = async () => {
   try {
     isDownloading.value = true;
     await telechargerPDF(invoiceStore.selectedInvoice.id);
+    toast.success("Facture telecharger avec succès !");
   } catch (error) {
     console.error("Erreur lors du téléchargement PDF :", error.message);
+    toast.error("Facture pas telecharger!");
     // Vous pourriez ajouter une notification d'erreur ici
   } finally {
     isDownloading.value = false;

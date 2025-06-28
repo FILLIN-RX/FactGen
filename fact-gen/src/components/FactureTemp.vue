@@ -285,6 +285,7 @@
 
 <script>
 // Dans <script> de ton composant
+import { useToast } from "vue-toastification";
 import Facture from "../models/facture";
 import societer from "../models/societer";
 import Produit from "../models/produit";
@@ -308,6 +309,7 @@ export default {
       ),
       date_emission: new Date().toISOString().substring(0, 10),
       date_echeance: "",
+      
     };
   },
   computed: {
@@ -339,25 +341,27 @@ export default {
       this.produits.splice(index, 1);
     },
 async sauvegarderFacture() {
-      const invoiceStore = useFacturesStore(); // ici ou dans `setup()`
+  const invoiceStore = useFacturesStore();
+  const toast = useToast(); // ✅ ajouter ici
 
-      try {
-        await invoiceStore.creerFactureComplete({
-          client: this.client,
-          societer: this.societer,
-          produits: this.produits,
-          reduction: this.utiliseReduction === "oui" ? this.reduction : null,
-          suplement: this.suplement,
-          date_emission: this.date_emission,
-          date_echeance: this.date_echeance,
-        });
+  try {
+    await invoiceStore.creerFactureComplete({
+      client: this.client,
+      societer: this.societer,
+      produits: this.produits,
+      reduction: this.utiliseReduction === "oui" ? this.reduction : null,
+      suplement: this.suplement,
+      date_emission: this.date_emission,
+      date_echeance: this.date_echeance,
+    });
 
-        alert("✅ Facture enregistrée avec succès !");
-      } catch (error) {
-        console.error("❌ Erreur :", error);
-        alert("Erreur lors de la sauvegarde : " + error.message);
-      }
-},
+    toast.success("Facture créée !");
+  } catch (error) {
+    console.error("❌ Erreur :", error);
+    toast.error("Erreur lors de la création de la facture");
+  }
+}
+,
 
     previewLogo(event) {
       const file = event.target.files[0];

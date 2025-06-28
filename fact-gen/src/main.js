@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { supabase } from "./lib/supabase";
+import Toast, { POSITION } from "vue-toastification";
 import "./style.css";
 import { Icon } from "@iconify/vue";
 
@@ -14,7 +15,10 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 app.component("Icon", Icon);
-
+app.use(Toast, {
+  position: POSITION.TOP_RIGHT,
+  timeout: 3000,
+});
 // 💡 Initialisation du store AVANT le mount
 const authStore = useAuthStore();
 
