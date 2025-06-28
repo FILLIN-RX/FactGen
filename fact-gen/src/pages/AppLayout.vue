@@ -4,9 +4,9 @@
     <div class="w-64  text-white">
       <LoginNav />
     </div>
-
+   
     <!-- Contenu principal -->
-    <div class="flex flex-col flex-1 pr-20">
+    <div  class="flex flex-col flex-1 pr-20">
       <!-- Header -->
       <div class="sticky top-0 z-10 ">
         <HaeDer />

@@ -17,8 +17,13 @@ export const useStatsStore = defineStore("stats", {
 
   getters: {
     moyenneRevenuParMois: (state) => {
-      const total = state.revenusParMois.reduce((sum, revenu) => sum + revenu, 0);
-      return state.revenusParMois.length > 0 ? total / state.revenusParMois.length : 0;
+      const total = state.revenusParMois.reduce(
+        (sum, revenu) => sum + revenu,
+        0
+      );
+      return state.revenusParMois.length > 0
+        ? total / state.revenusParMois.length
+        : 0;
     },
 
     moisLePlusRentable: (state) => {
@@ -46,23 +51,16 @@ export const useStatsStore = defineStore("stats", {
       this.error = null;
 
       try {
-        const authStore = useAuthStore();
-        if (!authStore.isAuthenticated) {
-          await authStore.initialize();
-          if (!authStore.isAuthenticated) {
-            throw new Error("Utilisateur non authentifié");
-          }
-        }
+      
 
         const [statsRes, revenusRes] = await Promise.all([
           API.get("/statistiques"),
-          API.get("/statistiques/revenusmois")
+          API.get("/statistiques/revenusmois"),
         ]);
 
         this.mettreAJourStatistiquesGlobales(statsRes.data);
         this.traiterRevenusParMois(revenusRes.data.revenusParMois || []);
         this.lastUpdated = Date.now();
-
       } catch (err) {
         this.gererErreur(err);
       } finally {
@@ -75,12 +73,24 @@ export const useStatsStore = defineStore("stats", {
       this.totalFactures = data.totalFactures ?? 0;
       this.totalRevenu = data.totalRevenu ?? 0;
       this.totalReductions = data.totalReductions ?? 0;
+      this.lastUpdated = data.lastUpdated;
+
     },
 
     traiterRevenusParMois(revenusData) {
       const moisLabels = [
-        "janvier", "février", "mars", "avril", "mai", "juin",
-        "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre",
       ];
 
       if (!Array.isArray(revenusData)) {
@@ -89,13 +99,13 @@ export const useStatsStore = defineStore("stats", {
       }
 
       const revenusMap = new Map();
-      
-      revenusData.forEach(item => {
-        if (!item.mois || typeof item.total_revenu === 'undefined') return;
-        
+
+      revenusData.forEach((item) => {
+        if (!item.mois || typeof item.total_revenu === "undefined") return;
+
         const [year, month] = item.mois.split("-");
         const moisIndex = parseInt(month, 10) - 1;
-        
+
         if (moisIndex >= 0 && moisIndex < 12) {
           const label = `${moisLabels[moisIndex]} ${year}`;
           revenusMap.set(label, item.total_revenu || 0);
@@ -110,14 +120,15 @@ export const useStatsStore = defineStore("stats", {
         const iB = moisLabels.indexOf(mb);
         return parseInt(ya) - parseInt(yb) || iA - iB;
       });
-       console.log("📊 Données de revenus reçues :", revenusData);
+      console.log("📊 Données de revenus reçues :", revenusData);
       this.mois = sortedEntries.map(([label]) => label);
       this.revenusParMois = sortedEntries.map(([, revenu]) => revenu);
     },
 
     gererErreur(error) {
       console.error("Erreur lors du chargement des statistiques:", error);
-      this.error = error.response?.data?.error || error.message || "Erreur inconnue";
+      this.error =
+        error.response?.data?.error || error.message || "Erreur inconnue";
     },
 
     reinitialiser() {

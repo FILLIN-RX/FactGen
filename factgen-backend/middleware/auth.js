@@ -51,8 +51,15 @@ export async function authenticateUser(req, res, next) {
     }
 
     req.user = user;
+    req.userId = user.id; 
     req.supabase = supabase;
+     console.log("✅ Utilisateur connecté :", user);
+     console.log("user_id reçu :", user.id);
+
     next();
+   
+
+
   } catch (err) {
     console.error("Erreur fatale dans authenticateUser:", err);
     return res.status(503).json({

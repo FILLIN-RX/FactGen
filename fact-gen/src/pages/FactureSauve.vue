@@ -125,14 +125,17 @@
           <button
             @click="showDeleteConfirm = false"
             class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+            :disabled="isDeleting"
           >
             Annuler
           </button>
           <button
             @click="supprimerFacture"
-            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            :disabled="isDeleting"
           >
-            Supprimer
+            <div v-if="isDeleting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            {{ isDeleting ? 'Suppression...' : 'Supprimer' }}
           </button>
         </div>
       </div>
@@ -142,14 +145,16 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import axios from "axios";
 import { useFacturesStore } from "../stores/Facture";
 import InvoiceListItem from "../components/factures/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/factures/InvoiceDetailModal.vue";
 import { telechargerPDF } from "@/services/api";
 import FactureTemp from "../components/FactureTemp.vue";
 import { useToast } from "vue-toastification";
+import { useAppStore } from "../stores/app";
+
 const toast = useToast();
+
 // Variables réactives
 const searchTerm = ref("");
 const selectedClient = ref("");
@@ -158,11 +163,15 @@ const clients = ref([]);
 const open = ref(false);
 const isDownloading = ref(false);
 const showDeleteConfirm = ref(false);
+const isDeleting = ref(false); // ✅ Variable spécifique pour la suppression
 
+// Stores
 const invoiceStore = useFacturesStore();
+const appStore = useAppStore();
 
 // Montage du composant
 onMounted(async () => {
+  appStore.setLoading(true); // ✅ Loader global pour le chargement initial
   try {
     await invoiceStore.chargerFactures();
     
@@ -175,6 +184,9 @@ onMounted(async () => {
     clients.value = Array.from(uniqueClients).sort();
   } catch (error) {
     console.error("Erreur lors du chargement des factures:", error);
+    toast.error("Erreur lors du chargement des factures");
+  } finally {
+    appStore.setLoading(false);
   }
 });
 
@@ -197,7 +209,7 @@ function clearFilters() {
 function onFactureCreated() {
   open.value = false;
   // Recharger les factures après création
-  invoiceStore.charger();
+  invoiceStore.chargerFactures();
 }
 
 // Gestion de la suppression
@@ -207,12 +219,16 @@ function confirmerSuppression() {
 
 async function supprimerFacture() {
   try {
+    isDeleting.value = true; // ✅ Loader local pour la suppression
     await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
     showDeleteConfirm.value = false;
     invoiceStore.clearSelection();
-    toast.success("Facture supprimer avec succès !");
+    toast.success("Facture supprimée avec succès !");
   } catch (error) {
-   toast.error("Erreur lors de la suppression de la facture");
+    console.error("Erreur lors de la suppression:", error);
+    toast.error("Erreur lors de la suppression de la facture");
+  } finally {
+    isDeleting.value = false;
   }
 }
 
@@ -221,11 +237,10 @@ const telecharger = async () => {
   try {
     isDownloading.value = true;
     await telechargerPDF(invoiceStore.selectedInvoice.id);
-    toast.success("Facture telecharger avec succès !");
+    toast.success("Facture téléchargée avec succès !");
   } catch (error) {
     console.error("Erreur lors du téléchargement PDF :", error.message);
-    toast.error("Facture pas telecharger!");
-    // Vous pourriez ajouter une notification d'erreur ici
+    toast.error("Erreur lors du téléchargement de la facture");
   } finally {
     isDownloading.value = false;
   }

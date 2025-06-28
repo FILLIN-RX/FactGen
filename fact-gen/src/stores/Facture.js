@@ -139,9 +139,7 @@ export const useFacturesStore = defineStore("factures", {
       const facture = this.factures[idx];
       if (!facture) return;
 
-      if (!confirm("Êtes-vous sûr de vouloir supprimer cette facture ?")) {
-        return;
-      }
+    
 
       this.loading = true;
       this.error = null;

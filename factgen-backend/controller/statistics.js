@@ -4,7 +4,7 @@ import { getRevenusParMois } from "../service/totalMois.js";
 
 export const getStatistiques = async (req, res) => {
   try {
-    const user_id = req.user?.id;
+    const user_id = req.userId;
     if (!user_id) throw new Error("Utilisateur non authentifié");
 
     // 🔧 CORRECTION: Déclaration correcte des variables d'erreur
@@ -39,6 +39,7 @@ export const getStatistiques = async (req, res) => {
       totalFactures: factures.length,
       totalRevenu,
       totalReductions,
+      lastUpdated: new Date().toISOString(),
     });
   } catch (err) {
     console.error("Erreur stats :", err.message);

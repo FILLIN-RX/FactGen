@@ -1,24 +1,35 @@
 <template>
-  <div class="loader"></div>
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="flex flex-col items-center">
+      <!-- Spinner -->
+      <div class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+      
+      <!-- Message optionnel -->
+      <div class="text-white text-sm font-medium">
+        {{ message || 'Chargement...' }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-// Pas besoin de script pour un loader simple
+// Props optionnelles pour personnaliser le loader
+defineProps({
+  message: {
+    type: String,
+    default: 'Chargement...'
+  }
+});
 </script>
 
 <style scoped>
-.loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  margin: auto;
-}
-
+/* Animation personnalisée si nécessaire */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 </style>

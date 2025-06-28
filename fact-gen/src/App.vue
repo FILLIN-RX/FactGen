@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Loading v-if="isLoading" />
-    <div v-else>
+   
+    <div>
       <NavBar v-if="!isLayoutProtege && $route.meta.showNavbarAndFooter !== false" />
 
       <div class="">
@@ -15,44 +15,27 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import NavBar from "./components/NavBar.vue";
 import FooTer from "./components/FooTer.vue";
 import HomePage from "../src/pages/HomePage.vue";
-import Loading from "./components/LoadinApp.vue";
-import { useAuthStore } from '@/stores/auth'
-export default {
-  
+import LoadinApp from "./components/LoadinApp.vue";
+import { useAuthStore } from '@/stores/auth';
 
 
+const route = useRoute();
 
-  components: {
-    NavBar,
-    HomePage,
-    Loading,
-    FooTer,
-    
-  },
-  data() {
-    return {
-      isLoading: false, // On démarre sur loading actif
-      
-    };
-  },
 
-  computed: {
-    isLayoutProtege() {
-      // AppLayout sera utilisé uniquement sur les routes enfants protégées
-      return this.$route.matched.some(
-        (r) => r.components?.default?.name === "AppLayout"
-      );
-    },
-  },
-};
+const isLayoutProtege = computed(() => {
+  return route.matched.some(
+    (r) => r.components?.default?.name === "AppLayout"
+  );
+});
 </script>
 
 <style>
-
-
 /* Styles généraux */
 </style>
+

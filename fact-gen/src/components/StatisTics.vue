@@ -4,6 +4,7 @@ import { onMounted } from 'vue'
 import { useClientsStore } from '../stores/client'
 import { useFacturesStore } from '../stores/Facture'
 import { useStatsStore } from '../stores/stats'
+import { useAuthStore } from '../stores/auth'
 
 const clientsStore = useClientsStore()
 const facturesStore = useFacturesStore()
@@ -27,6 +28,9 @@ onMounted(async () => {
 
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:px-40 gap-4">
+<p class="text-sm text-gray-500">
+  Dernière mise à jour : {{ new Date(statsStore.lastUpdated).toLocaleString() }}
+</p>
 
     <div class="bg-white border rounded-xl p-6 shadow text-center">
       <p class="text-gray-500">Nombre de clients</p>
