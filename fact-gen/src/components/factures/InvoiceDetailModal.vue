@@ -9,9 +9,18 @@
     >
       <!-- Header -->
       <div class="flex justify-between items-start mb-6">
-        <div>
-          <h2 class="text-2xl font-bold">Facture: {{ invoice.id }}</h2>
-          <p class="text-sm text-gray-500">{{ formatDate(invoice.date) }}</p>
+        <div class="grid grid-cols-4">
+          <h2 class="text-2xl font-bold col-span-3">
+            Facture: {{ invoice.id }}
+          </h2>
+          <div>
+            <p class="text-xl text-gray-600 justify-center">
+              Fait le:{{ formatDate(invoice.date_emission) }}
+            </p>
+            <p class="text-red-500 text-xl">
+              A payer avant le:{{ formatDate(invoice.date_echeance) }}
+            </p>
+          </div>
         </div>
         <button
           @click="$emit('close')"
@@ -80,17 +89,19 @@
           <span>Sous-total HT :</span>
           <span>{{ formatPrice(sousTotal) }} €</span>
         </div>
-        
+
         <div v-if="invoice.reduction" class="flex justify-between text-red-500">
           <span>Réduction :</span>
           <span>-{{ formatReduction() }}</span>
         </div>
-        
+
         <div class="flex justify-between">
           <span><strong>Total HT :</strong></span>
-          <span><strong>{{ formatPrice(totalHt) }} €</strong></span>
+          <span
+            ><strong>{{ formatPrice(totalHt) }} €</strong></span
+          >
         </div>
-        
+
         <div class="flex justify-between font-bold text-lg border-t pt-2">
           <span>Total TTC :</span>
           <span>{{ formatPrice(invoice.montant_total) }} €</span>
@@ -124,7 +135,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed } from "vue";
 
 const props = defineProps({
   invoice: Object,
@@ -161,11 +172,11 @@ const sousTotal = computed(() => {
 // Calcul du montant de la réduction
 const montantReduction = computed(() => {
   if (!props.invoice?.reduction) return 0;
-  
+
   const reduction = props.invoice.reduction;
-  if (reduction.type === 'montant') {
+  if (reduction.type === "montant") {
     return parseFloat(reduction.valeur) || 0;
-  } else if (reduction.type === 'pourcentage') {
+  } else if (reduction.type === "pourcentage") {
     const pourcentage = parseFloat(reduction.valeur) || 0;
     return sousTotal.value * (pourcentage / 100);
   }
@@ -180,11 +191,11 @@ const totalHt = computed(() => {
 // Formatage de l'affichage de la réduction
 function formatReduction() {
   if (!props.invoice?.reduction) return "";
-  
+
   const reduction = props.invoice.reduction;
-  if (reduction.type === 'montant') {
+  if (reduction.type === "montant") {
     return `${formatPrice(reduction.valeur)} €`;
-  } else if (reduction.type === 'pourcentage') {
+  } else if (reduction.type === "pourcentage") {
     return `${reduction.valeur}% (${formatPrice(montantReduction.value)} €)`;
   }
   return "";
