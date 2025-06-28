@@ -81,7 +81,7 @@ import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 const clientStore = useClientsStore();
 
 onMounted(() => {
-  clientStore.charger();
+  clientStore.chargerClients();
 })
 const handleSubmit = async () => {
   try {

@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import  API  from "../api/axios";
+import Facture from "../models/facture";
 import { useAuthStore } from "./auth";
+import { creerFacture, deleteFactures,getFacturesParClient } from "../services/api";
 
 export const useFacturesStore = defineStore("factures", {
   state: () => ({
@@ -46,8 +48,8 @@ export const useFacturesStore = defineStore("factures", {
           throw new Error("Utilisateur non authentifié");
         }
 
-        const factures = await 
-    API.lister();
+        const factures = await  getFacturesParClient() 
+
         this.factures = factures || [];
       } catch (error) {
         this.error = error.message;
@@ -57,27 +59,73 @@ export const useFacturesStore = defineStore("factures", {
       }
     },
 
-    async ajouterFacture(factureData) {
+   async creerFactureComplete({
+      client,
+      societer,
+      produits,
+      reduction,
+      suplement,
+      date_emission,
+      date_echeance,
+    }) {
       this.loading = true;
       this.error = null;
-      
+
       try {
         const authStore = useAuthStore();
         if (!authStore.isAuthenticated) {
           throw new Error("Utilisateur non authentifié");
         }
 
-        const nouvelleFacture = await 
-    API.creer({
-          ...factureData,
+        // ➕ Création de la facture temporaire (calcul total etc.)
+        const facture = new Facture(
+          societer,
+          client,
+          produits,
+          reduction,
+          suplement,
+          null,
+          date_emission,
+          date_echeance
+        );
+
+        facture.validate();
+
+        // 🔁 Upsert client
+        const clientData = {
+          nom: client.nom,
+          email: client.email,
+          address: client.address,
+        };
+
+        if (!clientData.nom || !clientData.email || !clientData.address) {
+          throw new Error("Le client doit avoir un nom, un email et une adresse valide.");
+        }
+
+        const clientUpserted = await upsertClient(clientData);
+
+        // 🧾 Préparation des données à envoyer
+        const factureData = {
+          client_id: clientUpserted.id,
+          client_data: client,
+          societer,
+          produits,
+          reduction,
+          suplement,
+          montant_total: facture.totalTTC,
+          created_at: new Date().toISOString(),
+          date_emission,
+          date_echeance,
           user_id: authStore.userId,
-        });
-        
+        };
+
+        const nouvelleFacture = await creerFacture(factureData);
         this.factures.push(nouvelleFacture);
+
         return nouvelleFacture;
       } catch (error) {
         this.error = error.message;
-        console.error("Erreur lors de l'ajout de la facture:", error);
+        console.error("❌ Erreur création facture :", error);
         throw error;
       } finally {
         this.loading = false;
@@ -99,8 +147,7 @@ export const useFacturesStore = defineStore("factures", {
       this.error = null;
       
       try {
-        await 
-    API.supprimer(facture.id);
+        await deleteFactures(facture.id);
         this.factures.splice(idx, 1);
         this.clearSelection();
       } catch (error) {
@@ -133,7 +180,6 @@ export const useFacturesStore = defineStore("factures", {
         this.loading = false;
       }
     },
-
     selectionnerFacture(facture, index) {
       this.selectedFacture = facture;
       this.selectedIndex = index;
@@ -144,4 +190,10 @@ export const useFacturesStore = defineStore("factures", {
       this.selectedIndex = null;
     },
   },
+  getters: {
+  hasInvoices(state) {
+    return state.factures && state.factures.length > 0;
+  }
+}
+
 });

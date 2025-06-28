@@ -4,7 +4,7 @@ import { onMounted } from 'vue'
 const auth = useAuthStore()
 
 onMounted(() => {
-  auth.getCurrentUser()
+  auth.initialize()
 })
 const today = new Date().toLocaleDateString('en-US', {
   weekday: 'long',

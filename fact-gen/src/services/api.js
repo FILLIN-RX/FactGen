@@ -34,6 +34,7 @@ export async function creerFacture(factureData) {
 // ✅ Factures : récupérer celles de l’utilisateur
 export async function getFacturesParClient() {
   const { data } = await API.get("/factures");
+  console.log("🔍 Données reçues depuis /factures:", data); // ← ← ← ICI
   return data;
 }
 

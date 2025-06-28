@@ -125,7 +125,8 @@
             class="w-full lg:w-1/4 border-2 border-orange-100 rounded-xl p-2"
           />
           <div class="text-blue-800 font-semibold lg:w-auto">
-            {{ (p.prix * p.quantite).toFixed(2) }} €
+            <p class="text-right">{{ (Number(p.prix) * Number(p.quantite)).toFixed(2) }} €</p>
+
           </div>
           <button
             @click="supprimerLigne(index)"
@@ -254,8 +255,8 @@
           </div>
 
           <div class="text-center">{{ p.quantite }}</div>
-          <div class="text-center">{{ p.prix.toFixed(2) }} €</div>
-          <div class="text-right">{{ (p.prix * p.quantite).toFixed(2) }} €</div>
+          <div class="text-center">{{ Number(p.prix).toFixed(2) }}  €</div>
+          <div class="text-right">{{ (Number(p.prix) * Number(p.quantite)).toFixed(2) }} €</div>
         </div>
       </div>
 
@@ -287,6 +288,7 @@
 import Facture from "../models/facture";
 import societer from "../models/societer";
 import Produit from "../models/produit";
+import { useFacturesStore } from "../stores/Facture";
 import html2canvas from "html2canvas";
 import { creerFacture, upsertClient } from "../services/api";
 export default {
@@ -312,7 +314,7 @@ export default {
     factureInstance() {
       const reductionActive =
         this.utiliseReduction === "oui" ? this.reduction : null;
-      return new Facture(
+        return new Facture(
         this.societer,
         this.client,
         this.produits,
@@ -336,69 +338,26 @@ export default {
     supprimerLigne(index) {
       this.produits.splice(index, 1);
     },
+async sauvegarderFacture() {
+      const invoiceStore = useFacturesStore(); // ici ou dans `setup()`
 
-    async sauvegarderFacture() {
-      console.log("====================================");
-      console.log(this.client);
-      console.log("====================================");
       try {
-        // 🧾 Étape 1 : création de la facture (en mémoire, sans l'enregistrer)
-        const facture = new Facture(
-          this.societer,
-          this.client,
-          this.produits,
-          this.utiliseReduction === "oui" ? this.reduction : null,
-          this.suplement,
-          null,
-          this.date_emission,
-          this.date_echeance
-        );
-
-        // ✅ Vérification des données de la facture
-        facture.validate();
-        const clientDataForUpsert = {
-          nom: this.client.nom,
-          email: this.client.email,
-          address: this.client.address, // attention au nom ici : "address" et non "adresse"
-        };
-
-        if (
-          !clientDataForUpsert.nom ||
-          !clientDataForUpsert.email ||
-          !clientDataForUpsert.address
-        ) {
-          throw new Error(
-            "Le client doit avoir un nom, un email et une adresse valide."
-          );
-        }
-
-        // 🔁 Étape 2 : upsert du client (envoie au back)
-        const clientUpserted = await upsertClient(clientDataForUpsert);
-        console.log("Client upserté :", clientUpserted);
-
-        // 🧾 Étape 3 : création des données à envoyer pour la facture
-        const factureData = {
-          client_id: clientUpserted.id, // Référence au client
-          client_data: this.client, // Données figées pour l'affichage
+        await invoiceStore.creerFactureComplete({
+          client: this.client,
           societer: this.societer,
-          produits: facture.produits,
-          reduction: facture.reduction,
-          suplement: facture.suplement,
-          montant_total: facture.totalTTC,
-          created_at: new Date().toISOString(),
-          date_echeance:facture.date_echeance,
-          date_emission:facture.date_emission,
-        };
-
-        // 📤 Étape 4 : enregistrement de la facture
-        await creerFacture(factureData);
+          produits: this.produits,
+          reduction: this.utiliseReduction === "oui" ? this.reduction : null,
+          suplement: this.suplement,
+          date_emission: this.date_emission,
+          date_echeance: this.date_echeance,
+        });
 
         alert("✅ Facture enregistrée avec succès !");
       } catch (error) {
-        console.error("Erreur :", error);
-        alert("❌ Erreur lors de la sauvegarde : " + error.message);
+        console.error("❌ Erreur :", error);
+        alert("Erreur lors de la sauvegarde : " + error.message);
       }
-    },
+},
 
     previewLogo(event) {
       const file = event.target.files[0];

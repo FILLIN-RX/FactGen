@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import API  from "../api/axios";
 import { useAuthStore } from "./auth";
-
+import { getClients,creerClient,deleteClient } from "../services/api";
 export const useClientsStore = defineStore("clients", {
   state: () => ({
     clients: [],
@@ -58,7 +58,7 @@ export const useClientsStore = defineStore("clients", {
           throw new Error("Utilisateur non authentifié");
         }
 
-        const clients = await API.lister();
+        const clients = await getClients()
         this.clients = clients || [];
       } catch (error) {
         this.error = error.message;
@@ -83,7 +83,7 @@ export const useClientsStore = defineStore("clients", {
           user_id: authStore.userId,
         };
 
-        const nouveauClient = await API.creer(clientData);
+        const nouveauClient = await creerClient(clientData);
         this.clients.push(nouveauClient);
         this.resetForm();
         
@@ -112,7 +112,7 @@ export const useClientsStore = defineStore("clients", {
       this.error = null;
       
       try {
-        await API.supprimer(client.id);
+        await deleteClient(client.id);
         this.clients.splice(idx, 1);
         this.fermerDetails();
       } catch (error) {
