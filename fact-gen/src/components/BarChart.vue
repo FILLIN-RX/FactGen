@@ -43,7 +43,8 @@ onMounted(async() => {
     console.error("Utilisateur non authentifié");
     return;
   }
-  statsStore.fetchStatistiques().then(() => {
+ statsStore.chargerStatistiques().then(() => {
+
     lineChartKey.value++;
     console.log("Mois:", statsStore.mois);
     console.log("Revenus:", statsStore.revenusParMois);

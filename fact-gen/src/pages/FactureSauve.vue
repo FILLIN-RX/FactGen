@@ -206,7 +206,7 @@ function confirmerSuppression() {
 
 async function supprimerFacture() {
   try {
-    await invoiceStore.deleteInvoice(invoiceStore.selectedIndex);
+    await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
     showDeleteConfirm.value = false;
     invoiceStore.clearSelection();
   } catch (error) {

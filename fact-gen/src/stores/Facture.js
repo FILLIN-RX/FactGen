@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import  API  from "../api/axios";
 import Facture from "../models/facture";
 import { useAuthStore } from "./auth";
-import { creerFacture, deleteFactures,getFacturesParClient } from "../services/api";
+import { creerFacture, deleteFactures,getFacturesParClient ,upsertClient} from "../services/api";
 
 export const useFacturesStore = defineStore("factures", {
   state: () => ({

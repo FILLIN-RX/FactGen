@@ -110,7 +110,7 @@ export const useStatsStore = defineStore("stats", {
         const iB = moisLabels.indexOf(mb);
         return parseInt(ya) - parseInt(yb) || iA - iB;
       });
-
+       console.log("📊 Données de revenus reçues :", revenusData);
       this.mois = sortedEntries.map(([label]) => label);
       this.revenusParMois = sortedEntries.map(([, revenu]) => revenu);
     },

@@ -9,9 +9,20 @@ const clientsStore = useClientsStore()
 const facturesStore = useFacturesStore()
 const statsStore = useStatsStore()
 
-onMounted(() => {
-  statsStore.fetchStatistiques()
-})
+onMounted(async () => {
+  const auth = useAuthStore();
+  await auth.initialize(); // très important
+
+  if (!auth.isAuthenticated) {
+    console.error("Utilisateur non authentifié");
+    return;
+  }
+
+  // Appel des statistiques après authentification
+  await statsStore.chargerStatistiques();
+});
+
+
 </script>
 
 <template>
