@@ -16,6 +16,9 @@ export const useFacturesStore = defineStore("factures", {
   getters: {
     hasFactures: (state) => state.factures.length > 0,
     
+    facturesParClient: (state) => (clientId) =>
+      state.factures.filter((f) => f.client_id === clientId),
+
     factureParId: (state) => (id) => 
       state.factures.find((f) => f.id === id),
     
@@ -35,6 +38,24 @@ export const useFacturesStore = defineStore("factures", {
 
     facturesParStatut: (state) => (statut) =>
       state.factures.filter((f) => f.statut === statut),
+
+    // ✅ CORRECTION : Déplacer statistiquesParClient dans les getters
+    statistiquesParClient: (state) => (clientId) => {
+      const factures = state.factures.filter((f) => f.client_id === clientId);
+      const total = factures.length;
+      const payees = factures.filter(f => f.statut === 'payée' || f.statut === 'payé').length;
+      const en_attente = total - payees;
+
+      return {
+        total,
+        payees,
+        en_attente,
+      };
+    },
+
+    hasInvoices: (state) => {
+      return state.factures && state.factures.length > 0;
+    }
   },
 
   actions: {
@@ -48,8 +69,7 @@ export const useFacturesStore = defineStore("factures", {
           throw new Error("Utilisateur non authentifié");
         }
 
-        const factures = await  getFacturesParClient() 
-
+        const factures = await getFacturesParClient() 
         this.factures = factures || [];
       } catch (error) {
         this.error = error.message;
@@ -59,7 +79,7 @@ export const useFacturesStore = defineStore("factures", {
       }
     },
 
-   async creerFactureComplete({
+    async creerFactureComplete({
       client,
       societer,
       produits,
@@ -139,8 +159,6 @@ export const useFacturesStore = defineStore("factures", {
       const facture = this.factures[idx];
       if (!facture) return;
 
-    
-
       this.loading = true;
       this.error = null;
       
@@ -161,8 +179,7 @@ export const useFacturesStore = defineStore("factures", {
       this.error = null;
       
       try {
-        const factureModifiee = await 
-    API.mettreAJour(id, donnees);
+        const factureModifiee = await API.mettreAJour(id, donnees);
         const index = this.factures.findIndex((f) => f.id === id);
         
         if (index !== -1) {
@@ -178,6 +195,7 @@ export const useFacturesStore = defineStore("factures", {
         this.loading = false;
       }
     },
+
     selectionnerFacture(facture, index) {
       this.selectedFacture = facture;
       this.selectedIndex = index;
@@ -187,11 +205,5 @@ export const useFacturesStore = defineStore("factures", {
       this.selectedFacture = null;
       this.selectedIndex = null;
     },
-  },
-  getters: {
-  hasInvoices(state) {
-    return state.factures && state.factures.length > 0;
   }
-}
-
 });

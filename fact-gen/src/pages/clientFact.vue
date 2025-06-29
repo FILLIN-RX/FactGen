@@ -12,22 +12,27 @@
           @input="clientStore.page = 1"
         />
         <button
-          @click="clientStore.openForm()"
+          @click="clientStore.ouvrirFormulaire()"
           class="bg-blue-600 text-white text-[15px] px-4 py-2 rounded"
         >
           Ajouter un client
         </button>
       </div>
 
+      <!-- Loading State -->
+      <div v-if="clientStore.loading || facturesStore.loading" class="text-center py-4">
+        <LoadinApp />
+      </div>
+
       <!-- Client List -->
-      <div v-if="clientStore.clients.length === 0" class="text-gray-600 py-4">
-        Aucune client sauvegardée pour le moment.
+      <div v-else-if="clientStore.clients.length === 0" class="text-gray-600 py-4">
+        Aucun client sauvegardé pour le moment.
       </div>
       <ul v-else class="mt-4 space-y-4">
         <li
           v-for="(client, index) in clientStore.paginatedClients"
-          :key="index"
-          @click="clientStore.selectClient(client, index)"
+          :key="client.id || index"
+          @click="handleClientSelection(client, index)"
           class="bg-white p-4 rounded-xl shadow hover:bg-gray-100 cursor-pointer transition"
         >
           #{{ client.nom }} - {{ client.telephone }}
@@ -37,7 +42,7 @@
       <!-- Pagination -->
       <div class="flex justify-center items-center space-x-4 mt-6">
         <button
-          @click="clientStore.prevPage()"
+          @click="clientStore.pagePrecedente()"
           :disabled="clientStore.page === 1"
           class="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
         >
@@ -45,7 +50,7 @@
         </button>
         <span>Page {{ clientStore.page }} / {{ clientStore.totalPages }}</span>
         <button
-          @click="clientStore.nextPage()"
+          @click="clientStore.pageSuivante()"
           :disabled="clientStore.page === clientStore.totalPages"
           class="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
         >
@@ -56,51 +61,96 @@
 
     <!-- Client Form Modal -->
     <ClientFormModal 
-      v-model:open="clientStore.isFormOpen"
+      :open="clientStore.isFormOpen"
+      :form="clientStore.clientForm"
       @submit="handleSubmit"
-      v-model:form="clientStore.clientForm"
-      @close="clientStore.closeForm"
+      @close="clientStore.fermerFormulaire"
     />
 
     <!-- Client Details -->
     <ClientDetailsPopup
-      v-model:open="clientStore.isDetailsOpen"
+      :open="clientStore.isDetailsOpen"
       :client="clientStore.selectedClient"
-      @close="clientStore.closeDetails"
-      @delete="clientStore.deleteClient"
+      :stats="statsClient"
+      @close="clientStore.fermerDetails"
+      @delete="handleDelete"
     />
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useClientsStore } from '../stores/client';
 import ClientFormModal from '../components/client/ClientFormModal .vue';
 import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 import { useToast } from "vue-toastification";
+import { useFacturesStore } from '../stores/Facture';
+import LoadinApp from '../components/LoadinApp.vue';
+
 const toast = useToast();
-
+const router = useRouter();
 const clientStore = useClientsStore();
+const facturesStore = useFacturesStore();
 
-onMounted(() => {
-  clientStore.chargerClients();
-})
+// ✅ CORRECTION : Calcul des statistiques avec vérification
+const statsClient = computed(() => {
+  if (!clientStore.selectedClient) {
+    return { total: 0, payees: 0, en_attente: 0 };
+  }
+  
+  // Vérifier que facturesStore.statistiquesParClient est bien une fonction
+  if (typeof facturesStore.statistiquesParClient !== 'function') {
+    console.error('statistiquesParClient n\'est pas une fonction');
+    return { total: 0, payees: 0, en_attente: 0 };
+  }
+  
+  try {
+    return facturesStore.statistiquesParClient(clientStore.selectedClient.id);
+  } catch (error) {
+    console.error('Erreur lors du calcul des statistiques:', error);
+    return { total: 0, payees: 0, en_attente: 0 };
+  }
+});
+
+// ✅ CORRECTION : Gérer la sélection client avec debug
+const handleClientSelection = (client, index) => {
+  console.log('Client sélectionné:', client);
+  console.log('Factures disponibles:', facturesStore.factures);
+  clientStore.selectionnerClient(client, index);
+};
+
+// ✅ CORRECTION : Charger les factures au montage
+onMounted(async () => {
+  try {
+    await clientStore.chargerClients();
+    await facturesStore.chargerFactures(); // Important pour les statistiques
+  } catch (error) {
+    console.error('Erreur lors du chargement initial:', error);
+    toast.error('Erreur lors du chargement des données');
+  }
+});
+
 const handleSubmit = async () => {
   try {
-    await clientStore.addClient();
-    // Fermer le modal si succès
-    emit('update:open', false);
-    toast.success("clients enregistrée avec succès !");
-
+    await clientStore.ajouterClient();
+    toast.success("Client enregistré avec succès !");
   } catch (error) {
-    // Affichez un message d'erreur spécifique
     if (error.message.includes("session")) {
-      alert("Votre session a expiré, veuillez vous reconnecter");
+      toast.error("Votre session a expiré, veuillez vous reconnecter");
       router.push('/login');
     } else {
       toast.error("Erreur lors de la création du client");
-
     }
+  }
+};
+
+const handleDelete = async () => {
+  try {
+    await clientStore.supprimerClient();
+    toast.success("Client supprimé avec succès !");
+  } catch (error) {
+    toast.error("Erreur lors de la suppression du client");
   }
 };
 </script>

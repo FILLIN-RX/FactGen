@@ -28,7 +28,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-600">Adresse</label>
-          <p class="text-gray-800">{{ client?.address || 'N/A' }}</p>
+          <p class="text-gray-800">{{ client?.address || client?.adresse || 'N/A' }}</p>
         </div>
       </div>
 
@@ -37,17 +37,22 @@
         <div class="flex divide-x border rounded-lg">
           <div class="flex-1 p-3 text-center">
             <h5 class="text-gray-400">Nombre de facture</h5>
-            <p class="font-medium">18</p>
+            <p class="font-medium">{{ stats?.total || 0 }}</p>
           </div>
           <div class="flex-1 p-3 text-center text-red-900">
             <h5 class="text-red-400">Factures en attente</h5>
-            <p class="font-medium">8</p>
+            <p class="font-medium">{{ stats?.en_attente || 0 }}</p>
           </div>
           <div class="flex-1 p-3 text-center text-green-900">
             <h5 class="text-green-400">Factures payées</h5>
-            <p class="font-medium">10</p>
+            <p class="font-medium">{{ stats?.payees || 0 }}</p>
           </div>
         </div>
+      </div>
+
+      <!-- Debug info (à supprimer en production) -->
+      <div class="mt-4 p-2 bg-gray-100 rounded text-xs" v-if="true">
+        <strong>Debug:</strong> {{ JSON.stringify(stats, null, 2) }}
       </div>
 
       <!-- Actions -->
@@ -71,7 +76,8 @@
 <script setup>
 defineProps({
   open: Boolean,
-  client: Object
+  client: Object,
+  stats: Object,
 });
 
 defineEmits(['close', 'delete']);

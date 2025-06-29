@@ -5,7 +5,7 @@ import { useClientsStore } from '../stores/client'
 import { useFacturesStore } from '../stores/Facture'
 import { useStatsStore } from '../stores/stats'
 import { useAuthStore } from '../stores/auth'
-
+import LoadinApp from './LoadinApp.vue'
 const clientsStore = useClientsStore()
 const facturesStore = useFacturesStore()
 const statsStore = useStatsStore()
@@ -36,7 +36,7 @@ onMounted(async () => {
     <div class="bg-white border rounded-xl p-6 shadow text-center">
       <p class="text-gray-500">Nombre de clients</p>
 
-      <div v-if="statsStore.isLoading">Chargement des clients...</div>
+      <div v-if="statsStore.isLoading"><LoadinApp/></div>
       <div v-else-if="statsStore.error" class="text-red-600 font-semibold">{{ statsStore.error }}</div>
       <p v-else class="text-3xl font-bold text-blue-600">{{ statsStore.totalClients }}</p>
     </div>
@@ -44,7 +44,7 @@ onMounted(async () => {
     <div class="bg-white border rounded-xl p-6 shadow text-center">
       <p class="text-gray-500">Nombre de factures</p>
 
-      <div v-if="statsStore.isLoading">Chargement des factures...</div>
+      <div v-if="statsStore.isLoading"><LoadinApp/></div>
       <div v-else-if="statsStore.error" class="text-red-600 font-semibold">{{ statsStore.error }}</div>
       <p v-else class="text-3xl font-bold text-green-600">{{ statsStore.totalFactures }}</p>
     </div>
