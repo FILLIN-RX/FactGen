@@ -60,7 +60,8 @@ export const useStatsStore = defineStore("stats", {
           API.get("/statistiques"),
           API.get("/statistiques/revenusmois"),
         ]);
-
+   console.log("Stats reçues :", statsRes.data);
+    console.log("Revenus reçus :", revenusRes.data);
         console.log("📊 Réponse statistiques:", statsRes.data);
         console.log("💰 Réponse revenus:", revenusRes.data);
 
@@ -123,7 +124,9 @@ export const useStatsStore = defineStore("stats", {
 
         if (moisIndex >= 0 && moisIndex < 12) {
           const label = `${moisLabels[moisIndex]} ${year}`;
-          revenusMap.set(label, item.total_revenu || 0);
+         const revenuActuel = revenusMap.get(label) || 0;
+          revenusMap.set(label, revenuActuel + (item.total_revenu || 0));
+
         }
       });
 
@@ -162,5 +165,20 @@ export const useStatsStore = defineStore("stats", {
       this.error = null;
       this.lastUpdated = null;
     },
-  },
+  
+ async chargerRevenusJournaliers() {
+    try {
+      const response = await API.get("/statistiques/revenusjours");
+      const data = response.data.revenusParJour || [];
+
+      this.jours = data.map(item => item.jour);
+      this.revenusParJours = data.map(item => item.total_revenu);
+
+      console.log("Revenus journaliers chargés:", this.jours, this.revenusParJours);
+    } catch (error) {
+      console.error("Erreur chargement revenus journaliers", error);
+      this.error = "Erreur chargement revenus journaliers";
+    }
+  }
+  }
 });

@@ -70,7 +70,7 @@ const metrics = [
 </script>
 
 <template>
-  <div class="card h-full">
+  <div class="card h-full p-5  bg-white mb-5 rounded-2xl">
     <div class="card-title mb-6">Expense Monitoring</div>
     
     <!-- Tabs -->

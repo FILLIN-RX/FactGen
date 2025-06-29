@@ -27,10 +27,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:px-40 gap-4">
-<p class="text-sm text-gray-500">
+  <p class="text-sm text-gray-500">
   Dernière mise à jour : {{ new Date(statsStore.lastUpdated).toLocaleString() }}
 </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:px-40 gap-4">
+
 
     <div class="bg-white border rounded-xl p-6 shadow text-center">
       <p class="text-gray-500">Nombre de clients</p>
