@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 export async function createPDF(req, res) {
   const factureId = req.params.id;
-  const url = `http://localhost:5173/facture/${factureId}/pdf`;
+  const url = `http://localhost:5173/facture/${factureId}`;
 
   try {
     const browser = await puppeteer.launch({

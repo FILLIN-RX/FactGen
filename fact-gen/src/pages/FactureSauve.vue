@@ -236,7 +236,7 @@ async function supprimerFacture() {
 const telecharger = async () => {
   try {
     isDownloading.value = true;
-    await telechargerPDF(invoiceStore.selectedInvoice.id);
+    await telechargerPDF(invoiceStore.selectedFacture.id);
     toast.success("Facture téléchargée avec succès !");
   } catch (error) {
     console.error("Erreur lors du téléchargement PDF :", error.message);
