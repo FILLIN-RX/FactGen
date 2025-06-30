@@ -72,7 +72,7 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { requiresAuth: false, showNavbarAndFooter: true }
+    meta: { requiresAuth: false, showNavbarAndFooter: false }
   }
 ];
 

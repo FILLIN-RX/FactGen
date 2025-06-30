@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 max-w-6xl mx-auto bg-white shadow rounded">
+  <div class="p-6 max-w-8xl mx-auto bg-white shadow rounded">
     <!-- Filtres et recherche -->
     <div class="mb-6 flex gap-4 flex-wrap items-center">
       <input

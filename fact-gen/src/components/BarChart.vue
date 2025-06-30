@@ -203,12 +203,9 @@ const hasDayData = computed(() => {
 <template>
   <div>
     <!-- Activités récentes -->
-    <div class="px-10">
-      <ActiviterRecente />
-    </div>
 
     <!-- Graphiques -->
-    <div class="space-y-6 grid lg:grid-cols-2 gap-5 lg:px-10">
+    <div class="space-y-6 grid  lg:grid-cols-2 gap-5 lg:px-10">
       <!-- 📊 Graphique Barres : par mois -->
       <div class="bg-white rounded-xl border border-blue-100 shadow p-6">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">

@@ -8,7 +8,7 @@ const route = useRoute();
 const router = useRouter();
 
 const menuItems = ref([
-  { id: 1, icon: "menu", label: "Menu", route: "/", active: false },
+ 
   {
     id: 2,
     icon: "dashboard",
@@ -148,25 +148,11 @@ async function navigateToRoute(item: any) {
           >
             <div class="min-w-[40px] h-10 flex items-center justify-center">
               <!-- Menu icon -->
-              <svg
-                v-if="item.icon === 'menu'"
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+             
 
               <!-- Dashboard icon -->
               <svg
-                v-else-if="item.icon === 'dashboard'"
+                v-if="item.icon === 'dashboard'"
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"
                 fill="none"
@@ -252,7 +238,7 @@ async function navigateToRoute(item: any) {
             </div>
 
             <span
-              class="hidden group-hover:block ml-3 text-blue-400 whitespace-nowrap"
+              class=" ml-3 text-blue-400 whitespace-nowrap"
             >
               {{ item.label }}
             </span>
