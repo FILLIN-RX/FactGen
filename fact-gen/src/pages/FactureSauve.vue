@@ -97,6 +97,7 @@
         :key="facture.id"
         :invoice="facture"
         @select="invoiceStore.selectionnerFacture(facture, index)"
+        :societer="fetchEntreprise()"
       />
     </div>
 
@@ -148,7 +149,7 @@ import { ref, onMounted, computed } from "vue";
 import { useFacturesStore } from "../stores/Facture";
 import InvoiceListItem from "../components/factures/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/factures/InvoiceDetailModal.vue";
-import { telechargerPDF } from "@/services/api";
+import { telechargerPDF,getInfoEntreprise } from "@/services/api";
 import FactureTemp from "../components/FactureTemp.vue";
 import { useToast } from "vue-toastification";
 import { useAppStore } from "../stores/app";
@@ -168,12 +169,19 @@ const isDeleting = ref(false); // ✅ Variable spécifique pour la suppression
 // Stores
 const invoiceStore = useFacturesStore();
 const appStore = useAppStore();
-
+async function fetchEntreprise() {
+  try {
+    infoEntreprise.value = await getInfoEntreprise();
+  } catch (error) {
+    console.error("Erreur récupération infos entreprise", error);
+  }
+}
 // Montage du composant
 onMounted(async () => {
   appStore.setLoading(true); // ✅ Loader global pour le chargement initial
   try {
     await invoiceStore.chargerFactures();
+    fetchEntreprise();
     
     // Extraire la liste unique des clients
     const uniqueClients = new Set(

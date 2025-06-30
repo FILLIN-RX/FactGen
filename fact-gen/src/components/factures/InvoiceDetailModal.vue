@@ -136,15 +136,30 @@
 </template>
 
 <script setup>
-import { telechargerPDF } from "../../services/api";
+import { telechargerPDF,getInfoEntreprise } from "../../services/api";
 import { computed, ref } from "vue";
 import { useToast } from "vue-toastification";
+import societer from "../../models/societer";
+
+const infoEntreprise = ref(null);
+
+async function fetchEntreprise() {
+  try {
+    infoEntreprise.value = await getInfoEntreprise();
+  } catch (error) {
+    console.error("Erreur récupération infos entreprise", error);
+  }
+}
+
 const factureHtmlRef = ref(null);
 const toast = useToast();
 const isDownloading = ref(false);
 const getFactureHtml = () => {
   return factureHtmlRef.value ? factureHtmlRef.value.innerHTML : "";
 };
+onMounted(() => {
+  fetchEntreprise();
+});
 const generatePDFTemplate = () => {
   return `
     <!DOCTYPE html>
@@ -437,6 +452,7 @@ const props = defineProps({
   invoice: Object,
   logoDataUrl: String,
   isDownloading: Boolean,
+  societer:Object,
 });
 const downloadPDF = async () => {
   try {

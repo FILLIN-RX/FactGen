@@ -222,4 +222,48 @@ export async function getFactureById(id) {
   const { data } = await API.get(`/factures/${id}`);
   return data;
 }
+// ... votre code existant ...
+
+// 🆕 Entreprise : Récupérer les informations de l'entreprise
+export async function getInfoEntreprise() {
+  try {
+    const { data } = await API.get("/info");
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des infos entreprise:", error);
+    throw error;
+  }
+}
+
+// 🆕 Entreprise : Créer ou mettre à jour les informations de l'entreprise
+export async function sauvegarderInfoEntreprise(infoData) {
+  try {
+    const { data } = await API.post("/info", infoData);
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la sauvegarde des infos entreprise:", error);
+    throw error;
+  }
+}
+
+// 🆕 Entreprise : Mettre à jour les informations de l'entreprise par ID
+export async function mettreAJourInfoEntreprise(id, infoData) {
+  try {
+    const { data } = await API.put(`/info/${id}`, infoData);
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour des infos entreprise:", error);
+    throw error;
+  }
+}
+
+// 🆕 Utilitaire : Convertir un fichier en base64
+export function convertirFichierEnBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
 

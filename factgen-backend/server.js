@@ -8,11 +8,13 @@ import dotenv from "dotenv";
 import pdfRoute from "./routes/pythonpdfRoute.js"
 import pdfRoutes from "./routes/pdf.js";
 import logger from './middleware/logger.js';
-
+import infoRoute from './routes/info.js'
 dotenv.config();
 
 const app = express();
-
+// ...existing code...
+app.use(express.json({ limit: '5mb' })); // ← augmente la limite à 5 Mo
+// ...existing code...
 // Middleware global pour injecter supabase
 app.use((req, res, next) => {
   req.supabase = supabase;
@@ -63,6 +65,7 @@ app.use("/api/factures", factureRoutes);
 app.use("/api/statistiques", statisticRoutes);
 app.use("/api/pdf1", pdfRoutes);
 app.use("/api/pdf",pdfRoute)
+app.use("/api/info",infoRoute)
 // Middleware 404
 app.use((req, res, next) => {
   res.status(404).json({ error: "Route non trouvée" });
