@@ -10,7 +10,7 @@ import RealLayout from '../pages/RealLayout.vue';
 import SignUp from '../pages/SignUp.vue';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/auth'
-
+import SettingPage from '../pages/SettingPage.vue';
 const session = supabase.auth.getSession();
 console.log(session);
 
@@ -54,6 +54,12 @@ const routes = [
         meta: { requiresAuth: true },
       
       },
+      {
+        path: '/setting',
+        name:'setting',
+        component:SettingPage,
+        meta:{requiresAuth:true}
+      }
       
     ]
     },
