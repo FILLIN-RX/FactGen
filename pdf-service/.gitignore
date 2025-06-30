@@ -1,0 +1,22 @@
+# Environnement virtuel
+venv/
+.venv/
+
+# Fichiers de cache Python
+__pycache__/
+*.pyc
+
+# Dossiers de build
+dist/
+build/
+
+# Fichiers PDF générés automatiquement
+*.pdf
+
+# Fichiers temporaires
+*.log
+*.tmp
+
+# Fichiers de configuration utilisateur (si tu utilises VS Code ou autre)
+.vscode/
+.env
