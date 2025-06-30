@@ -87,7 +87,7 @@ import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 import { useToast } from "vue-toastification";
 import { useFacturesStore } from '../stores/Facture';
 import LoadinApp from '../components/LoadinApp.vue';
-
+import { showToast } from '../composables/useToast';
 const toast = useToast();
 const router = useRouter();
 const clientStore = useClientsStore();
@@ -124,23 +124,28 @@ const handleClientSelection = (client, index) => {
 onMounted(async () => {
   try {
     await clientStore.chargerClients();
-    await facturesStore.chargerFactures(); // Important pour les statistiques
+    await facturesStore.chargerFactures();
+    showToast("Client charger avec success","success")
+    // Toast si liste vide
+    if (clientStore.clients.length === 0) {
+      showToast("Aucun client trouvé. Ajoutez-en un !", "info");
+    }
   } catch (error) {
-    console.error('Erreur lors du chargement initial:', error);
-    toast.error('Erreur lors du chargement des données');
+    showToast("Erreur lors du chargement des clients", "error");
+    console.error(error);
   }
 });
 
 const handleSubmit = async () => {
   try {
     await clientStore.ajouterClient();
-    toast.success("Client enregistré avec succès !");
+    showToast("Client enregistré avec succès !","success");
   } catch (error) {
     if (error.message.includes("session")) {
-      toast.error("Votre session a expiré, veuillez vous reconnecter");
+      showToast("Votre session a expiré, veuillez vous reconnecter","error");
       router.push('/login');
     } else {
-      toast.error("Erreur lors de la création du client");
+      showToast("Erreur lors de la création du client","error");
     }
   }
 };
@@ -148,9 +153,9 @@ const handleSubmit = async () => {
 const handleDelete = async () => {
   try {
     await clientStore.supprimerClient();
-    toast.success("Client supprimé avec succès !");
+    showToast("Client supprimé avec succès !","success");
   } catch (error) {
-    toast.error("Erreur lors de la suppression du client");
+    showToast("Erreur lors de la suppression du client","error");
   }
 };
 </script>

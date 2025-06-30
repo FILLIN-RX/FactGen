@@ -115,10 +115,10 @@ async function navigateToRoute(item: any) {
 
   <aside
     :class="[
-      'fixed w-16 top-0 bg-white flex flex-col py-6 left-0 z-10 shadow-md text-blue-900 h-full transition-transform duration-300 group',
+      'fixed w-64 top-0 bg-white flex flex-col py-6 left-0 z-10 shadow-md text-red-900 h-full transition-transform duration-300 group',
       isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
       'w-64',
-      'lg:relative lg:translate-x-0 lg:w-16 lg:hover:w-64 lg:block',
+      'lg:relative lg:translate-x-0 lg:w-64  lg:',
     ]"
   >
     <div class="mb-8 px-4">
@@ -142,7 +142,7 @@ async function navigateToRoute(item: any) {
             :class="[
               'flex items-center rounded-lg transition-all duration-300 cursor-pointer px-2 py-2',
               isActive
-                ? 'bg-primary-500 text-blue-400'
+                ? 'bg-neutral-100 text-red-400'
                 : 'text-neutral-500 hover:bg-neutral-100',
             ]"
           >

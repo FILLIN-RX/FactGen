@@ -186,15 +186,39 @@
         ></textarea>
       </div>
 
-      <!-- Bouton sauvegarde -->
-      <div class="text-center">
-        <button
-          @click="sauvegarderFacture"
-          class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-700 transition"
-        >
-          Sauvegarder la facture
-        </button>
-      </div>
+     <div class="text-center">
+  <button
+    @click="sauvegarderFacture"
+    :disabled="isSaving"
+    class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+  >
+    <svg
+      v-if="isSaving"
+      class="animate-spin h-5 w-5 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+      ></circle>
+      <path
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      ></path>
+    </svg>
+    <span v-if="!isSaving">Sauvegarder la facture</span>
+    <span v-else>Enregistrement...</span>
+  </button>
+
+</div>
+
     </section>
 
     <!-- Aperçu facture -->
@@ -285,6 +309,7 @@
 
 <script>
 // Dans <script> de ton composant
+import { ref } from "vue";
 import { useToast } from "vue-toastification";
 import Facture from "../models/facture";
 import societer from "../models/societer";
@@ -309,6 +334,7 @@ export default {
       ),
       date_emission: new Date().toISOString().substring(0, 10),
       date_echeance: "",
+       isSaving: false,
       
     };
   },
@@ -343,8 +369,9 @@ export default {
 async sauvegarderFacture() {
   const invoiceStore = useFacturesStore();
   const toast = useToast(); // ✅ ajouter ici
-
+  
   try {
+     this.isSaving = true;
     await invoiceStore.creerFactureComplete({
       client: this.client,
       societer: this.societer,
@@ -359,6 +386,8 @@ async sauvegarderFacture() {
   } catch (error) {
     console.error("❌ Erreur :", error);
     toast.error("Erreur lors de la création de la facture");
+  }finally{
+    this.isSaving = false
   }
 }
 ,

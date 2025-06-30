@@ -16,10 +16,10 @@
           </h2>
           <div>
             <p class="text-xl text-gray-600 justify-center">
-              Fait le:{{ formatDate(invoice.date_emission) }}
+              Fait le: {{ formatDate(invoice.date_emission) }}
             </p>
             <p class="text-red-500 text-xl">
-              A payer avant le:{{ formatDate(invoice.date_echeance) }}
+              A payer avant le: {{ formatDate(invoice.date_echeance) }}
             </p>
           </div>
         </div>
@@ -38,16 +38,17 @@
             class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow"
           >
             <img
-              v-if="logoDataUrl"
-              :src="logoDataUrl"
-              alt="Logo"
+              v-if="companyInfo.logo"
+              :src="companyInfo.logo"
+              alt="Logo entreprise"
               class="h-full w-full object-cover"
             />
           </div>
-          <div v-if="invoice.societer">
-            <h3 class="text-xl font-semibold">{{ invoice.societer.nom }}</h3>
-            <p class="text-sm text-gray-600">{{ invoice.societer.email }}</p>
-            <p class="text-sm text-gray-600">{{ invoice.societer.adresse }}</p>
+          <!-- Utilisation des données de l'entreprise (priorité aux props, puis aux données de la facture) -->
+          <div>
+            <h3 class="text-xl font-semibold">{{ companyInfo.nom }}</h3>
+            <p class="text-sm text-gray-600">{{ companyInfo.email }}</p>
+            <p class="text-sm text-gray-600">{{ companyInfo.adresse }}</p>
           </div>
         </div>
       </div>
@@ -120,6 +121,7 @@
           @click="downloadPDF()"
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           :disabled="isDownloading"
+
         >
           <span v-if="isDownloading">Téléchargement en cours...</span>
           <span v-else>Télécharger PDF</span>
@@ -136,31 +138,54 @@
 </template>
 
 <script setup>
-import { telechargerPDF,getInfoEntreprise } from "../../services/api";
-import { computed, ref } from "vue";
+import { telechargerPDF, getInfoEntreprise } from "../../services/api";
+import { computed, ref, onMounted } from "vue";
 import { useToast } from "vue-toastification";
-import societer from "../../models/societer";
-
-const infoEntreprise = ref(null);
-
-async function fetchEntreprise() {
-  try {
-    infoEntreprise.value = await getInfoEntreprise();
-  } catch (error) {
-    console.error("Erreur récupération infos entreprise", error);
-  }
-}
-
-const factureHtmlRef = ref(null);
+import { showToast } from "../../composables/useToast";
 const toast = useToast();
 const isDownloading = ref(false);
-const getFactureHtml = () => {
-  return factureHtmlRef.value ? factureHtmlRef.value.innerHTML : "";
-};
-onMounted(() => {
-  fetchEntreprise();
+const factureHtmlRef = ref(null);
+const infoEntreprise = ref(null);
+
+// Props
+const props = defineProps({
+  invoice: Object,
+  logoDataUrl: String,
+  isDownloading: Boolean,
+  societer: Object, // Données de l'entreprise passées depuis le parent
 });
+
+// Events
+defineEmits(["close", "download", "delete"]);
+
+// Récupération des infos entreprise si pas passées en props
+onMounted(async () => {
+  if (!props.societer) {
+    try {
+      infoEntreprise.value = await getInfoEntreprise();
+    } catch (error) {
+      console.error("Erreur récupération infos entreprise", error);
+    }
+  }
+});
+
+// Computed pour les informations de l'entreprise (priorité aux props)
+const companyInfo = computed(() => {
+  return (
+    props.societer ||
+    infoEntreprise.value ||
+    props.invoice.societer || {
+      nom: "Nom de l'entreprise",
+      email: "email@entreprise.com",
+      adresse: "Adresse de l'entreprise",
+    }
+  );
+});
+
+// Génération du template PDF
 const generatePDFTemplate = () => {
+  const company = companyInfo.value;
+
   return `
     <!DOCTYPE html>
     <html lang="fr">
@@ -357,21 +382,22 @@ const generatePDFTemplate = () => {
         </div>
 
         <div class="company-info">
-          ${
-            props.logoDataUrl
-              ? `
-            <div class="logo">
-              <img src="${props.logoDataUrl}" alt="Logo" />
-            </div>
-          `
-              : ""
-          }
-          <div class="company-details">
-            <h3>${props.invoice.societer?.nom || ""}</h3>
-            <p>${props.invoice.societer?.email || ""}</p>
-            <p>${props.invoice.societer?.adresse || ""}</p>
-          </div>
-        </div>
+  ${
+    company.logo
+      ? `
+    <div class="logo">
+      <img src="${company.logo}" alt="Logo" />
+    </div>
+  `
+      : ""
+  }
+  <div class="company-details">
+    <h3>${company.nom}</h3>
+    <p>${company.email}</p>
+    <p>${company.adresse}</p>
+  </div>
+</div>
+
 
         <div class="client-info">
           <h4>Client :</h4>
@@ -448,12 +474,7 @@ const generatePDFTemplate = () => {
   `;
 };
 
-const props = defineProps({
-  invoice: Object,
-  logoDataUrl: String,
-  isDownloading: Boolean,
-  societer:Object,
-});
+// Fonction de téléchargement PDF
 const downloadPDF = async () => {
   try {
     isDownloading.value = true;
@@ -464,17 +485,17 @@ const downloadPDF = async () => {
       invoiceDate: props.invoice.date_emission,
       clientName: props.invoice.client_data?.nom,
     });
-    toast.success("PDF téléchargé avec succès !");
+     emit("close");
+    showToast("PDF téléchargé avec succès !","success");
   } catch (error) {
     console.error("Erreur de téléchargement du PDF", error);
-    toast.error("Erreur lors du téléchargement du PDF");
+    showToast("Erreur lors du téléchargement du PDF","error");
   } finally {
     isDownloading.value = false;
   }
 };
 
-defineEmits(["close", "download", "delete"]);
-
+// Fonctions utilitaires
 function formatDate(date) {
   if (!date) return "";
   return new Date(date).toLocaleDateString();
@@ -491,7 +512,7 @@ function calculateProductTotal(product) {
   return quantite * prix;
 }
 
-// Calcul du sous-total des produits
+// Calculs des totaux
 const sousTotal = computed(() => {
   if (!props.invoice?.produits) return 0;
   return props.invoice.produits.reduce((total, product) => {
@@ -499,7 +520,6 @@ const sousTotal = computed(() => {
   }, 0);
 });
 
-// Calcul du montant de la réduction
 const montantReduction = computed(() => {
   if (!props.invoice?.reduction) return 0;
 
@@ -513,12 +533,10 @@ const montantReduction = computed(() => {
   return 0;
 });
 
-// Calcul du total HT (après réduction)
 const totalHt = computed(() => {
   return sousTotal.value - montantReduction.value;
 });
 
-// Formatage de l'affichage de la réduction
 function formatReduction() {
   if (!props.invoice?.reduction) return "";
 

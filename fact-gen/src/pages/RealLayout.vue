@@ -22,9 +22,10 @@
 import RecentActivity from "../components/RecentActivity.vue";
 import StatisTics from "../components/StatisTics.vue";
 import BarChart from "../components/BarChart.vue";
+import { useToast } from "vue-toastification";
 
 // Exemple avec fetch dans un composant Vue
-
+const toast=useToast();
 
 export default {
 
@@ -62,12 +63,9 @@ export default {
       ]
     };
   },
-  mounted() {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    // Tu peux faire quelque chose avec ces valeurs si besoin
-  
-  },
+mounted() {
+ 
+}
 };
 
 </script>

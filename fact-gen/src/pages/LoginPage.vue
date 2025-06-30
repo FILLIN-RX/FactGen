@@ -66,7 +66,9 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-
+import { useToast } from "vue-toastification";
+// Exemple avec fetch dans un composant Vue
+const toast=useToast();
 const router = useRouter()
 const authStore = useAuthStore()
 
@@ -101,18 +103,21 @@ async function onSubmit() {
   }
 }
 
-// Google OAuth login
 async function signInWithGoogle() {
-  errorMessage.value = ''
-  loading.value = true
-  
+  errorMessage.value = '';
+  loading.value = true;
   try {
-    await authStore.signInWithGoogle()
-    router.push({ name: 'Real' })
+    toast.info("Connexion Google en cours...", { timeout: 2000 });
+    await authStore.signInWithGoogle();
+    toast.success("Connecté avec Google !", { timeout: 3000 });
+    router.push({ name: 'Real' });
   } catch (error) {
-    errorMessage.value = error.message || 'Erreur avec Google Auth'
+    toast.error("Échec de la connexion Google. Réessayez.", { 
+      timeout: 5000,
+    });
+    errorMessage.value = error.message;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>

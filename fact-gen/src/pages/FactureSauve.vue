@@ -97,7 +97,7 @@
         :key="facture.id"
         :invoice="facture"
         @select="invoiceStore.selectionnerFacture(facture, index)"
-        :societer="fetchEntreprise()"
+        
       />
     </div>
 
@@ -107,7 +107,7 @@
       :invoice="invoiceStore.selectedFacture"
       @close="invoiceStore.clearSelection()"
       @delete="confirmerSuppression"
-     
+     :societer="infoEntreprise"
       :is-downloading="isDownloading"
     />
 
@@ -153,7 +153,8 @@ import { telechargerPDF,getInfoEntreprise } from "@/services/api";
 import FactureTemp from "../components/FactureTemp.vue";
 import { useToast } from "vue-toastification";
 import { useAppStore } from "../stores/app";
-
+import societer from "../models/societer";
+import { showToast } from "../composables/useToast";
 const toast = useToast();
 
 // Variables réactives
@@ -165,23 +166,30 @@ const open = ref(false);
 const isDownloading = ref(false);
 const showDeleteConfirm = ref(false);
 const isDeleting = ref(false); // ✅ Variable spécifique pour la suppression
-
+const infoEntreprise = ref(null);
 // Stores
 const invoiceStore = useFacturesStore();
 const appStore = useAppStore();
+// ✅ Fonction pour récupérer les infos de l'entreprise
 async function fetchEntreprise() {
   try {
-    infoEntreprise.value = await getInfoEntreprise();
+    const data = await getInfoEntreprise();
+    infoEntreprise.value = data;
+    return data;
   } catch (error) {
     console.error("Erreur récupération infos entreprise", error);
+    return null;
   }
 }
 // Montage du composant
 onMounted(async () => {
-  appStore.setLoading(true); // ✅ Loader global pour le chargement initial
+  appStore.setLoading(true);
   try {
-    await invoiceStore.chargerFactures();
-    fetchEntreprise();
+    // Charger les factures et les infos entreprise en parallèle
+    await Promise.all([
+      invoiceStore.chargerFactures(),
+      fetchEntreprise()
+    ]);
     
     // Extraire la liste unique des clients
     const uniqueClients = new Set(
@@ -191,13 +199,12 @@ onMounted(async () => {
     );
     clients.value = Array.from(uniqueClients).sort();
   } catch (error) {
-    console.error("Erreur lors du chargement des factures:", error);
-    toast.error("Erreur lors du chargement des factures");
+    console.error("Erreur lors du chargement des données:", error);
+    showToast("Erreur lors du chargement des données","error");
   } finally {
     appStore.setLoading(false);
   }
 });
-
 // Fonctions utilitaires
 function formatPrice(val) {
   if (typeof val !== "number" || isNaN(val)) return "0.00";
@@ -214,10 +221,17 @@ function clearFilters() {
   selectedStatus.value = "";
 }
 
-function onFactureCreated() {
-  open.value = false;
-  // Recharger les factures après création
-  invoiceStore.chargerFactures();
+async function onFactureCreated() {
+  try {
+    open.value = false;
+    await invoiceStore.chargerFactures();
+    // Toast avec numéro de facture (si disponible)
+    const lastInvoice = invoiceStore.factures[invoiceStore.factures.length - 1];
+    const invoiceNumber = lastInvoice?.numero || "";
+    showToast(`Facture #${invoiceNumber} créée avec succès !`, "success");
+  } catch (error) {
+    showToast("Erreur lors de l'actualisation des factures", "error");
+  }
 }
 
 // Gestion de la suppression
@@ -231,10 +245,10 @@ async function supprimerFacture() {
     await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
     showDeleteConfirm.value = false;
     invoiceStore.clearSelection();
-    toast.success("Facture supprimée avec succès !");
+    showToast("Facture supprimée avec succès !","success");
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
-    toast.error("Erreur lors de la suppression de la facture");
+    showToast("Erreur lors de la suppression de la facture","error");
   } finally {
     isDeleting.value = false;
   }

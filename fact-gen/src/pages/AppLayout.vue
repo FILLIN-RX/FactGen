@@ -1,25 +1,25 @@
 <template>
-  <div class="flex h-screen"> <!-- toute la hauteur de l'écran -->
+  <div class="flex h-screen">
+    <!-- toute la hauteur de l'écran -->
     <!-- Sidebar -->
-    <div class="w-64  text-white">
+    <div class="w-64 text-white">
       <LoginNav />
     </div>
-   
+
     <!-- Contenu principal -->
-    <div  class="flex flex-col flex-1 pr-20">
+    <div class="flex flex-col flex-1 pr-20">
       <!-- Header -->
-      <div class="sticky top-0 z-10 ">
+      <div class="sticky top-0 z-10">
         <HaeDer />
       </div>
 
       <!-- Contenu -->
-      <div class="flex-1 overflow-auto p-4 bg-gray-50">
+      <div class="  p-4">
         <router-view />
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 // ⚠️ Vérifie l'orthographe
@@ -39,8 +39,18 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem("utilisateurConnecte");
-      this.$router.push("/login");
+      try {
+        localStorage.removeItem("utilisateurConnecte");
+        this.$router.push("/login");
+        // Toast de succès
+        this.$toast.success("Déconnexion réussie. À bientôt !", {
+          timeout: 3000,
+        });
+      } catch (error) {
+        this.$toast.error("Erreur lors de la déconnexion. Réessayez.", {
+          timeout: 5000,
+        });
+      }
     },
   },
 };
