@@ -65,9 +65,12 @@ onMounted(async () => {
 
 // 👀 Watcher pour détecter les changements de données
 watch(
-  () => [statsStore.mois, statsStore.revenusParMois,],
+  () => [statsStore.mois, statsStore.revenusParMois],
   ([newMois, newRevenus]) => {
-    console.log("🔄 Données mises à jour:", { mois: newMois, revenus: newRevenus });
+    console.log("🔄 Données mises à jour:", {
+      mois: newMois,
+      revenus: newRevenus,
+    });
     lineChartKey.value++; // Force le re-render des graphiques
   },
   { deep: true }
@@ -123,14 +126,16 @@ const lineChartData = computed(() => {
 // Graphique jours (nouveau)
 const dayBarChartData = computed(() => ({
   labels: statsStore.jours || [],
-  datasets: [{
-    label: "Montant TTC (par jour)",
-    data: statsStore.revenusParJours || [],
-    backgroundColor: "#f87171",
-    borderColor: "#ef4444",
-    borderWidth: 1,
-    borderRadius: 4,
-  }]
+  datasets: [
+    {
+      label: "Montant TTC (par jour)",
+      data: statsStore.revenusParJours || [],
+      backgroundColor: "#f87171",
+      borderColor: "#ef4444",
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+  ],
 }));
 // 🎨 Options des graphiques améliorées
 const chartOptions = {
@@ -188,9 +193,11 @@ const hasData = computed(() => {
   return statsStore.mois.length > 0 && statsStore.revenusParMois.length > 0;
 });
 const hasDayData = computed(() => {
-  return (statsStore.jours || []).length > 0 && (statsStore.revenusParJours || []).length > 0;
+  return (
+    (statsStore.jours || []).length > 0 &&
+    (statsStore.revenusParJours || []).length > 0
+  );
 });
-
 </script>
 
 <template>
@@ -202,20 +209,23 @@ const hasDayData = computed(() => {
 
     <!-- Graphiques -->
     <div class="space-y-6 grid lg:grid-cols-2 gap-5 lg:px-10">
-
       <!-- 📊 Graphique Barres : par mois -->
-      <div class="bg-white rounded-xl hover:shadow p-6">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Montant TTC par mois</h2>
+      <div class="bg-white rounded-xl border border-blue-100 shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          Montant TTC par mois
+        </h2>
 
         <div v-if="statsStore.isLoading" class="flex items-center justify-center h-[300px]">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           <span class="ml-2 text-gray-600">Chargement des données...</span>
         </div>
 
-        <div v-else-if="statsStore.error" class="text-center text-red-600 h-[300px] flex flex-col justify-center items-center">
+        <div v-else-if="statsStore.error"
+          class="text-center text-red-600 h-[300px] flex flex-col justify-center items-center">
           <p class="font-semibold">❌ Erreur</p>
           <p class="text-sm text-gray-600">{{ statsStore.error }}</p>
-          <button @click="statsStore.chargerStatistiques(true)" class="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-sm">
+          <button @click="statsStore.chargerStatistiques(true)"
+            class="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-sm">
             Réessayer
           </button>
         </div>
@@ -231,49 +241,23 @@ const hasDayData = computed(() => {
           <Bar :key="`bar-${lineChartKey}`" :data="barChartData" :options="chartOptions" />
         </div>
       </div>
-
-      <!-- 📈 Graphique Ligne : par mois -->
-      <div class="bg-white rounded-xl hover:shadow p-6">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Revenus mensuels</h2>
-
-        <div v-if="statsStore.isLoading" class="flex items-center justify-center h-[300px]">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-          <span class="ml-2 text-gray-600">Chargement des données...</span>
-        </div>
-
-        <div v-else-if="statsStore.error" class="text-center text-red-600 h-[300px] flex flex-col justify-center items-center">
-          <p class="font-semibold">❌ Erreur</p>
-          <p class="text-sm text-gray-600">{{ statsStore.error }}</p>
-          <button @click="statsStore.chargerStatistiques(true)" class="mt-2 px-3 py-1 bg-green-600 text-white rounded text-sm">
-            Réessayer
-          </button>
-        </div>
-
-        <div v-else-if="!hasData" class="text-center text-gray-500 h-[300px] flex items-center justify-center">
-          <div>
-            <p>📈 Aucune donnée disponible</p>
-            <p class="text-sm">Créez des factures pour voir l’évolution</p>
-          </div>
-        </div>
-
-        <div v-else style="height: 300px">
-          <Line :key="`line-${lineChartKey}`" :data="lineChartData" :options="chartOptions" />
-        </div>
-      </div>
-
       <!-- 📅 Graphique Barres : par jour -->
-      <div class="bg-white rounded-xl hover:shadow p-6 lg:col-span-2">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Montant TTC par jour</h2>
+      <div class="bg-white rounded-xl hover:shadow p-6 border border-blue-100">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          Montant TTC par jour
+        </h2>
 
         <div v-if="statsStore.isLoading" class="flex items-center justify-center h-[300px]">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
           <span class="ml-2 text-gray-600">Chargement des données...</span>
         </div>
 
-        <div v-else-if="statsStore.error" class="text-center text-red-600 h-[300px] flex flex-col justify-center items-center">
+        <div v-else-if="statsStore.error"
+          class="text-center text-red-600 h-[300px] flex flex-col justify-center items-center">
           <p class="font-semibold">❌ Erreur</p>
           <p class="text-sm text-gray-600">{{ statsStore.error }}</p>
-          <button @click="statsStore.chargerRevenusJournaliers()" class="mt-2 px-3 py-1 bg-red-600 text-white rounded text-sm">
+          <button @click="statsStore.chargerRevenusJournaliers()"
+            class="mt-2 px-3 py-1 bg-red-600 text-white rounded text-sm">
             Réessayer
           </button>
         </div>
@@ -290,15 +274,5 @@ const hasDayData = computed(() => {
         </div>
       </div>
     </div>
-
-    <!-- Debug -->
-    <pre class="text-xs text-gray-600 px-10 mt-4">
-hasData: {{ hasData }}
-hasDayData: {{ hasDayData }}
-mois: {{ statsStore.mois }}
-revenus (mois): {{ statsStore.revenusParMois }}
-jours: {{ statsStore.jours }}
-revenus (jours): {{ statsStore.revenusParJours }}
-    </pre>
   </div>
 </template>

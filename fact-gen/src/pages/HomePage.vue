@@ -31,6 +31,7 @@
             class="w-full max-w-md"
             src="../assets/Facture_moderne_de_Factgen__1_-removebg-preview.png"
             alt="Aperçu de facture"
+            loading="lazy"
           />
         </div>
       </div>
@@ -46,18 +47,48 @@
           class="rounded-2xl w-full h-150 object-cover shadow-md"
           src="../assets/9305906.jpg"
           alt="Exemple de facture 1"
+          loading="lazy"
         />
         <img
           class="rounded-2xl w-full h-150 object-cover shadow-md"
           src="../assets/8414110.jpg"
           alt="Exemple de facture 2"
+          loading="lazy"
         />
         <img
           class="rounded-2xl w-full h-150 object-cover shadow-md"
           src="../assets/8056759.jpg"
           alt="Exemple de facture 3"
+          loading="lazy"
         />
       </div>
+<section class="features-section px-6 lg:px-40 py-20 bg-gradient-to-r from-blue-100 to-white space-y-16">
+  <h2 class="text-4xl font-bold text-center text-blue-900 mb-12">
+    Découvrez toutes les fonctionnalités de Factgen
+  </h2>
+
+  <div class="grid lg:grid-cols-3 gap-10">
+    <div class="feature-card bg-white p-6 rounded-2xl shadow hover:shadow-lg transition flex flex-col items-center text-center">
+      <img src="../assets/invoice-icon.png" alt="Création facture" class="w-20 h-20 mb-4" />
+      <h3 class="text-xl font-bold text-blue-900 mb-2">Création de factures rapide</h3>
+      <p class="text-gray-700">Générez des factures personnalisées en quelques clics, avec logo, mentions légales, et export PDF instantané.</p>
+    </div>
+
+    <div class="feature-card bg-white p-6 rounded-2xl shadow hover:shadow-lg transition flex flex-col items-center text-center">
+      <img src="../assets/client-management.png" alt="Gestion clients" class="w-20 h-20 mb-4" />
+      <h3 class="text-xl font-bold text-blue-900 mb-2">Gestion complète des clients</h3>
+      <p class="text-gray-700">Centralisez toutes les informations clients, suivez leur historique et ajoutez des notes personnalisées.</p>
+    </div>
+
+    <div class="feature-card bg-white p-6 rounded-2xl shadow hover:shadow-lg transition flex flex-col items-center text-center">
+      <img src="../assets/statistics.png" alt="Statistiques" class="w-20 h-20 mb-4" />
+      <h3 class="text-xl font-bold text-blue-900 mb-2">Suivi et statistiques</h3>
+      <p class="text-gray-700">Visualisez vos chiffres d’affaires, factures émises et clients actifs grâce à un tableau de bord clair et intuitif.</p>
+    </div>
+
+    <!-- Ajouter autant de cards que besoin -->
+  </div>
+</section>
 
       <!-- CRM Section -->
       <div
@@ -140,6 +171,7 @@
             class="w-24 h-24 object-contain mb-4"
             src="../assets/temps.png"
             alt="Gagner du temps"
+            loading="lazy"
           />
           <h3 class="font-bold text-xl text-blue-900 mb-2">Gagnez du temps</h3>
           <p class="text-gray-700 text-center">
@@ -156,6 +188,7 @@
             class="w-24 h-24 object-contain mb-4"
             src="../assets/trust_8596259.png"
             alt="Sécurité des paiements"
+            loading="lazy"
           />
           <h3 class="font-bold text-xl text-blue-900 mb-2">
             Sécurisez vos paiements
@@ -174,6 +207,7 @@
             class="w-24 h-24 object-contain mb-4"
             src="../assets/money-management.png"
             alt="Booster son CA"
+            loading="lazy"
           />
           <h3 class="font-bold text-xl text-blue-900 mb-2">
             Boostez votre chiffre d'affaires
@@ -207,6 +241,7 @@
               class="w-20 h-20 object-contain mb-4"
               src="../assets/simplicite.png"
               alt="Simplicité"
+              loading="lazy"
             />
             <h3 class="text-xl font-bold text-blue-900 mb-2">Simplicité</h3>
             <p class="text-gray-700">
@@ -223,6 +258,7 @@
               class="w-20 h-20 object-contain mb-4"
               src="../assets/logo-cyberdefense-coche-confiance-pour-votre-entreprise-numerique.png"
               alt="Sécurité"
+              loading="lazy"
             />
             <h3 class="text-xl font-bold text-blue-900 mb-2">Sécurité</h3>
             <p class="text-gray-700">
@@ -239,6 +275,7 @@
               class="w-20 h-20 object-contain mb-4"
               src="../assets/5850.jpg"
               alt="Archivage"
+              loading="lazy"
             />
             <h3 class="text-xl font-bold text-blue-900 mb-2">Archivage</h3>
             <p class="text-gray-700">
@@ -270,6 +307,7 @@
             class="w-16 h-16 object-contain"
             src="../assets/icons8-pas-de-frais-cachés-80.png"
             alt="Pas de revente"
+            loading="lazy"
           />
           <div>
             <h3 class="text-xl font-bold text-blue-900 mb-1">
@@ -290,6 +328,7 @@
             class="w-16 h-16 object-contain"
             src="../assets/f0be3f5b-f2ae-4a67-b7d8-1dd4c19cba62.jpg"
             alt="Pas de pub"
+            loading="lazy"
           />
           <div>
             <h3 class="text-xl font-bold text-blue-900 mb-1">
@@ -369,6 +408,7 @@
         >
           <button
             @click="toggle(index)"
+            :aria-expanded="isOpen[index]"
             class="w-full px-6 py-4 flex justify-between items-center text-left text-blue-900 font-semibold text-lg hover:bg-blue-100 transition"
           >
             <span>{{ item.title }}</span>

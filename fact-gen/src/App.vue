@@ -5,7 +5,7 @@
         v-if="!isLayoutProtege && $route.meta.showNavbarAndFooter !== false"
       />
 
-      <div class="">
+      <div class="w-full">
         <router-view />
         <ToasT
           v-if="toast.message"

@@ -317,6 +317,7 @@ import Produit from "../models/produit";
 import { useFacturesStore } from "../stores/Facture";
 import html2canvas from "html2canvas";
 import { creerFacture, upsertClient } from "../services/api";
+import { showToast } from "../composables/useToast";
 export default {
   data() {
     return {
@@ -382,10 +383,10 @@ async sauvegarderFacture() {
       date_echeance: this.date_echeance,
     });
 
-    toast.success("Facture créée !");
+    showToast("Facture créée !","sucsess");
   } catch (error) {
     console.error("❌ Erreur :", error);
-    toast.error("Erreur lors de la création de la facture");
+    showToast("Erreur lors de la création de la facture","error");
   }finally{
     this.isSaving = false
   }

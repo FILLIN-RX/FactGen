@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen">
+  <div class="flex">
     <!-- toute la hauteur de l'écran -->
     <!-- Sidebar -->
     <div class="w-64 text-white">
@@ -14,7 +14,7 @@
       </div>
 
       <!-- Contenu -->
-      <div class="  p-4">
+      <div class="bg-white">
         <router-view />
       </div>
     </div>

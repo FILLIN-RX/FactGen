@@ -8,53 +8,29 @@
           <span class="text-white">FACT</span>GEN</router-link
         >
       </div>
-      <div class="lg:hidden icon flex h-full justify-center items-center top-0">
-        <img
-          @click="toggleNav"
-          :class="{ 'icon-active': mobileNav }"
-          src="../assets/8604bcf1-d9e9-4924-ab99-89e8a04d5de4.svg"
-          alt=""
-        />
-      </div>
+     
       <div>
         <ul
-          v-if="!mobile"
-          class="hidden lg:flex h-full justify-center space-x-10 items-center text-center"
+        
+          class=" lg:flex h-full justify-center space-x-10 items-center text-center"
         >
-          <li class="hover:text-blue-500 ease-in duration-200">
-            <router-link to="/FacTure">Facture</router-link>
-          </li>
-          <li class="hover:text-blue-500 ease-in duration-200">customize</li>
-          <li class="hover:text-blue-500 ease-in duration-200">
-            <router-link to="/clientFact">client</router-link>
-          </li>
+
           <button
-            class="capitalize transition duration-500 text-purple-300 p-3 border-purple-100 bg-blue-400 p-2 border- rounded-xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"
+            
+            class="capitalize transition duration-500 text-purple-300 border-purple-100 bg-blue-400 p-2 border- rounded-xl hover:text-white hover:border-transparent hover:bg-blue-600 active:bg-blue-900"
           >
             <router-link to="/login">login</router-link>
           </button>
+
           <button
-            class="transition duration-500 text-blue-600 p-3 border-green-100 bg-green-400 p-2 border- rounded-xl hover:text-black hover:border-transparent hover:bg-green-500 active:bg-green-900"
+           
+            class="transition duration-500 text-blue-600 border-green-100 bg-green-400 p-2 border- rounded-xl hover:text-black hover:border-transparent hover:bg-green-500 active:bg-green-900"
           >
             Registered
           </button>
         </ul>
       </div>
-      <transition name="mobile-nav" class="dropdown p-5">
-        <ul v-if="mobileNav" class="h-full space-x-3 items-center text-center">
-          <div>
-            <div class="absolute mb-4">X</div>
-            <li class="hover:underline">
-              <router-link to="/FacTure">Facture</router-link>
-            </li>
-            <li class="hover:underline">customize</li>
-            <li class="hover:underline">
-              <router-link to="/clientFact">client</router-link>
-            </li>
-            <li class="">login/Registered</li>
-          </div>
-        </ul>
-      </transition>
+      
     </div>
   </nav>
 </template>

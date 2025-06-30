@@ -1,20 +1,12 @@
 <template>
     <section class=" ">
-     
         <div class="mb-4">
           <StatisTics />
         </div>
         <!-- Graphique -->
-        <div class=" p-4 shadow">
+        <div class="p-4">
           <BarChart />
-        </div>
-
-        <!-- Activité récente -->
-        <div class="w-full border rounded-lg p-4 shadow">
-          
-        </div>
-      
-        
+        </div>   
       </section>
 </template>
 <script>
