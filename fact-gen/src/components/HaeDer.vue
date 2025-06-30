@@ -14,10 +14,7 @@ const today = new Date().toLocaleDateString('en-US', {
 </script>
 
 <template>
-  <header class="flex  hidden  justify-between items-center py-6">
-    <div>
-      <h1 class="text-3xl font-bold text-neutral-900">Factgen</h1>
-    </div>
+  <header class="flex   justify-between items-center py-6">
     <div class="flex items-center space-x-6">
       <span class="text-neutral-600">{{ today }}</span>
       
