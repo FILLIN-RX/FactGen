@@ -106,7 +106,7 @@
       :invoice="invoiceStore.selectedFacture"
       @close="invoiceStore.clearSelection()"
       @delete="confirmerSuppression"
-      @download="telecharger"
+     
       :is-downloading="isDownloading"
     />
 

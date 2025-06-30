@@ -1,6 +1,6 @@
 import { useAuthStore } from "../stores/auth";
 import API from "../api/axios";
-
+import Facture from "../models/facture";
 const API_BASE_URL = "http://localhost:4000/api";
 
 export async function upsertClient(clientData) {
@@ -11,33 +11,45 @@ export async function upsertClient(clientData) {
 // ✅ Facture : Télécharger PDF
 
 // ✅ Facture : Télécharger PDF (méthode existante améliorée)
-export async function telechargerPDF(factureId, options = {}) {
+export async function telechargerPDF({ html, id, invoiceDate, clientName }) {
   try {
-    console.log(`🔄 Téléchargement PDF pour facture ${factureId}`);
-    
-    const response = await API.get(`/pdf/${factureId}`, {
+    const res = await API.post("/pdf/from-python", { html, id }, {
       responseType: "blob",
-      timeout: 60000, // 60 secondes de timeout
-      ...options
     });
 
-    const blob = new Blob([response.data], { type: "application/pdf" });
+    const blob = new Blob([res.data], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
+
+    let filename;
+    
+    if (invoiceDate && clientName) {
+      // Nettoyer le nom du client
+      const cleanClientName = clientName
+        .replace(/[^a-zA-Z0-9]/g, '_')
+        .substring(0, 15);
+      
+      const date = new Date(invoiceDate).toISOString().split('T')[0];
+      filename = `facture_${cleanClientName}_${date}.pdf`;
+    } else {
+      // Fallback simple
+      const today = new Date().toISOString().split('T')[0];
+      const shortId = id.substring(0, 8);
+      filename = `facture_${today}_${shortId}.pdf`;
+    }
+
     const link = document.createElement("a");
     link.href = url;
-    link.download = `facture-${factureId}.pdf`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-
-    console.log(`✅ PDF téléchargé avec succès pour facture ${factureId}`);
-    return true;
-  } catch (error) {
-    console.error(`❌ Erreur téléchargement PDF:`, error);
-    throw new Error(`Erreur lors du téléchargement du PDF: ${error.message}`);
+  } catch (err) {
+    console.error("❌ Erreur génération PDF Flask :", err.message);
+    throw err;
   }
 }
+
 
 // 🆕 Générer PDF depuis HTML
 export async function genererPDFDepuisHTML(htmlContent, filename = 'document.pdf', options = {}) {

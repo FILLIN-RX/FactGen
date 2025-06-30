@@ -5,6 +5,7 @@
     @click.self="$emit('close')"
   >
     <div
+      ref="factureHtmlRef"
       class="bg-white p-6 rounded-xl shadow-lg mx-auto font-sans max-w-4xl w-full max-h-[90vh] overflow-y-auto"
     >
       <!-- Header -->
@@ -116,7 +117,7 @@
       <!-- Actions -->
       <div class="flex justify-end space-x-3 mt-6">
         <button
-          @click="$emit('download')"
+          @click="downloadPDF()"
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           :disabled="isDownloading"
         >
@@ -135,13 +136,326 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { telechargerPDF } from "../../services/api";
+import { computed, ref } from "vue";
+import { useToast } from "vue-toastification";
+const factureHtmlRef = ref(null);
+const toast = useToast();
+const isDownloading = ref(false);
+const getFactureHtml = () => {
+  return factureHtmlRef.value ? factureHtmlRef.value.innerHTML : "";
+};
+const generatePDFTemplate = () => {
+  return `
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Facture ${props.invoice.id}</title>
+      <style>
+        @page {
+          margin: 2cm;
+          size: A4;
+        }
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          font-family: 'Arial', sans-serif;
+          line-height: 1.6;
+          color: #333;
+          font-size: 14px;
+        }
+        
+        .invoice-container {
+          max-width: 100%;
+          margin: 0 auto;
+          background: white;
+        }
+        
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 30px;
+          border-bottom: 2px solid #e5e7eb;
+          padding-bottom: 20px;
+        }
+        
+        .invoice-title {
+          font-size: 24px;
+          font-weight: bold;
+          color: #1f2937;
+          margin-bottom: 10px;
+        }
+        
+        .dates {
+          text-align: right;
+          font-size: 12px;
+        }
+        
+        .emission-date {
+          color: #6b7280;
+          margin-bottom: 5px;
+        }
+        
+        .due-date {
+          color: #dc2626;
+          font-weight: 600;
+        }
+        
+        .company-info {
+          display: flex;
+          align-items: center;
+          margin-bottom: 30px;
+        }
+        
+        .logo {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          border: 1px solid #d1d5db;
+          margin-right: 20px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .logo img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .company-details h3 {
+          font-size: 18px;
+          font-weight: 600;
+          margin-bottom: 5px;
+        }
+        
+        .company-details p {
+          font-size: 12px;
+          color: #6b7280;
+          margin-bottom: 3px;
+        }
+        
+        .client-info {
+          background: #f9fafb;
+          padding: 20px;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
+          margin-bottom: 30px;
+        }
+        
+        .client-info h4 {
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: #374151;
+        }
+        
+        .client-info p {
+          margin-bottom: 5px;
+          font-size: 12px;
+        }
+        
+        .products-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 30px;
+        }
+        
+        .products-table th {
+          background: #f3f4f6;
+          padding: 12px 8px;
+          font-weight: 600;
+          color: #374151;
+          border-bottom: 2px solid #d1d5db;
+          font-size: 12px;
+        }
+        
+        .products-table td {
+          padding: 10px 8px;
+          border-bottom: 1px solid #e5e7eb;
+          font-size: 12px;
+        }
+        
+        .text-center {
+          text-align: center;
+        }
+        
+        .text-right {
+          text-align: right;
+        }
+        
+        .totals {
+          text-align: right;
+          margin-bottom: 20px;
+        }
+        
+        .total-line {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 5px;
+          font-size: 12px;
+        }
+        
+        .total-line.reduction {
+          color: #dc2626;
+        }
+        
+        .total-line.final {
+          font-weight: bold;
+          font-size: 16px;
+          border-top: 2px solid #e5e7eb;
+          padding-top: 10px;
+          margin-top: 10px;
+        }
+        
+        .additional-info {
+          font-size: 11px;
+          color: #6b7280;
+          margin-top: 20px;
+          font-style: italic;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="invoice-container">
+        <div class="header">
+          <div>
+            <h1 class="invoice-title">Facture: ${props.invoice.id}</h1>
+          </div>
+          <div class="dates">
+            <p class="emission-date">Fait le: ${formatDate(
+              props.invoice.date_emission
+            )}</p>
+            <p class="due-date">À payer avant le: ${formatDate(
+              props.invoice.date_echeance
+            )}</p>
+          </div>
+        </div>
+
+        <div class="company-info">
+          ${
+            props.logoDataUrl
+              ? `
+            <div class="logo">
+              <img src="${props.logoDataUrl}" alt="Logo" />
+            </div>
+          `
+              : ""
+          }
+          <div class="company-details">
+            <h3>${props.invoice.societer?.nom || ""}</h3>
+            <p>${props.invoice.societer?.email || ""}</p>
+            <p>${props.invoice.societer?.adresse || ""}</p>
+          </div>
+        </div>
+
+        <div class="client-info">
+          <h4>Client :</h4>
+          <p><strong>Nom :</strong> ${props.invoice.client_data.nom}</p>
+          <p><strong>Email :</strong> ${props.invoice.client_data.email}</p>
+          <p><strong>Adresse :</strong> ${props.invoice.client_data.address}</p>
+        </div>
+
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="text-center">Quantité</th>
+              <th class="text-center">Prix unitaire</th>
+              <th class="text-right">Prix total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(props.invoice.produits || [])
+              .map(
+                (product) => `
+              <tr>
+                <td>${product.nom}</td>
+                <td class="text-center">${product.quantite}</td>
+                <td class="text-center">${formatPrice(product.prix)} €</td>
+                <td class="text-right">${formatPrice(
+                  calculateProductTotal(product)
+                )} €</td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="total-line">
+            <span>Sous-total HT :</span>
+            <span>${formatPrice(sousTotal.value)} €</span>
+          </div>
+          
+          ${
+            props.invoice.reduction
+              ? `
+            <div class="total-line reduction">
+              <span>Réduction :</span>
+              <span>-${formatReduction()}</span>
+            </div>
+          `
+              : ""
+          }
+          
+          <div class="total-line">
+            <span><strong>Total HT :</strong></span>
+            <span><strong>${formatPrice(totalHt.value)} €</strong></span>
+          </div>
+          
+          <div class="total-line final">
+            <span>Total TTC :</span>
+            <span>${formatPrice(props.invoice.montant_total)} €</span>
+          </div>
+        </div>
+
+        ${
+          props.invoice.suplement
+            ? `
+          <p class="additional-info">Info supp : ${props.invoice.suplement}</p>
+        `
+            : ""
+        }
+      </div>
+    </body>
+    </html>
+  `;
+};
 
 const props = defineProps({
   invoice: Object,
   logoDataUrl: String,
   isDownloading: Boolean,
 });
+const downloadPDF = async () => {
+  try {
+    isDownloading.value = true;
+    const htmlContent = generatePDFTemplate();
+    await telechargerPDF({
+      html: htmlContent,
+      id: props.invoice.id,
+      invoiceDate: props.invoice.date_emission,
+      clientName: props.invoice.client_data?.nom,
+    });
+    toast.success("PDF téléchargé avec succès !");
+  } catch (error) {
+    console.error("Erreur de téléchargement du PDF", error);
+    toast.error("Erreur lors du téléchargement du PDF");
+  } finally {
+    isDownloading.value = false;
+  }
+};
 
 defineEmits(["close", "download", "delete"]);
 
