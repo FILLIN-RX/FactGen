@@ -58,7 +58,7 @@
         </main>
 
         <!-- Mobile Bottom Navigation (Optional) -->
-        <nav class="lg:hidden bg-white border-t border-slate-200 px-4 py-2">
+        <nav class="lg:hidden  w-full bg-white border-t border-slate-200 px-4 py-2">
           <div class="flex justify-around">
             <router-link
               to="/real"

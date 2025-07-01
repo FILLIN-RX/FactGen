@@ -41,9 +41,9 @@
       </div>
 
       <!-- Section graphiques -->
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+      <div class="grid grid-cols-1  gap-6 mb-8">
         <!-- Graphique principal -->
-        <div class="xl:col-span-2">
+        <div class="">
           <div class="glass-card p-4 sm:p-6 h-full">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
               <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-0">
@@ -64,7 +64,7 @@
         </div>
 
         <!-- Panneau latéral avec comptes -->
-        <div class="xl:col-span-1">
+        <div class="">
           <div class="glass-card p-4 sm:p-6 h-full">
             <h2 class="text-lg font-semibold text-gray-900 mb-6">
               Comptes actifs

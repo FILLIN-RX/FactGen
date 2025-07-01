@@ -66,7 +66,8 @@ const routes = [
     {
       path: '/signUp',
       name: 'register',
-      component: SignUp
+      component: SignUp,
+      meta:{showNavbarAndFooter:false}
     },
   {
     path: '/login',

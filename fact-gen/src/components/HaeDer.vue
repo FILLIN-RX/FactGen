@@ -14,8 +14,8 @@ const today = new Date().toLocaleDateString('en-US', {
 </script>
 
 <template>
-  <header class="flex   justify-between items-center py-6">
-    <div class="flex items-center space-x-6">
+  <header class="flex hidden  w-10  justify-between items-center py-6">
+    <div class="lg:flex items-center space-x-6">
       <span class="text-neutral-600">{{ today }}</span>
       
       <button class="text-neutral-600 hover:text-neutral-900 transition-colors">
