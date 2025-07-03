@@ -6,7 +6,7 @@ export async function createPDFFromFlask(req, res) {
     const {html,id} = req.body;
     if (!html) return res.status(400).json({ error: "HTML manquant" });
 
-    const response = await axios.post("https://factgen-1.onrender.com", {
+    const response = await axios.post("https://factgen-1.onrender.com/generate-pdf", {
       html: html,
     }, {
       responseType: "arraybuffer",
