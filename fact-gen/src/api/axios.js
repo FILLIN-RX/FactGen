@@ -3,7 +3,7 @@ import axios from "axios";
 import { supabase } from "../lib/supabase";
 
 const API = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "https://factgen.onrender.com/api",
 });
 
 API.interceptors.request.use(
