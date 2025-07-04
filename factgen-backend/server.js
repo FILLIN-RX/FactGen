@@ -23,13 +23,22 @@ app.use((req, res, next) => {
 
 app.use(logger);
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  })
-);
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://fact-gen.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 
 // Route de santé avec test Supabase
 app.get('/api/health', async (req, res) => {
