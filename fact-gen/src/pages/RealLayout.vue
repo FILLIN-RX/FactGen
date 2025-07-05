@@ -17,13 +17,13 @@
           
           <!-- Actions rapides -->
           <div class="flex flex-wrap gap-2 sm:gap-3">
-            <button class="btn-secondary">
+            <button class="btn-secondary" @click="handleExport">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"/>
               </svg>
               Exporter
             </button>
-            <button class="btn-primary">
+            <button class="btn-primary" @click="handleNewReport">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
@@ -144,77 +144,77 @@
   </section>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import { supabase } from "../supabaseClient";
+
+import BarChart from "../components/BarChart.vue";
 import RecentActivity from "../components/RecentActivity.vue";
 import StatisTics from "../components/StatisTics.vue";
-import BarChart from "../components/BarChart.vue";
-import { useToast } from "vue-toastification";
 
 const toast = useToast();
+const router = useRouter();
 
-export default {
-  name: "RealLayout",
-  
-  components: {
-    BarChart,
-    RecentActivity,
-    StatisTics,
+// Données réactives
+const utilisateur = ref(null);
+const showRecentActivity = ref(false);
+const accounts = ref([
+  {
+    amount: 15420,
+    currency: 'EUR',
+    names: 'Compte Principal',
+    percent: '12',
+    color: '#3B82F6'
   },
-  
-  data() {
-    return {
-      utilisateur: null,
-      showRecentActivity: false,
-      accounts: [
-        {
-          amount: 15420,
-          currency: 'EUR',
-          names: 'Compte Principal',
-          percent: '12',
-          color: '#3B82F6'
-        },
-        {
-          amount: 8750,
-          currency: 'USD',
-          names: 'Épargne Plus',
-          percent: '8',
-          color: '#10B981'
-        },
-        {
-          amount: 3200,
-          currency: 'EUR',
-          names: 'Investissements',
-          percent: '24',
-          color: '#F59E0B'
-        },
-      ]
-    };
+  {
+    amount: 8750,
+    currency: 'USD',
+    names: 'Épargne Plus',
+    percent: '8',
+    color: '#10B981'
   },
-  
-  methods: {
-    formatCurrency(amount) {
-      return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'EUR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(amount);
-    },
-    
-    handleExport() {
-      toast.success('Export en cours...');
-    },
-    
-    handleNewReport() {
-      toast.info('Nouveau rapport créé');
-    }
+  {
+    amount: 3200,
+    currency: 'EUR',
+    names: 'Investissements',
+    percent: '24',
+    color: '#F59E0B'
   },
-  
-  mounted() {
-    console.log('Dashboard monté avec succès');
+]);
+
+// Fonctions
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount);
+}
+
+function handleExport() {
+  toast.success('Export en cours...');
+}
+
+function handleNewReport() {
+  toast.info('Nouveau rapport créé');
+}
+
+// Vérification de session
+onMounted(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    router.push('/');
+  } else {
+    utilisateur.value = session.user;
+    console.log("Utilisateur connecté :", session.user);
   }
-};
+});
 </script>
+
 
 <style scoped>
 /* Glass Morphism Cards */

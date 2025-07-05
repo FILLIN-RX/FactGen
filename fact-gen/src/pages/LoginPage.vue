@@ -289,7 +289,7 @@ async function signInWithGoogle() {
     toast.info("Connexion Google en cours...", { timeout: 2000 });
     await authStore.signInWithGoogle();
     toast.success("Connecté avec Google !", { timeout: 3000 });
-    router.push({ name: 'Real' });
+
   } catch (error) {
     toast.error("Échec de la connexion Google. Réessayez.", { timeout: 5000 });
     errorMessage.value = error.message;
