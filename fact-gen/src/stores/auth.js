@@ -85,7 +85,7 @@ export const useAuthStore = defineStore("auth", {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: window.location.origin,
+            redirectTo: "https://fact-gen.vercel.app/real",
           },
         });
         if (error) throw error;
