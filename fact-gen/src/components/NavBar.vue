@@ -63,7 +63,7 @@
 
     <!-- Menu Mobile -->
     <transition name="mobile-nav">
-      <div v-if="mobileNav" class="absolute top-full left-0 w-full mobile-nav lg:hidden">
+      <div v-if="mobileNav" class="absolute top-full left-0 w-full mobile-nav bg-white z-50 lg:hidden">
         <div class="px-4 py-6 space-y-6">
           <div class="space-y-4">
             <router-link 
