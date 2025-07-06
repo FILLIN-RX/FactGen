@@ -14,9 +14,7 @@
         >
           <div class="flex items-center space-x-3">
             <div class="relative">
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"
-              ></div>
+              
               <div
                 class="relative bg-white bg-opacity-10 p-2 rounded-xl backdrop-blur-sm border border-white border-opacity-20"
               >
