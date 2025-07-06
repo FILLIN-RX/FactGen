@@ -1,40 +1,58 @@
 <template>
-  <nav :class="{ 'scrolled-nav': scrollNav }" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out navbar">
-    <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-between h-20">
+  <nav
+    :class="{ 'scrolled-nav': scrollNav }"
+    class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out navbar"
+  >
+    <div
+      class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-between h-20"
+    >
       <!-- Logo -->
       <div class="flex-shrink-0">
-        <router-link to="/" class="flex items-center space-x-3 text-white hover:text-blue-100 transition-all duration-300 group">
+        <router-link
+          to="/"
+          class="flex items-center space-x-3 text-white hover:text-blue-100 transition-all duration-300 group"
+        >
           <div class="flex items-center space-x-3">
             <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
-              <div class="relative bg-white bg-opacity-10 p-2 rounded-xl backdrop-blur-sm border border-white border-opacity-20">
-                <svg viewBox="0 0 40 40" class="w-8 h-8 text-white">
-                  <defs>
-                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
-                      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
-                    </linearGradient>
-                  </defs>
-                  <rect x="8" y="8" width="24" height="24" rx="3" fill="url(#logoGradient)" opacity="0.2"/>
-                  <rect x="8" y="8" width="24" height="24" rx="3" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                  <circle cx="20" cy="20" r="6" fill="url(#logoGradient)" opacity="0.3"/>
-                  <text x="20" y="24" text-anchor="middle" fill="white" font-size="8" font-weight="bold">€</text>
+              <div
+                class="absolute inset-0 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"
+              ></div>
+              <div
+                class="relative bg-white bg-opacity-10 p-2 rounded-xl backdrop-blur-sm border border-white border-opacity-20"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="#2563eb"
+                >
+                  <rect width="24" height="24" rx="4" fill="#2563eb" />
+                  <path
+                    fill="none"
+                    stroke="#fff"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 10h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
             </div>
             <div class="text-2xl font-bold tracking-tight">
               <span class="text-white font-black">FACT</span>
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-emerald-300">GEN</span>
+              <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-emerald-300"
+                >GEN</span
+              >
             </div>
           </div>
         </router-link>
       </div>
 
       <!-- Menu Mobile Toggle -->
-      <button 
-        @click="toggleMobileNav" 
+      <button
+        @click="toggleMobileNav"
         class="relative w-10 h-10 flex flex-col justify-center items-center text-white hover:text-blue-200 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 rounded-lg lg:hidden hover:bg-white hover:bg-opacity-10"
-        :class="{ 'active': mobileNav }"
+        :class="{ active: mobileNav }"
         aria-label="Toggle navigation"
       >
         <span class="hamburger-line"></span>
@@ -55,15 +73,25 @@
             <span class="nav-link-text">Support</span>
           </router-link>
         </div>
-        
+
         <div class="flex items-center space-x-4">
           <router-link to="/login" class="btn btn-outline">
             Connexion
           </router-link>
           <router-link to="/register" class="btn btn-primary">
             <span class="btn-text">S'inscrire</span>
-            <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            <svg
+              class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              ></path>
             </svg>
           </router-link>
         </div>
@@ -72,80 +100,135 @@
 
     <!-- Menu Mobile -->
     <transition name="mobile-nav">
-      <div v-if="mobileNav" class="absolute top-full left-0 w-full mobile-nav lg:hidden">
+      <div
+        v-if="mobileNav"
+        class="absolute top-full left-0 w-full mobile-nav lg:hidden"
+      >
         <div class="px-6 py-8 space-y-6">
           <div class="space-y-2">
-            <router-link 
-              to="/features" 
+            <router-link
+              to="/features"
               class="mobile-nav-link"
               @click="closeMobileNav"
             >
               <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 bg-blue-500 bg-opacity-20 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                <div
+                  class="w-10 h-10 bg-blue-500 bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    ></path>
                   </svg>
                 </div>
                 <div>
                   <div class="font-semibold">Fonctionnalités</div>
-                  <div class="text-sm text-blue-200 opacity-70">Découvrez nos outils</div>
+                  <div class="text-sm text-blue-200 opacity-70">
+                    Découvrez nos outils
+                  </div>
                 </div>
               </div>
             </router-link>
-            
-            <router-link 
-              to="/pricing" 
+
+            <router-link
+              to="/pricing"
               class="mobile-nav-link"
               @click="closeMobileNav"
             >
               <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 bg-emerald-500 bg-opacity-20 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                <div
+                  class="w-10 h-10 bg-emerald-500 bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                    ></path>
                   </svg>
                 </div>
                 <div>
                   <div class="font-semibold">Tarifs</div>
-                  <div class="text-sm text-blue-200 opacity-70">Plans et abonnements</div>
+                  <div class="text-sm text-blue-200 opacity-70">
+                    Plans et abonnements
+                  </div>
                 </div>
               </div>
             </router-link>
-            
-            <router-link 
-              to="/support" 
+
+            <router-link
+              to="/support"
               class="mobile-nav-link"
               @click="closeMobileNav"
             >
               <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 bg-purple-500 bg-opacity-20 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div
+                  class="w-10 h-10 bg-purple-500 bg-opacity-20 rounded-lg flex items-center justify-center"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
                   </svg>
                 </div>
                 <div>
                   <div class="font-semibold">Support</div>
-                  <div class="text-sm text-blue-200 opacity-70">Aide et assistance</div>
+                  <div class="text-sm text-blue-200 opacity-70">
+                    Aide et assistance
+                  </div>
                 </div>
               </div>
             </router-link>
           </div>
-          
+
           <div class="space-y-4 pt-6 border-t border-white border-opacity-20">
-            <router-link 
-              to="/login" 
+            <router-link
+              to="/login"
               class="btn btn-outline w-full"
               @click="closeMobileNav"
             >
               Connexion
             </router-link>
-            <router-link 
-              to="/register" 
+            <router-link
+              to="/register"
               class="btn btn-primary w-full group"
               @click="closeMobileNav"
             >
               <span class="btn-text">S'inscrire</span>
-              <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              <svg
+                class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                ></path>
               </svg>
             </router-link>
           </div>
@@ -157,7 +240,7 @@
 
 <script>
 export default {
-  name: 'NavBar',
+  name: "NavBar",
   data() {
     return {
       scrollNav: false,
@@ -179,31 +262,31 @@ export default {
   methods: {
     toggleMobileNav() {
       this.mobileNav = !this.mobileNav;
-      
+
       if (this.mobileNav) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
       } else {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
       }
     },
-    
+
     closeMobileNav() {
       this.mobileNav = false;
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     },
-    
+
     checkScreen() {
       this.windowWidth = window.innerWidth;
       if (this.windowWidth > 1024) {
         this.mobileNav = false;
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
       }
     },
-    
+
     updateScroll() {
       const scrollPosition = window.scrollY;
       this.scrollNav = scrollPosition > 50;
-    }
+    },
   },
 };
 </script>
@@ -211,9 +294,10 @@ export default {
 <style scoped>
 /* Navbar principale */
 .navbar {
-  background: linear-gradient(135deg, 
-    rgba(30, 58, 138, 0.95) 0%, 
-    rgba(59, 130, 246, 0.90) 50%, 
+  background: linear-gradient(
+    135deg,
+    rgba(30, 58, 138, 0.95) 0%,
+    rgba(59, 130, 246, 0.9) 50%,
     rgba(16, 185, 129, 0.85) 100%
   );
   backdrop-filter: blur(20px);
@@ -223,8 +307,9 @@ export default {
 
 /* Navbar scrollée - Devient plus opaque et compacte */
 .scrolled-nav {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.95) 0%, 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
     rgba(248, 250, 252, 0.98) 100%
   );
   backdrop-filter: blur(25px);
@@ -293,7 +378,7 @@ export default {
 }
 
 .nav-link-text::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -0.25rem;
   left: 0;
@@ -334,13 +419,18 @@ export default {
 }
 
 .btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -370,7 +460,7 @@ export default {
 }
 
 .btn-primary::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   padding: 2px;
@@ -420,9 +510,10 @@ export default {
 
 /* Menu Mobile */
 .mobile-nav {
-  background: linear-gradient(135deg, 
-    rgba(30, 58, 138, 0.98) 0%, 
-    rgba(59, 130, 246, 0.95) 50%, 
+  background: linear-gradient(
+    135deg,
+    rgba(30, 58, 138, 0.98) 0%,
+    rgba(59, 130, 246, 0.95) 50%,
     rgba(16, 185, 129, 0.92) 100%
   );
   backdrop-filter: blur(25px);
@@ -474,15 +565,15 @@ export default {
     padding-right: 1rem;
     height: 4rem;
   }
-  
+
   .text-2xl {
     font-size: 1.25rem;
   }
-  
+
   .navbar {
     height: 4rem;
   }
-  
+
   .scrolled-nav .mx-auto {
     height: 3.5rem;
   }
@@ -509,14 +600,15 @@ export default {
 
 /* Ajout d'un effet de glassmorphism */
 .navbar::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0.05) 100%
   );
   pointer-events: none;
