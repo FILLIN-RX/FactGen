@@ -148,7 +148,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../lib/supabase";
 
 import BarChart from "../components/BarChart.vue";
 import RecentActivity from "../components/RecentActivity.vue";
