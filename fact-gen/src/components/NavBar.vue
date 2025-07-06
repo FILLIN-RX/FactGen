@@ -1,11 +1,11 @@
 <template>
-  <nav :class="{ 'scrolled-nav': scrollNav }" class="navbar">
-    <div class="navbar-container">
+  <nav :class="{ 'scrolled-nav': scrollNav }" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out navbar">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-between h-16">
       <!-- Logo -->
-      <div class="logo">
-        <router-link to="/" class="logo-link">
-          <div class="logo-content">
-            <div class="logo-icon">
+      <div class="flex-shrink-0">
+        <router-link to="/" class="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200">
+          <div class="flex items-center space-x-2">
+            <div class="text-blue-200">
               <svg viewBox="0 0 40 40" class="w-8 h-8">
                 <rect x="8" y="6" width="20" height="26" rx="2" fill="currentColor" opacity="0.1"/>
                 <rect x="8" y="6" width="20" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
@@ -17,7 +17,7 @@
                 <text x="20" y="28" text-anchor="middle" fill="white" font-size="4" font-weight="bold">€</text>
               </svg>
             </div>
-            <div class="logo-text">
+            <div class="text-xl font-bold tracking-tight">
               <span class="text-white font-bold">FACT</span><span class="text-blue-300">GEN</span>
             </div>
           </div>
@@ -27,7 +27,7 @@
       <!-- Menu Mobile Toggle -->
       <button 
         @click="toggleMobileNav" 
-        class="mobile-menu-btn lg:hidden"
+        class="relative w-8 h-8 flex flex-col justify-center items-center text-white hover:text-blue-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 rounded lg:hidden"
         :class="{ 'active': mobileNav }"
         aria-label="Toggle navigation"
       >
@@ -37,8 +37,8 @@
       </button>
 
       <!-- Navigation Desktop -->
-      <div class="desktop-nav hidden lg:flex">
-        <div class="nav-links">
+      <div class="hidden lg:flex items-center space-x-8">
+        <div class="flex items-center space-x-6">
           <router-link to="/features" class="nav-link">
             Fonctionnalités
           </router-link>
@@ -50,7 +50,7 @@
           </router-link>
         </div>
         
-        <div class="nav-buttons">
+        <div class="flex items-center space-x-3">
           <router-link to="/login" class="btn btn-outline">
             Connexion
           </router-link>
@@ -63,12 +63,12 @@
 
     <!-- Menu Mobile -->
     <transition name="mobile-nav">
-      <div v-if="mobileNav" class="mobile-nav lg:hidden">
-        <div class="mobile-nav-content">
-          <div class="mobile-nav-links">
+      <div v-if="mobileNav" class="absolute top-full left-0 w-full mobile-nav lg:hidden">
+        <div class="px-4 py-6 space-y-6">
+          <div class="space-y-4">
             <router-link 
               to="/features" 
-              class="mobile-nav-link"
+              class="flex items-center space-x-3 text-white hover:text-blue-200 py-3 px-4 rounded-lg transition-colors duration-200 hover:bg-blue-800 hover:bg-opacity-50"
               @click="closeMobileNav"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@
             
             <router-link 
               to="/pricing" 
-              class="mobile-nav-link"
+              class="flex items-center space-x-3 text-white hover:text-blue-200 py-3 px-4 rounded-lg transition-colors duration-200 hover:bg-blue-800 hover:bg-opacity-50"
               @click="closeMobileNav"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@
             
             <router-link 
               to="/support" 
-              class="mobile-nav-link"
+              class="flex items-center space-x-3 text-white hover:text-blue-200 py-3 px-4 rounded-lg transition-colors duration-200 hover:bg-blue-800 hover:bg-opacity-50"
               @click="closeMobileNav"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@
             </router-link>
           </div>
           
-          <div class="mobile-nav-buttons">
+          <div class="space-y-3 pt-6 border-t border-blue-700">
             <router-link 
               to="/login" 
               class="btn btn-outline w-full"
@@ -191,135 +191,12 @@ export default {
 
 /* Navbar principale */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 50;
-  transition: all 0.3s ease-in-out;
   background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-container {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  max-width: 80rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 4rem;
-}
-
-@media (min-width: 640px) {
-  .navbar-container {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .navbar-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
-/* Logo */
-.logo {
-  flex-shrink: 0;
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.logo-link:hover {
-  color: #bfdbfe;
-}
-
-.logo-content {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.logo-icon {
-  color: #bfdbfe;
-}
-
-.logo-text {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-}
-
-.text-white {
-  color: white;
-}
-
-.font-bold {
-  font-weight: 700;
-}
-
-.text-blue-300 {
-  color: #93c5fd;
-}
-
-.w-8 {
-  width: 2rem;
-}
-
-.h-8 {
-  height: 2rem;
-}
-
-.w-5 {
-  width: 1.25rem;
-}
-
-.h-5 {
-  height: 1.25rem;
-}
-
-.w-full {
-  width: 100%;
-}
-
-/* Menu Mobile Toggle */
-.mobile-menu-btn {
-  position: relative;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  transition: color 0.2s ease;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.mobile-menu-btn:hover {
-  color: #bfdbfe;
-}
-
-.mobile-menu-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.5);
-  border-radius: 0.25rem;
-}
-
+/* Hamburger Animation */
 .hamburger-line {
   display: block;
   width: 1.5rem;
@@ -333,45 +210,27 @@ export default {
   margin-bottom: 0;
 }
 
-.mobile-menu-btn.active .hamburger-line:first-child {
+.active .hamburger-line:first-child {
   transform: rotate(45deg) translateY(0.375rem);
 }
 
-.mobile-menu-btn.active .hamburger-line:nth-child(2) {
+.active .hamburger-line:nth-child(2) {
   opacity: 0;
 }
 
-.mobile-menu-btn.active .hamburger-line:last-child {
+.active .hamburger-line:last-child {
   transform: rotate(-45deg) translateY(-0.375rem);
 }
 
-/* Navigation Desktop */
-.desktop-nav {
-  display: none;
-  align-items: center;
-  gap: 2rem;
-}
-
-@media (min-width: 1024px) {
-  .desktop-nav {
-    display: flex;
-  }
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
+/* Navigation Links */
 .nav-link {
   color: white;
-  text-decoration: none;
-  transition: color 0.2s ease;
   font-weight: 500;
   font-size: 0.875rem;
   letter-spacing: 0.025em;
   position: relative;
+  transition: color 0.2s ease;
+  text-decoration: none;
 }
 
 .nav-link:hover {
@@ -402,12 +261,6 @@ export default {
 }
 
 /* Boutons */
-.nav-buttons {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .btn {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
@@ -417,13 +270,12 @@ export default {
   text-decoration: none;
   display: inline-block;
   text-align: center;
-  cursor: pointer;
   border: none;
+  cursor: pointer;
 }
 
 .btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px transparent;
 }
 
 .btn-outline {
@@ -458,56 +310,9 @@ export default {
 
 /* Menu Mobile */
 .mobile-nav {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
   background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
   border-top: 1px solid #1d4ed8;
   min-height: calc(100vh - 4rem);
-}
-
-@media (min-width: 1024px) {
-  .mobile-nav {
-    display: none;
-  }
-}
-
-.mobile-nav-content {
-  padding: 1.5rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.mobile-nav-links {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.mobile-nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: white;
-  text-decoration: none;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  transition: color 0.2s ease;
-}
-
-.mobile-nav-link:hover {
-  color: #bfdbfe;
-  background-color: rgba(30, 64, 175, 0.5);
-}
-
-.mobile-nav-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #1d4ed8;
 }
 
 /* Animations */
@@ -533,48 +338,39 @@ export default {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.scrolled-nav .navbar-container {
+.scrolled-nav .mx-auto {
   height: 3.5rem;
 }
 
-.scrolled-nav .logo-text {
+.scrolled-nav .text-xl {
   font-size: 1.125rem;
 }
 
-.scrolled-nav .logo-icon {
+.scrolled-nav .w-8 {
   width: 1.5rem;
   height: 1.5rem;
 }
 
 /* Responsive Design */
 @media (max-width: 640px) {
-  .navbar-container {
+  .mx-auto {
     padding-left: 1rem;
     padding-right: 1rem;
     height: 3.5rem;
   }
   
-  .logo-text {
+  .text-xl {
     font-size: 1.125rem;
   }
   
-  .mobile-nav-content {
-    padding: 1rem;
-  }
-}
-
-/* Utilitaires Tailwind conservés */
-.hidden {
-  display: none;
-}
-
-@media (min-width: 1024px) {
-  .lg\:hidden {
-    display: none;
+  .mobile-nav .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   
-  .lg\:flex {
-    display: flex;
+  .mobile-nav .py-6 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }
 
@@ -587,8 +383,7 @@ export default {
 
 /* States focus améliorés */
 .btn:focus-visible,
-.nav-link:focus-visible,
-.mobile-nav-link:focus-visible {
+.nav-link:focus-visible {
   outline: 2px solid #93c5fd;
   outline-offset: 2px;
 }
