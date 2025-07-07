@@ -242,7 +242,7 @@
       <!-- Desktop Sidebar -->
       <div class="hidden lg:flex lg:w-72 xl:w-80">
         <div class="w-full bg-white border-r border-slate-200 shadow-sm">
-         <!-- <LoginNav /> -->
+         <LoginNav />
         </div>
       </div>
 
