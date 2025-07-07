@@ -24,6 +24,7 @@
             </div>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+             <router-link to="/facture">
               <button class="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out">
                 <span class="flex items-center justify-center gap-2">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -32,9 +33,8 @@
                   Créer ma facture
                 </span>
               </button>
-              <button class="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold hover:border-blue-600 hover:text-blue-600 transition-all duration-300">
-                Voir la démo
-              </button>
+              </router-link> 
+
             </div>
 
             <!-- Trust Indicators -->

@@ -3,15 +3,15 @@
     :class="{ 'scrolled-nav': scrollNav }"
     class="fixed top-0 left-0 w-full z-50 transition-all duration-300 navbar"
   >
-    <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-between h-16">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 container  flex items-center justify-between h-16">
       <!-- Logo -->
       <div class="flex-shrink-0">
         <router-link to="/" class="flex items-center space-x-2 text-gray-900 hover:text-blue-600 transition-colors">
-          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
+           <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
           <span class="text-xl font-bold">FactGen</span>
         </router-link>
       </div>
@@ -21,6 +21,7 @@
         <router-link to="/features" class="nav-link">Fonctionnalités</router-link>
         <router-link to="/pricing" class="nav-link">Tarifs</router-link>
         <router-link to="/support" class="nav-link">Support</router-link>
+       
       </div>
 
       <!-- Boutons d'action -->
@@ -28,10 +29,10 @@
         <router-link to="/login" class="btn-login">
           Connexion
         </router-link>
-        <router-link to="/register" class="btn-primary">
+      
+           <router-link to="/signUp" class="btn-primary">
           S'inscrire
         </router-link>
-        
         <!-- Menu mobile toggle -->
         <button
           @click="toggleMobileNav"
@@ -69,6 +70,9 @@
           @click="closeMobileNav"
         >
           Support
+        </router-link>
+           <router-link to="/register" class="btn-primary">
+          S'inscrire
         </router-link>
       </div>
     </div>
@@ -114,13 +118,13 @@ export default {
 <style scoped>
 /* Navbar principale */
 .navbar {
-  background: rgba(255, 255, 255, 0.95);
+  background:#4E71FF;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .scrolled-nav {
-  background: rgba(255, 255, 255, 0.98);
+  background: #5EABD6;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
