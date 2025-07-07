@@ -1,140 +1,63 @@
 <template>
   <section class="min-h-screen bg-gray-50">
-    <!-- Container principal avec padding adaptatif -->
-    <div class="container mx-auto px-4 py-6 max-w-6xl">
+    <!-- Augmentation du padding vertical sur mobile -->
+    <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
       
-      <!-- Header avec titre et actions -->
-      <header class="mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+      <!-- Header réorganisé pour mobile -->
+      <header class="mb-6 sm:mb-8">
+        <div class="flex flex-col">
+          <div class="mb-4">
+            <h1 class="text-xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
               Dashboard Analytics
             </h1>
-            <p class="text-gray-600 text-sm sm:text-base">
-              Vue d'ensemble de vos performances en temps réel
+            <p class="text-xs sm:text-base text-gray-600">
+              Vue d'ensemble de vos performances
             </p>
           </div>
           
-          <!-- Actions rapides -->
-          <div class="flex flex-wrap gap-2 sm:gap-3">
-            <button class="btn-secondary" @click="handleExport">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"/>
-              </svg>
-              Exporter
-            </button>
-            <button class="btn-primary" @click="handleNewReport">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-              </svg>
-              Nouveau rapport
-            </button>
-          </div>
+          <!-- Boutons en colonne sur mobile -->
+          
         </div>
       </header>
 
-      <!-- Statistiques avec grid responsive -->
-      <div class="mb-8">
-        <div class="glass-card p-4 sm:p-6">
+      <!-- Statistiques avec moins d'espacement sur mobile -->
+      <div class="mb-6 sm:mb-8">
+        <div class="glass-card p-3 sm:p-6">
           <StatisTics />
         </div>
       </div>
 
-      <!-- Section graphiques -->
-      <div class="grid grid-cols-1  gap-6 mb-8">
+      <!-- Grille simplifiée sur mobile -->
+      <div class="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <!-- Graphique principal -->
-        <div class="">
-          <div class="glass-card p-4 sm:p-6 h-full">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-              <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-0">
+        <div>
+          <div class="glass-card p-3 sm:p-6">
+            <div class="flex flex-col mb-4 sm:mb-6">
+              <h2 class="text-base sm:text-xl font-semibold text-gray-900 mb-2">
                 Évolution des revenus
               </h2>
-              <div class="flex gap-2">
-                <select class="select-custom">
-                  <option>7 derniers jours</option>
-                  <option>30 derniers jours</option>
-                  <option>3 derniers mois</option>
-                </select>
-              </div>
+              <select class="select-custom text-xs sm:text-sm">
+                <option>7 derniers jours</option>
+                <option>30 derniers jours</option>
+                <option>3 derniers mois</option>
+              </select>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="min-height: 250px">
               <BarChart />
             </div>
           </div>
         </div>
 
         <!-- Panneau latéral avec comptes -->
-        <div class="">
-          <div class="glass-card p-4 sm:p-6 h-full">
-            <h2 class="text-lg font-semibold text-gray-900 mb-6">
-              Comptes actifs
-            </h2>
-            
-            <div class="space-y-4">
-              <div 
-                v-for="(account, index) in accounts" 
-                :key="index"
-                class="account-card"
-              >
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center">
-                    <div 
-                      class="w-3 h-3 rounded-full mr-3"
-                      :style="{ backgroundColor: account.color }"
-                    ></div>
-                    <span class="font-medium text-gray-900 text-sm">
-                      {{ account.names }}
-                    </span>
-                  </div>
-                  <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                    +{{ account.percent }}%
-                  </span>
-                </div>
-                
-                <div class="flex items-end justify-between">
-                  <div>
-                    <p class="text-2xl font-bold text-gray-900">
-                      {{ formatCurrency(account.amount) }}
-                    </p>
-                    <p class="text-xs text-gray-500 uppercase tracking-wide">
-                      {{ account.currency }}
-                    </p>
-                  </div>
-                  
-                  <!-- Mini graphique de progression -->
-                  <div class="w-16 h-8">
-                    <div class="h-full bg-gray-200 rounded relative overflow-hidden">
-                      <div 
-                        class="absolute bottom-0 left-0 bg-blue-500 rounded transition-all duration-300"
-                        :style="{ 
-                          width: '100%', 
-                          height: `${Math.min(parseInt(account.percent), 100)}%` 
-                        }"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bouton d'action -->
-            <button class="w-full mt-6 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors duration-200 flex items-center justify-center">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-              </svg>
-              Ajouter un compte
-            </button>
-          </div>
-        </div>
       </div>
 
-      <!-- Section activité récente (optionnelle) -->
-      <div class="glass-card p-4 sm:p-6" v-if="showRecentActivity">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-lg sm:text-xl font-semibold text-gray-900">
+      <!-- Section activité récente -->
+      <div class="glass-card p-3 sm:p-6" v-if="showRecentActivity">
+        <div class="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 class="text-base sm:text-xl font-semibold text-gray-900">
             Activité récente
           </h2>
-          <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+          <button class="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium">
             Voir tout
           </button>
         </div>

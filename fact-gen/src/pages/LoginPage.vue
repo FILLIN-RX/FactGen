@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex flex-col">
+  <div class="min-h-screen bg-blue-50 flex flex-col">
     <!-- Header avec logo/bouton retour -->
     <header class="relative z-10 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -7,23 +7,23 @@
           to="/" 
           class="flex items-center space-x-3 group transition-all duration-300 hover:scale-105"
         >
-          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
             <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
           </div>
           <div class="hidden sm:block">
-            <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+            <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               FactGen
             </span>
-            <div class="text-xs text-slate-500 -mt-1">Gestion de factures</div>
+            <div class="text-xs text-gray-500 -mt-1">Gestion de factures</div>
           </div>
         </router-link>
         
         <!-- Bouton retour mobile -->
         <router-link 
           to="/" 
-          class="sm:hidden flex items-center space-x-2 text-slate-600 hover:text-blue-600 transition-colors duration-200"
+          class="sm:hidden flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors duration-200"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -36,8 +36,7 @@
     <!-- Background Pattern -->
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full opacity-10 blur-3xl animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-green-400 rounded-full opacity-10 blur-3xl animate-pulse"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-300 rounded-full opacity-5 blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400 rounded-full opacity-10 blur-3xl animate-pulse"></div>
     </div>
 
     <!-- Main Content -->
@@ -45,98 +44,35 @@
       <div class="relative w-full max-w-6xl mx-auto">
         <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
           <!-- Left Side - Branding (Desktop) -->
-          <div class="hidden lg:block space-y-8">
-            <div class="text-center lg:text-left space-y-6">
-              <div class="relative inline-block">
-                <img 
-                  src="../assets/Facture_moderne_de_Factgen__1_-removebg-preview.png" 
-                  class="w-full max-w-md mx-auto lg:mx-0 drop-shadow-2xl" 
-                  alt="FactGen - Gestion de factures moderne"
-                />
-                <div class="absolute -inset-4 bg-gradient-to-r from-blue-600/10 to-green-600/10 rounded-3xl blur-2xl"></div>
-              </div>
-              
-              <div class="space-y-4">
-                <h1 class="text-4xl xl:text-5xl font-bold text-slate-900 leading-tight">
-                  Bienvenue sur 
-                  <span class="bg-gradient-to-r from-blue-600 via-blue-700 to-green-600 bg-clip-text text-transparent block lg:inline">
-                    FactGen
-                  </span>
-                </h1>
-                <p class="text-xl text-slate-600 leading-relaxed max-w-lg">
-                  La solution moderne et intuitive pour gérer vos factures et clients en toute simplicité
-                </p>
-              </div>
-            </div>
-            
-            <!-- Features List -->
-            <div class="space-y-4">
-              <div class="flex items-center space-x-4 group">
-                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
-                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-slate-900">Factures professionnelles</h3>
-                  <p class="text-sm text-slate-600">Création rapide et personnalisée</p>
-                </div>
-              </div>
-              
-              <div class="flex items-center space-x-4 group">
-                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
-                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-slate-900">Gestion clients</h3>
-                  <p class="text-sm text-slate-600">Suivi complet et historique</p>
-                </div>
-              </div>
-              
-              <div class="flex items-center space-x-4 group">
-                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-100 to-blue-200 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
-                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-slate-900">Analyses avancées</h3>
-                  <p class="text-sm text-slate-600">Tableaux de bord et rapports</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          
 
           <!-- Right Side - Login Form -->
           <div class="w-full">
-            <div class="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-10 relative overflow-hidden">
+            <div class="bg-white border border-gray-100 rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10 relative overflow-hidden">
               <!-- Decorative elements -->
-              <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-green-500/10 rounded-full blur-2xl"></div>
-              <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-green-500/10 to-blue-500/10 rounded-full blur-2xl"></div>
+              <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
               
               <!-- Mobile Logo -->
               <div class="lg:hidden text-center mb-8">
                 <div class="inline-flex items-center space-x-3 mb-3">
-                  <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                   </div>
-                  <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                  <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
                     FactGen
                   </h1>
                 </div>
-                <p class="text-slate-600 text-sm sm:text-base">Gestion moderne de factures</p>
+                <p class="text-gray-600 text-sm sm:text-base">Gestion moderne de factures</p>
               </div>
 
               <!-- Form Header -->
               <div class="text-center mb-8 relative">
-                <h2 class="text-2xl sm:text-3xl lg:text-3xl font-bold text-slate-900 mb-3">
+                <h2 class="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900 mb-3">
                   Connectez-vous
                 </h2>
-                <p class="text-slate-600 text-sm sm:text-base">
+                <p class="text-gray-600 text-sm sm:text-base">
                   Accédez à votre espace de gestion personnalisé
                 </p>
               </div>
@@ -145,12 +81,12 @@
               <form @submit.prevent="onSubmit" class="space-y-6">
                 <!-- Email Input -->
                 <div class="space-y-2">
-                  <label for="email" class="text-sm font-semibold text-slate-700">
+                  <label for="email" class="text-sm font-semibold text-gray-700">
                     Adresse email
                   </label>
                   <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
                       </svg>
                     </div>
@@ -160,19 +96,19 @@
                       type="email"
                       placeholder="votre@email.com"
                       required
-                      class="block w-full pl-12 pr-4 py-4 border border-slate-200 rounded-2xl bg-white/80 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
+                      class="block w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
                     />
                   </div>
                 </div>
 
                 <!-- Password Input -->
                 <div class="space-y-2">
-                  <label for="password" class="text-sm font-semibold text-slate-700">
+                  <label for="password" class="text-sm font-semibold text-gray-700">
                     Mot de passe
                   </label>
                   <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                       </svg>
                     </div>
@@ -183,17 +119,17 @@
                       placeholder="••••••••"
                       required
                       minlength="6"
-                      class="block w-full pl-12 pr-14 py-4 border border-slate-200 rounded-2xl bg-white/80 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
+                      class="block w-full pl-12 pr-14 py-4 border border-gray-200 rounded-2xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
                     />
                     <button
                       type="button"
                       @click="showPassword = !showPassword"
-                      class="absolute inset-y-0 right-0 pr-4 flex items-center hover:bg-slate-50 rounded-r-2xl transition-colors duration-200"
+                      class="absolute inset-y-0 right-0 pr-4 flex items-center hover:bg-gray-50 rounded-r-2xl transition-colors duration-200"
                     >
-                      <svg v-if="showPassword" class="h-5 w-5 text-slate-400 hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg v-if="showPassword" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/>
                       </svg>
-                      <svg v-else class="h-5 w-5 text-slate-400 hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg v-else class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                       </svg>
@@ -208,9 +144,9 @@
                       id="remember-me"
                       v-model="rememberMe"
                       type="checkbox"
-                      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded transition-colors duration-200"
+                      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-200"
                     />
-                    <label for="remember-me" class="ml-3 block text-sm text-slate-700 font-medium">
+                    <label for="remember-me" class="ml-3 block text-sm text-gray-700 font-medium">
                       Se souvenir de moi
                     </label>
                   </div>
@@ -222,7 +158,7 @@
                 <!-- Login Button -->
                 <button
                   type="submit"
-                  class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-2xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 via-blue-700 to-blue-500 hover:from-blue-700 hover:via-blue-800 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:transform active:scale-95"
+                  class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-2xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl"
                   :disabled="loading"
                 >
                   <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -237,10 +173,10 @@
               <div class="my-8">
                 <div class="relative">
                   <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-slate-200"></div>
+                    <div class="w-full border-t border-gray-200"></div>
                   </div>
                   <div class="relative flex justify-center text-sm">
-                    <span class="px-6 bg-white text-slate-500 font-medium">ou continuer avec</span>
+                    <span class="px-6 bg-white text-gray-500 font-medium">ou continuer avec</span>
                   </div>
                 </div>
               </div>
@@ -248,7 +184,7 @@
               <!-- Google Login -->
               <button
                 @click="signInWithGoogle"
-                class="w-full flex justify-center items-center py-4 px-6 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 active:transform active:scale-95"
+                class="w-full flex justify-center items-center py-4 px-6 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md"
                 :disabled="loading"
               >
                 <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -262,11 +198,11 @@
 
               <!-- Signup Link -->
               <div class="mt-8 text-center">
-                <p class="text-sm text-slate-600">
+                <p class="text-sm text-gray-600">
                   Pas encore de compte ?
                   <router-link 
                     to="/signUp" 
-                    class="font-semibold text-blue-600 hover:text-green-600 transition-colors duration-200 ml-1"
+                    class="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 ml-1"
                   >
                     Créer un compte gratuit
                   </router-link>
@@ -373,11 +309,6 @@ async function signInWithGoogle() {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
-}
-
-/* Effet glassmorphism amélioré */
-.backdrop-blur-2xl {
-  backdrop-filter: blur(20px);
 }
 
 /* Transitions fluides */

@@ -57,6 +57,7 @@ const statsCards = computed(() => [
     color: 'blue',
     bgGradient: 'from-blue-500 to-blue-600',
     lightBg: 'bg-blue-50',
+    iconColor: 'text-blue-600',
     description: 'Clients enregistrés',
     trend: '+12%',
     trendDirection: 'up'
@@ -69,6 +70,7 @@ const statsCards = computed(() => [
     color: 'emerald',
     bgGradient: 'from-emerald-500 to-emerald-600',
     lightBg: 'bg-emerald-50',
+    iconColor: 'text-emerald-600',
     description: 'Factures créées',
     trend: '+8%',
     trendDirection: 'up'
@@ -81,6 +83,7 @@ const statsCards = computed(() => [
     color: 'purple',
     bgGradient: 'from-purple-500 to-purple-600',
     lightBg: 'bg-purple-50',
+    iconColor: 'text-purple-600',
     description: 'Revenus totaux',
     trend: '+15%',
     trendDirection: 'up',
@@ -94,6 +97,7 @@ const statsCards = computed(() => [
     color: 'orange',
     bgGradient: 'from-orange-500 to-orange-600',
     lightBg: 'bg-orange-50',
+    iconColor: 'text-orange-600',
     description: 'Conversion clients',
     trend: '+3%',
     trendDirection: 'up',
@@ -133,60 +137,114 @@ const getIcon = (iconName) => {
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full  bg-gray-50">
     <!-- Header Section -->
-    <div class="mb-6 px-4 sm:px-6">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+    <div class="bg-white border-b border-gray-100 px-3 py-4 sm:px-6 sm:py-6">
+      <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div>
-          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          <h1 class="text-xl font-bold text-gray-900 sm:text-2xl">
             Statistiques
           </h1>
-          <p class="text-sm text-gray-600">
+          <p class="text-xs text-gray-600 sm:text-sm">
             Vue d'ensemble de votre activité
           </p>
         </div>
         
         <!-- Last Update Badge -->
-        <div class="mt-4 sm:mt-0">
-          <div class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-            <svg class="w-3 h-3 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Mis à jour {{ formattedLastUpdate }}
-          </div>
+        <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 sm:px-3 sm:py-1.5">
+          <svg class="w-3 h-3 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="truncate">{{ formattedLastUpdate }}</span>
         </div>
       </div>
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6">
-      <div 
-        v-for="card in statsCards" 
-        :key="card.id"
-        class="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
-      >
-        <!-- Gradient Background -->
-        <div :class="`absolute inset-0 bg-gradient-to-br ${card.bgGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`"></div>
-        
-        <!-- Content -->
-        <div class="relative p-4 sm:p-6">
-          <!-- Header -->
-          <div class="flex items-center justify-between mb-4">
-            <div :class="`p-2.5 rounded-xl ${card.lightBg}`">
-              <svg 
-                class="w-5 h-5"
-                :class="`text-${card.color}-600`"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                v-html="getIcon(card.icon)"
-              ></svg>
+    <div class="p-3 sm:p-6">
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 lg:gap-6">
+        <div 
+          v-for="(card, index) in statsCards" 
+          :key="card.id"
+          class="stats-card group relative bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+          :style="`animation-delay: ${index * 0.1}s`"
+        >
+          <!-- Gradient Background -->
+          <div :class="`absolute inset-0 bg-gradient-to-br ${card.bgGradient} opacity-0 group-hover:opacity-3 transition-opacity duration-300`"></div>
+          
+          <!-- Content -->
+          <div class="relative p-3 sm:p-4">
+            <!-- Header with Icon and Trend -->
+            <div class="flex items-center justify-between mb-3">
+              <div :class="`p-1.5 rounded-lg ${card.lightBg} sm:p-2`">
+                <svg 
+                  class="w-3.5 h-3.5 sm:w-4 sm:h-4"
+                  :class="card.iconColor"
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  v-html="getIcon(card.icon)"
+                ></svg>
+              </div>
+              
+              <!-- Trend Badge (Hidden on very small screens) -->
+              <div class="hidden xs:flex items-center space-x-1">
+                <svg 
+                  class="w-2.5 h-2.5 sm:w-3 sm:h-3"
+                  :class="card.trendDirection === 'up' ? 'text-emerald-500' : 'text-red-500'"
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    :d="card.trendDirection === 'up' ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6'"
+                  ></path>
+                </svg>
+                <span 
+                  class="text-xs font-medium"
+                  :class="card.trendDirection === 'up' ? 'text-emerald-600' : 'text-red-600'"
+                >
+                  {{ card.trend }}
+                </span>
+              </div>
             </div>
-            
-            <!-- Trend Badge -->
-            <div class="flex items-center space-x-1">
+
+            <!-- Title -->
+            <h3 class="text-xs font-medium text-gray-600 mb-1.5 sm:text-sm truncate">
+              {{ card.title }}
+            </h3>
+
+            <!-- Value -->
+            <div class="mb-2">
+              <!-- Loading State -->
+              <div v-if="statsStore.isLoading" class="animate-pulse bg-gray-200 h-5 w-12 rounded sm:h-6 sm:w-16"></div>
+              
+              <!-- Error State -->
+              <div v-else-if="statsStore.error" class="flex items-center text-red-500">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-xs font-medium">Erreur</span>
+              </div>
+              
+              <!-- Success State -->
+              <p v-else class="text-lg font-bold text-gray-900 leading-tight group-hover:scale-105 transition-transform duration-200 sm:text-xl">
+                {{ formatValue(card.value, card.format) }}
+              </p>
+            </div>
+
+            <!-- Description (Hidden on small screens) -->
+            <p class="hidden sm:block text-xs text-gray-500 truncate">
+              {{ card.description }}
+            </p>
+
+            <!-- Trend on mobile (visible only on very small screens) -->
+            <div class="flex xs:hidden items-center space-x-1 mt-1">
               <svg 
-                class="w-3 h-3"
+                class="w-2.5 h-2.5"
                 :class="card.trendDirection === 'up' ? 'text-emerald-500' : 'text-red-500'"
                 fill="none" 
                 stroke="currentColor" 
@@ -206,58 +264,27 @@ const getIcon = (iconName) => {
                 {{ card.trend }}
               </span>
             </div>
-          </div>
 
-          <!-- Title -->
-          <h3 class="text-sm font-medium text-gray-600 mb-1">
-            {{ card.title }}
-          </h3>
-
-          <!-- Value -->
-          <div class="mb-2">
-            <!-- Loading State -->
-            <div v-if="statsStore.isLoading" class="flex items-center">
-              <div class="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
+            <!-- Loading Overlay -->
+            <div v-if="statsStore.isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center rounded-xl">
+              <div class="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
             </div>
-            
-            <!-- Error State -->
-            <div v-else-if="statsStore.error" class="flex items-center text-red-500">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span class="text-sm font-medium">Erreur</span>
-            </div>
-            
-            <!-- Success State -->
-            <p v-else class="text-2xl sm:text-3xl font-bold text-gray-900 group-hover:scale-105 transition-transform duration-200">
-              {{ formatValue(card.value, card.format) }}
-            </p>
-          </div>
-
-          <!-- Description -->
-          <p class="text-xs text-gray-500">
-            {{ card.description }}
-          </p>
-
-          <!-- Loading Overlay -->
-          <div v-if="statsStore.isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center rounded-2xl">
-            <LoadinApp />
           </div>
         </div>
       </div>
     </div>
 
     <!-- Quick Actions Section -->
-    <div class="mt-8 px-4 sm:px-6">
-      <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h2>
+    <div class="px-3 pb-6 sm:px-6">
+      <div class="bg-white rounded-xl p-4 border border-gray-200 sm:p-6">
+        <h2 class="text-base font-semibold text-gray-900 mb-4 sm:text-lg">Actions rapides</h2>
         
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <!-- Refresh Stats -->
           <button 
             @click="statsStore.chargerStatistiques(true)"
             :disabled="statsStore.isLoading"
-            class="flex items-center justify-center px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+            class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group sm:px-4 sm:py-3"
           >
             <svg 
               class="w-4 h-4 mr-2 transition-transform duration-200"
@@ -272,7 +299,7 @@ const getIcon = (iconName) => {
           </button>
 
           <!-- Export Data -->
-          <button class="flex items-center justify-center px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 group">
+          <button class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 group sm:px-4 sm:py-3">
             <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
@@ -280,7 +307,7 @@ const getIcon = (iconName) => {
           </button>
 
           <!-- View Details -->
-          <button class="flex items-center justify-center px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 group">
+          <button class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 group sm:px-4 sm:py-3">
             <svg class="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -291,49 +318,58 @@ const getIcon = (iconName) => {
       </div>
     </div>
 
-    <!-- Error Details Modal/Toast -->
-    <div v-if="statsStore.error" class="fixed bottom-4 right-4 max-w-sm">
-      <div class="bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg">
-        <div class="flex items-start">
-          <div class="flex-shrink-0">
-            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <div class="ml-3 flex-1">
-            <h3 class="text-sm font-medium text-red-800">
-              Erreur de chargement
-            </h3>
-            <div class="mt-1 text-sm text-red-700">
-              {{ statsStore.error }}
+    <!-- Error Toast -->
+    <Transition 
+      enter-active-class="transition-all duration-300 ease-out"
+      enter-from-class="opacity-0 translate-y-4 translate-x-4"
+      enter-to-class="opacity-100 translate-y-0 translate-x-0"
+      leave-active-class="transition-all duration-200 ease-in"
+      leave-from-class="opacity-100 translate-y-0 translate-x-0"
+      leave-to-class="opacity-0 translate-y-4 translate-x-4"
+    >
+      <div v-if="statsStore.error" class="fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-sm z-50">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg">
+          <div class="flex items-start">
+            <div class="flex-shrink-0">
+              <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
             </div>
-            <div class="mt-3 flex space-x-2">
-              <button 
-                @click="statsStore.chargerStatistiques(true)"
-                class="text-xs bg-red-100 hover:bg-red-200 text-red-800 font-medium px-2 py-1 rounded-md transition-colors"
-              >
-                Réessayer
-              </button>
-              <button 
-                @click="statsStore.error = null"
-                class="text-xs text-red-600 hover:text-red-800 font-medium"
-              >
-                Ignorer
-              </button>
+            <div class="ml-3 flex-1">
+              <h3 class="text-sm font-medium text-red-800">
+                Erreur de chargement
+              </h3>
+              <div class="mt-1 text-sm text-red-700">
+                {{ statsStore.error }}
+              </div>
+              <div class="mt-3 flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                <button 
+                  @click="statsStore.chargerStatistiques(true)"
+                  class="text-xs bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-800 font-medium px-3 py-1.5 rounded-md transition-colors"
+                >
+                  Réessayer
+                </button>
+                <button 
+                  @click="statsStore.error = null"
+                  class="text-xs text-red-600 hover:text-red-800 font-medium px-3 py-1.5"
+                >
+                  Fermer
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
 <style scoped>
 /* Custom animations */
-@keyframes fadeInUp {
+@keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -341,58 +377,74 @@ const getIcon = (iconName) => {
   }
 }
 
-.group {
-  animation: fadeInUp 0.3s ease-out;
+.stats-card {
+  animation: slideInUp 0.4s ease-out both;
 }
 
-.group:nth-child(1) { animation-delay: 0.1s; }
-.group:nth-child(2) { animation-delay: 0.2s; }
-.group:nth-child(3) { animation-delay: 0.3s; }
-.group:nth-child(4) { animation-delay: 0.4s; }
-
-/* Responsive adjustments */
+/* Responsive grid improvements */
 @media (max-width: 640px) {
-  .grid {
-    gap: 1rem;
+  .stats-card {
+    min-height: 120px;
   }
 }
 
-/* Hover effects */
-.group:hover {
-  transform: translateY(-2px);
-}
-
-/* Loading state improvements */
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Custom scrollbar for mobile */
-@media (max-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 4px;
+/* Custom breakpoint for very small screens */
+@media (max-width: 375px) {
+  .xs\:hidden {
+    display: none !important;
   }
   
-  ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+  .xs\:flex {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 375px) {
+  .xs\:hidden {
+    display: block !important;
   }
   
-  ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 2px;
+  .xs\:flex {
+    display: none !important;
   }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+}
+
+/* Improved hover effects */
+.stats-card:hover {
+  transform: translateY(-1px);
+}
+
+.stats-card:active {
+  transform: translateY(0);
+}
+
+/* Touch-friendly buttons */
+@media (max-width: 640px) {
+  button {
+    min-height: 44px;
+  }
+}
+
+/* Loading animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improved scrolling on mobile */
+@supports (-webkit-overflow-scrolling: touch) {
+  .w-full {
+    -webkit-overflow-scrolling: touch;
   }
 }
 </style>

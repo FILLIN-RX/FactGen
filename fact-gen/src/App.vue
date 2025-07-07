@@ -7,12 +7,7 @@
 
       <div class="w-full">
         <router-view />
-        <ToasT
-          v-if="toast.message"
-          :message="toast.message"
-          :type="toast.type"
-          :duration="toast.duration"
-        />
+       
       </div>
 
       <FooTer
