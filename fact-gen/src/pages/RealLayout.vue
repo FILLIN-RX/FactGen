@@ -1,4 +1,5 @@
 <template>
+   
   <section class="min-h-screen bg-gray-50">
     <!-- Augmentation du padding vertical sur mobile -->
     <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
@@ -65,6 +66,12 @@
       </div>
     </div>
   </section>
+
+    <ClientFormModal
+      :open="operationsStore.showNewClientModal"
+      @close="operationsStore.closeNewClientModal"
+      :form="{}"
+    />
 </template>
 
 <script setup>
@@ -72,11 +79,17 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { supabase } from "../lib/supabase";
-
+import FactureTemp from "../components/FactureTemp.vue";
+import ClientFormModal from "../components/client/ClientFormModal .vue";
+import { useOperationsStore } from "../stores/ui";
+import LoginNav from "../components/LoginNav.vue";
 import BarChart from "../components/BarChart.vue";
 import RecentActivity from "../components/RecentActivity.vue";
 import StatisTics from "../components/StatisTics.vue";
-
+function creer() {
+  open.value = !open.value;
+}
+const operationsStore = useOperationsStore();
 const toast = useToast();
 const router = useRouter();
 

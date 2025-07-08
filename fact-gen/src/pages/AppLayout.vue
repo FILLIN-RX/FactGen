@@ -277,6 +277,7 @@
         </main>
       </div>
     </div>
+   
   </div>
 </template>
 
@@ -287,7 +288,9 @@ import LoginNav from "../components/LoginNav.vue";
 import HaeDer from "../components/HaeDer.vue";
 import { useAuthStore } from "../stores/auth";
 import { useToast } from "vue-toastification";
-
+import FactureTemp from "../components/FactureTemp.vue";
+import ClientFormModal from "../components/client/ClientFormModal .vue";
+import { useOperationsStore } from "../stores/ui";
 const isMobileMenuOpen = ref(false);
 const utilisateur = ref(null);
 const auth = useAuthStore();

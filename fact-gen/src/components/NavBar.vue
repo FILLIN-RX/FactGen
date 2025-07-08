@@ -30,9 +30,6 @@
           Connexion
         </router-link>
       
-           <router-link to="/signUp" class="btn-primary">
-          S'inscrire
-        </router-link>
         <!-- Menu mobile toggle -->
         <button
           @click="toggleMobileNav"
@@ -71,7 +68,7 @@
         >
           Support
         </router-link>
-           <router-link to="/register" class="btn-primary">
+           <router-link to="/signUp" class="btn-primary">
           S'inscrire
         </router-link>
       </div>

@@ -9,14 +9,19 @@ const route = useRoute();
 const router = useRouter();
 const showNewInvoice = ref(false)
 const showNewClient = ref(false)
+const emit = defineEmits(['openInvoice', 'openClient'])
+import { useOperationsStore } from "../stores/ui";
+const operationsStore = useOperationsStore();
 
 function openInvoice() {
-  showNewInvoice.value = true
+  operationsStore.openNewInvoiceModal()
 }
 
 function openClient() {
-  showNewClient.value = true
+  operationsStore.openNewClientModal()
 }
+
+
 const menuItems = ref([
   {
     id: 2,
@@ -210,7 +215,7 @@ async function navigateToRoute(item: any) {
         </h3>
         <div class="space-y-1">
           <div class="px-4 py-2 text-sm text-slate-600 hover:text-blue-600 cursor-pointer rounded-lg hover:bg-slate-50 transition-colors">
-            <div class="flex items-center" @click="$emit('openInvoice')">
+            <div class="flex items-center" @click="openInvoice">
               <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
               </svg>
@@ -218,7 +223,8 @@ async function navigateToRoute(item: any) {
             </div>
           </div>
           <div class="px-4 py-2 text-sm text-slate-600 hover:text-blue-600 cursor-pointer rounded-lg hover:bg-slate-50 transition-colors">
-            <div class="flex items-center" @click="$emit('openClient')">
+            <div class="flex items-center" @click="openClient">
+
               <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
               </svg>
