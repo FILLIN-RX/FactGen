@@ -325,7 +325,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue';
+import { onMounted, computed ,ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useClientsStore } from '../stores/client';
 import ClientFormModal from '../components/client/ClientFormModal .vue';
@@ -338,7 +338,15 @@ const toast = useToast();
 const router = useRouter();
 const clientStore = useClientsStore();
 const facturesStore = useFacturesStore();
+const sortBy = ref('date')        // Défini la variable
+const sortOrder = ref('asc')
+const clientsActifs = ref(0)
 
+function handleEdit(id) {
+  console.log('Edit client', id)
+}
+
+const showDeleteConfirm = ref(false)
 // ✅ CORRECTION : Calcul des statistiques avec vérification
 const statsClient = computed(() => {
   if (!clientStore.selectedClient) {

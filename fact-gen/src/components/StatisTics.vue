@@ -283,7 +283,7 @@ const getIcon = (iconName) => {
       <div class="bg-white rounded-xl p-4 border border-gray-200 sm:p-6">
         <h2 class="text-base font-semibold text-gray-900 mb-4 sm:text-lg">Actions rapides</h2>
         
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <!-- Refresh Stats -->
           <button 
             @click="statsStore.chargerStatistiques(true)"
@@ -302,24 +302,18 @@ const getIcon = (iconName) => {
             Actualiser
           </button>
 
-          <!-- Export Data -->
-          <button class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 group sm:px-4 sm:py-3">
-            <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            Exporter
-          </button>
-
           <!-- View Details -->
-           <router-link to="/statistics">
+           
           <button  class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 group sm:px-4 sm:py-3">
+            <router-link to="/statistics" class="flex items-center w-full h-full justify-center">
             <svg class="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
             Détails
+            </router-link>
           </button>
-           </router-link>
+           
         </div>
       </div>
     </div>
