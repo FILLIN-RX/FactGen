@@ -266,11 +266,11 @@ async function onSubmit() {
       password: form.password
     });
     
-    toast.success("Connexion réussie ! Bienvenue.", { timeout: 3000 });
+   
     router.push({ name: 'Real' });
   } catch (error) {
     errorMessage.value = error.message || 'Erreur de connexion';
-    toast.error("Échec de la connexion. Vérifiez vos identifiants.", { timeout: 5000 });
+
   } finally {
     loading.value = false;
   }

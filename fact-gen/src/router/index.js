@@ -11,6 +11,8 @@ import SignUp from '../pages/SignUp.vue';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/auth'
 import SettingPage from '../pages/SettingPage.vue';
+import StatisTics from '../components/StatisTics.vue';
+import StatisticS from '../views/StatisticS.vue';
 const session = supabase.auth.getSession();
 console.log(session);
 
@@ -32,26 +34,26 @@ const routes = [
     path: '/accueil',
     name: 'accueil',
     component: AppLayout,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true , showNavbarAndFooter: false },
     children: [
       {
         path: '/real',
         name: 'Real',
         component: RealLayout,
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true , showNavbarAndFooter: false },
     },
       {
         path: '/facture',
         name: 'Facture',
         component: FacTure,
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true ,showNavbarAndFooter:false},
         
       },
       {
         path: '/clientFact',
         name: 'Client',
         component: clientFact,
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true , showNavbarAndFooter : false},
       
       },
       {
@@ -59,6 +61,12 @@ const routes = [
         name:'setting',
         component:SettingPage,
         meta:{requiresAuth:true}
+      },
+      {
+        path: '/statistics',
+        name: 'statistics',
+        component: StatisticS,
+        meta: { requiresAuth: true, showNavbarAndFooter: false }
       }
       
     ]

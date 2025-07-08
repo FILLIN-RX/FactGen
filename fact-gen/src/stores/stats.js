@@ -5,11 +5,20 @@ import { useAuthStore } from "./auth";
 export const useStatsStore = defineStore("stats", {
   state: () => ({
     totalClients: 0,
+    totalClientsSemaineDerniere: 0, // ← historique pour tendance
     totalFactures: 0,
+    totalFacturesSemaineDerniere: 0,
     totalRevenu: 0,
+    totalRevenuSemaineDerniere: 0,
     totalReductions: 0,
+
+    totalProspects: 0, // ← nécessaire pour taux de conversion
+
     mois: [],
     revenusParMois: [],
+    jours: [],
+    revenusParJours: [],
+
     isLoading: false,
     error: null,
     lastUpdated: null,
@@ -17,13 +26,8 @@ export const useStatsStore = defineStore("stats", {
 
   getters: {
     moyenneRevenuParMois: (state) => {
-      const total = state.revenusParMois.reduce(
-        (sum, revenu) => sum + revenu,
-        0
-      );
-      return state.revenusParMois.length > 0
-        ? total / state.revenusParMois.length
-        : 0;
+      const total = state.revenusParMois.reduce((sum, revenu) => sum + revenu, 0);
+      return state.revenusParMois.length > 0 ? total / state.revenusParMois.length : 0;
     },
 
     moisLePlusRentable: (state) => {
@@ -35,73 +39,88 @@ export const useStatsStore = defineStore("stats", {
         revenu: maxRevenu,
       };
     },
+
+    // ✅ Nouveaux getters pour les tendances
+    clientsTrend: (state) => {
+      const diff = state.totalClients - state.totalClientsSemaineDerniere;
+      const pourcent = (diff / (state.totalClientsSemaineDerniere || 1)) * 100;
+      return {
+        value: `${pourcent.toFixed(1)}%`,
+        direction: pourcent >= 0 ? "up" : "down"
+      };
+    },
+
+    facturesTrend: (state) => {
+      const diff = state.totalFactures - state.totalFacturesSemaineDerniere;
+      const pourcent = (diff / (state.totalFacturesSemaineDerniere || 1)) * 100;
+      return {
+        value: `${pourcent.toFixed(1)}%`,
+        direction: pourcent >= 0 ? "up" : "down"
+      };
+    },
+
+    revenuTrend: (state) => {
+      const diff = state.totalRevenu - state.totalRevenuSemaineDerniere;
+      const pourcent = (diff / (state.totalRevenuSemaineDerniere || 1)) * 100;
+      return {
+        value: `${pourcent.toFixed(1)}%`,
+        direction: pourcent >= 0 ? "up" : "down"
+      };
+    },
+
+    // ✅ Taux de conversion
+    tauxConversion: (state) => {
+      if (!state.totalProspects) return 0;
+      return ((state.totalClients / state.totalProspects) * 100).toFixed(1);
+    },
   },
 
   actions: {
     async chargerStatistiques(forceRefresh = false) {
       console.log("🚀 Début chargement statistiques, forceRefresh:", forceRefresh);
-      
-      // Éviter les rechargements inutiles
       if (!forceRefresh && this.lastUpdated) {
         const unMinute = 60 * 1000;
-        if (Date.now() - this.lastUpdated < unMinute) {
-          console.log("⏭️ Cache encore valide, skip");
-          return;
-        }
+        if (Date.now() - this.lastUpdated < unMinute) return;
       }
 
       this.isLoading = true;
       this.error = null;
 
       try {
-        console.log("📡 Envoi des requêtes API...");
-
         const [statsRes, revenusRes] = await Promise.all([
           API.get("/statistiques"),
           API.get("/statistiques/revenusmois"),
         ]);
-   console.log("Stats reçues :", statsRes.data);
-    console.log("Revenus reçus :", revenusRes.data);
-        console.log("📊 Réponse statistiques:", statsRes.data);
-        console.log("💰 Réponse revenus:", revenusRes.data);
 
         this.mettreAJourStatistiquesGlobales(statsRes.data);
         this.traiterRevenusParMois(revenusRes.data.revenusParMois || []);
         this.lastUpdated = Date.now();
-        
-        console.log("✅ Statistiques mises à jour avec succès");
-        console.log("📈 État final:", {
-          totalClients: this.totalClients,
-          totalFactures: this.totalFactures,
-          totalRevenu: this.totalRevenu,
-          totalReductions: this.totalReductions
-        });
 
       } catch (err) {
-        console.error("❌ Erreur lors du chargement:", err);
-        console.error("📄 Détails erreur:", {
-          message: err.message,
-          response: err.response?.data,
-          status: err.response?.status,
-          config: err.config
-        });
         this.gererErreur(err);
       } finally {
         this.isLoading = false;
-        console.log("🏁 Fin chargement statistiques");
       }
     },
 
     mettreAJourStatistiquesGlobales(data) {
-      console.log("🔄 Mise à jour données globales:", data);
+      this.totalClientsSemaineDerniere = data.totalClientsSemaineDerniere ?? 0;
       this.totalClients = data.totalClients ?? 0;
+
+      this.totalFacturesSemaineDerniere = data.totalFacturesSemaineDerniere ?? 0;
       this.totalFactures = data.totalFactures ?? 0;
+
+      this.totalRevenuSemaineDerniere = data.totalRevenuSemaineDerniere ?? 0;
       this.totalRevenu = data.totalRevenu ?? 0;
+
       this.totalReductions = data.totalReductions ?? 0;
+      this.totalProspects = data.totalProspects ?? 0;
+
       this.lastUpdated = data.lastUpdated;
     },
 
-    traiterRevenusParMois(revenusData) {
+    // (inchangé)
+     traiterRevenusParMois(revenusData) {
       console.log("📅 Traitement revenus par mois:", revenusData);
       
       const moisLabels = [
@@ -150,35 +169,42 @@ export const useStatsStore = defineStore("stats", {
 
     gererErreur(error) {
       const errorMessage = error.response?.data?.error || error.message || "Erreur inconnue";
-      console.error("🚨 Erreur gérée:", errorMessage);
       this.error = errorMessage;
     },
 
     reinitialiser() {
-      console.log("🔄 Réinitialisation du store stats");
       this.totalClients = 0;
+      this.totalClientsSemaineDerniere = 0;
       this.totalFactures = 0;
+      this.totalFacturesSemaineDerniere = 0;
       this.totalRevenu = 0;
+      this.totalRevenuSemaineDerniere = 0;
       this.totalReductions = 0;
+      this.totalProspects = 0;
       this.mois = [];
       this.revenusParMois = [];
       this.error = null;
       this.lastUpdated = null;
     },
-  
- async chargerRevenusJournaliers() {
-    try {
-      const response = await API.get("/statistiques/revenusjours");
-      const data = response.data.revenusParJour || [];
 
-      this.jours = data.map(item => item.jour);
-      this.revenusParJours = data.map(item => item.total_revenu);
-
-      console.log("Revenus journaliers chargés:", this.jours, this.revenusParJours);
-    } catch (error) {
-      console.error("Erreur chargement revenus journaliers", error);
-      this.error = "Erreur chargement revenus journaliers";
-    }
-  }
+    async chargerRevenusJournaliers() {
+      try {
+        const response = await API.get("/statistiques/revenusjours");
+        const data = response.data.revenusParJour || [];
+        this.jours = data.map(item => item.jour);
+        this.revenusParJours = data.map(item => item.total_revenu);
+      } catch (error) {
+        this.error = "Erreur chargement revenus journaliers";
+      }
+    },
   }
 });
+
+
+
+
+
+
+
+
+ 

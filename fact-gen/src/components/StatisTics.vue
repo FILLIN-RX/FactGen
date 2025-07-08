@@ -5,7 +5,7 @@ import { useFacturesStore } from '../stores/Facture'
 import { useStatsStore } from '../stores/stats'
 import { useAuthStore } from '../stores/auth'
 import LoadinApp from './LoadinApp.vue'
-
+import StatisticS from '../views/StatisticS.vue'
 const clientsStore = useClientsStore()
 const facturesStore = useFacturesStore()
 const statsStore = useStatsStore()
@@ -21,7 +21,11 @@ onMounted(async () => {
 
   await statsStore.chargerStatistiques();
 });
-
+// Fonctions utilitaires
+function formatPrice(val) {
+  if (typeof val !== "number" || isNaN(val)) return "0.00";
+  return val.toFixed(2);
+}
 // Computed pour formater la date de dernière mise à jour
 const formattedLastUpdate = computed(() => {
   if (!statsStore.lastUpdated) return 'Non disponible';
@@ -59,8 +63,8 @@ const statsCards = computed(() => [
     lightBg: 'bg-blue-50',
     iconColor: 'text-blue-600',
     description: 'Clients enregistrés',
-    trend: '+12%',
-    trendDirection: 'up'
+    trend: statsStore.clientsTrend.value,
+    trendDirection: statsStore.clientsTrend.direction
   },
   {
     id: 'factures',
@@ -72,35 +76,35 @@ const statsCards = computed(() => [
     lightBg: 'bg-emerald-50',
     iconColor: 'text-emerald-600',
     description: 'Factures créées',
-    trend: '+8%',
-    trendDirection: 'up'
+    trend: statsStore.facturesTrend.value,
+    trendDirection: statsStore.facturesTrend.direction
   },
   {
     id: 'revenus',
     title: 'Chiffre d\'affaires',
-    value: statsStore.totalRevenus || 0,
+    value: formatPrice(statsStore.totalRevenu || 0),
     icon: 'currency',
     color: 'purple',
     bgGradient: 'from-purple-500 to-purple-600',
     lightBg: 'bg-purple-50',
     iconColor: 'text-purple-600',
     description: 'Revenus totaux',
-    trend: '+15%',
-    trendDirection: 'up',
+    trend: statsStore.revenuTrend.value,
+    trendDirection: statsStore.revenuTrend.direction,
     format: 'currency'
   },
   {
     id: 'taux',
     title: 'Taux de conversion',
-    value: 87.5,
+    value: statsStore.tauxConversion,
     icon: 'chart',
     color: 'orange',
     bgGradient: 'from-orange-500 to-orange-600',
     lightBg: 'bg-orange-50',
     iconColor: 'text-orange-600',
     description: 'Conversion clients',
-    trend: '+3%',
-    trendDirection: 'up',
+    trend: '', // facultatif ici (à définir si tu veux comparer au taux précédent)
+    trendDirection: 'up', // ou calculer la variation plus tard
     format: 'percentage'
   }
 ]);
@@ -114,8 +118,8 @@ const formatValue = (value, format) => {
       return new Intl.NumberFormat('fr-FR', {
         style: 'currency',
         currency: 'XOF',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       }).format(value).replace('XOF', 'FCFA');
     case 'percentage':
       return `${value}%`;
@@ -307,13 +311,15 @@ const getIcon = (iconName) => {
           </button>
 
           <!-- View Details -->
-          <button class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 group sm:px-4 sm:py-3">
+           <router-link to="/statistics">
+          <button  class="flex items-center justify-center px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-200 transition-all duration-200 group sm:px-4 sm:py-3">
             <svg class="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
             Détails
           </button>
+           </router-link>
         </div>
       </div>
     </div>
