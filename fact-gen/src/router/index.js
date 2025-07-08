@@ -13,6 +13,8 @@ import { useAuthStore } from '../stores/auth'
 import SettingPage from '../pages/SettingPage.vue';
 import StatisTics from '../components/StatisTics.vue';
 import StatisticS from '../views/StatisticS.vue';
+import SupPort from '../pages/SupPort.vue';
+import FonctionaLiter from '../pages/FonctionaLiter.vue';
 const session = supabase.auth.getSession();
 console.log(session);
 
@@ -76,6 +78,16 @@ const routes = [
       name: 'register',
       component: SignUp,
       meta:{showNavbarAndFooter:false}
+    },
+    {
+      path: '/features',
+      name: 'Features',
+      component: FonctionaLiter,
+    },
+    {
+      path: '/support',
+      name: 'Support',
+      component : SupPort,
     },
   {
     path: '/login',

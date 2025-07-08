@@ -605,7 +605,9 @@
             Créez votre première facture en moins de 2 minutes. Aucune carte de crédit requise.
           </p>
           <button class="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-gray-100 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+            <router-link to="/facture">
             Commencer gratuitement
+            </router-link>
           </button>
         </div>
       </div>

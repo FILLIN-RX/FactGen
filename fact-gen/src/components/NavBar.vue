@@ -19,7 +19,6 @@
       <!-- Navigation Desktop -->
       <div class="hidden md:flex items-center space-x-8">
         <router-link to="/features" class="nav-link">Fonctionnalités</router-link>
-        <router-link to="/pricing" class="nav-link">Tarifs</router-link>
         <router-link to="/support" class="nav-link">Support</router-link>
        
       </div>
@@ -28,6 +27,9 @@
       <div class="flex items-center space-x-3">
         <router-link to="/login" class="btn-login">
           Connexion
+        </router-link>
+          <router-link to="/signUp" class="btn-primary hidden lg:block" >
+          S'inscrire
         </router-link>
       
         <!-- Menu mobile toggle -->
@@ -53,13 +55,6 @@
           @click="closeMobileNav"
         >
           Fonctionnalités
-        </router-link>
-        <router-link
-          to="/pricing"
-          class="mobile-nav-link"
-          @click="closeMobileNav"
-        >
-          Tarifs
         </router-link>
         <router-link
           to="/support"
