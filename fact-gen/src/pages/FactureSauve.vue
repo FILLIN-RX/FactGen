@@ -127,7 +127,7 @@
             </button>
           </div>
           <div class="p-3 sm:p-4 lg:p-6">
-            <FactureTemp @close="open = false" @created="onFactureCreated" />
+            <FactureForm @close="open = false" @created="onFactureCreated" />
           </div>
         </div>
       </div>
@@ -292,6 +292,7 @@ import FactureTemp from "../components/FactureTemp.vue";
 import { useToast } from "vue-toastification";
 import { useAppStore } from "../stores/app";
 import { showToast } from "../composables/useToast";
+import FactureForm from "../components/FactureForm.vue";
 
 const toast = useToast();
 

@@ -8,7 +8,7 @@
         >
           De
         </h3>
-        <div class="bg-slate-50 rounded-xl p-4">
+        <div v-if="societer" class="bg-slate-50 rounded-xl p-4">
           <h4 class="font-bold text-slate-800 text-lg mb-2">
             {{ societer.nom || "Nom de l'entreprise" }}
           </h4>
@@ -17,6 +17,15 @@
           </p>
           <p class="text-slate-600 text-sm whitespace-pre-line">
             {{ societer.adresse || "Adresse de l'entreprise" }}
+          </p>
+        </div>
+        <div v-else class="bg-slate-50 rounded-xl p-4">
+          <h4 class="font-bold text-slate-800 text-lg mb-2">
+            Nom de l'entreprise
+          </h4>
+          <p class="text-slate-600 text-sm">email@entreprise.com</p>
+          <p class="text-slate-600 text-sm whitespace-pre-line">
+            Adresse de l'entreprise
           </p>
         </div>
       </div>
@@ -73,13 +82,14 @@
               <div class="col-span-6 text-slate-800">
                 {{ produit.nom || "Produit sans nom" }}
               </div>
+              <div class="col-span-2 text-center text-slate-800">
+                {{ produit.quantite }}
+              </div>
+              <div class="col-span-2 text-right text-slate-800">
+                {{ Number(produit.prix).toFixed(2) }} €
+              </div>
               <div class="col-span-2 text-right font-semibold text-slate-800">
-                {{
-                  (
-                    Number(produit.prix || 0) * Number(produit.quantite || 0)
-                  ).toFixed(2)
-                }}
-                €
+                {{ (produit.prix * produit.quantite).toFixed(2) }} €
               </div>
             </div>
           </div>
@@ -138,8 +148,10 @@
   </div>
 </template>
 <script setup>
-
-// Props : 
+import { ref } from "vue";
+import societer from "../models/societer";
+import Facture from "../models/facture";
+// Props :
 defineProps({
   societer: Object,
   client: Object,
@@ -150,10 +162,16 @@ defineProps({
   reduction: Object,
   suplement: String,
   date_emission: String,
-  date_echeance: String
-})
+  date_echeance: String,
+});
 
-
-
-
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("fr-FR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 </script>
