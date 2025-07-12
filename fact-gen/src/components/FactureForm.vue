@@ -412,7 +412,7 @@ import Produit from '@/models/produit'
 import Societer from '@/models/societer'
 import { useFacturesStore } from '@/stores/Facture'
 import FacturePreview from './FacturePreview.vue'
-import TempateSelector from './templates/TempateSelector.vue'
+import TempateSelector from './templates/TemplateSelector.vue'
 const factureStore = useFacturesStore()
 
 // Données réactives
