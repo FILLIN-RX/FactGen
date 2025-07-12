@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+const { createI18n, useI18n } = VueI18n;
 import { supabase } from "./lib/supabase";
 import Toast, { POSITION } from 'vue-toastification';
 import "./style.css";
@@ -15,16 +16,7 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 app.component("Icon", Icon);
-app.use(Toast, {
-  position: POSITION.TOP_RIGHT,
-  timeout: 3000,
-  icon: false,  // Désactive les icônes SVG
-  // Utilisez des emojis à la place
-  success: "✅",
-  error: "❌",
-  warning: "⚠️",
-  info: "ℹ️"
-});
+
 // 💡 Initialisation du store AVANT le mount
 const authStore = useAuthStore();
 

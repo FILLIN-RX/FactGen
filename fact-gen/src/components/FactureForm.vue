@@ -27,6 +27,8 @@
         </div>
 
         <form @submit.prevent="sauvegarderFacture" class="space-y-8">
+              <h2 class="text-xl font-bold mb-4">Choisissez un modèle de facture</h2>
+              <TempateSelector v-model="facture.template" />
           <!-- Toutes vos sections existantes restent identiques -->
           <!-- Section Dates -->
           <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -411,7 +413,7 @@ import Societer from '@/models/societer'
 import { useFacturesStore } from '@/stores/Facture'
 import { showToast } from '@/composables/useToast'
 import FacturePreview from './FacturePreview.vue'
-
+import TempateSelector from './template/TempateSelector.vue'
 const factureStore = useFacturesStore()
 
 // Données réactives
