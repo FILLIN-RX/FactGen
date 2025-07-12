@@ -2,9 +2,9 @@
 import { defineStore } from 'pinia'
 
 // Importation des composants Vue des templates
-import FactureClassique from '@/components/templates/FactureClassique.vue'
-import FactureModerne from '@/components/templates/FactureModerne.vue'
-import FactureMinimaliste from '@/components/templates/FactureMinimaliste.vue'
+import FactureClassique from '../components/templates/FactureClassique.vue'
+import FactureModerne from '../components/templates/FactureModerne.vue'
+import FactureMinimaliste from '../components/templates/FactureMinimaliste.vue'
 
 export const useTemplateStore = defineStore('template', {
   state: () => ({

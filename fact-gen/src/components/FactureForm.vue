@@ -411,9 +411,8 @@ import Facture from '@/models/facture'
 import Produit from '@/models/produit'
 import Societer from '@/models/societer'
 import { useFacturesStore } from '@/stores/Facture'
-import { showToast } from '@/composables/useToast'
 import FacturePreview from './FacturePreview.vue'
-import TempateSelector from './template/TempateSelector.vue'
+import TempateSelector from './templates/TempateSelector.vue'
 const factureStore = useFacturesStore()
 
 // Données réactives

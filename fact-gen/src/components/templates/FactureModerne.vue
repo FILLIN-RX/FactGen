@@ -46,14 +46,17 @@
           <th style="width: 25%">TOTAL</th>
         </tr>
       </thead>
-      <tbody v-for="(produit, index) in produits" :key="index">
+      <tbody>
+        <tr v-for="(produit, index) in produits" :key="index">
         <th style="width: 40%">{{ produit.nom }}</th>
         <th style="width: 15%">{{ produit.quantite }}</th>
         <th style="width: 20%">{{ Number(produit.prix).toFixed(2) }} $</th>
         <th style="width: 25%">
           {{ (produit.prix * produit.quantite).toFixed(2) }} €
         </th>
+      </tr>
       </tbody>
+      
     </table>
 
     <!-- Totals -->
