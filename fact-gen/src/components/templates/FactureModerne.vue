@@ -10,7 +10,7 @@
         <div class="company-name">{{ societer.nom }}</div>
         <div class="company-details">
           {{ societer.email }}<br />
-          {{ societe.adresse }}
+          {{ societer.adresse }}
         </div>
       </div>
 
@@ -19,8 +19,8 @@
         <div class="invoice-details">
           <strong>N° {{ factureId }}</strong
           ><br />
-          Émise le: {{ dateEmission }}<br />
-          <span class="important">À payer avant le: {{ dateEcheance }}</span>
+          Émise le: {{ date_emission }}<br />
+          <span class="important">À payer avant le: {{ date_echeance }}</span>
         </div>
       </div>
     </div>
@@ -29,10 +29,10 @@
     <div class="client-section">
       <div class="client-title">FACTURÉ À:</div>
       <div class="client-info">
-        <strong>{{ client.nom }}</strong
+        <strong>{{ client.nom || "Nom du client" }}</strong
         ><br />
         {{ client.email }}<br />
-        {{ client.adresse }}
+        {{ client.address }}
       </div>
     </div>
 
@@ -48,12 +48,12 @@
       </thead>
       <tbody>
         <tr v-for="(produit, index) in produits" :key="index">
-        <th style="width: 40%">{{ produit.nom }}</th>
-        <th style="width: 15%">{{ produit.quantite }}</th>
-        <th style="width: 20%">{{ Number(produit.prix).toFixed(2) }} $</th>
-        <th style="width: 25%">
+        <td style="width: 40%">{{ produit.nom }}</td>
+        <td style="width: 15%">{{ produit.quantite }}</td>
+        <td style="width: 20%">{{ Number(produit.prix).toFixed(2) }} $</td>
+        <td style="width: 25%">
           {{ (produit.prix * produit.quantite).toFixed(2) }} €
-        </th>
+        </td>
       </tr>
       </tbody>
       
@@ -70,7 +70,7 @@
         <div
           v-if="montantReduction"
           class="total-line reduction-line"
-          style="display: {{reductionDisplay}};"
+          :style="{ display: reductionDisplay }"
         >
           <span>Réduction:</span>
           <span>-{{ montantReduction.toFixed(2) }} €</span>
@@ -94,7 +94,7 @@
     <div
       v-if="suplement"
       class="notes-section"
-      style="display: {{notesDisplay}};"
+      :style="{ display: notesDisplay }"
     >
       <div class="notes-title">Informations complémentaires:</div>
       <div class="notes-content">{{ suplement }}</div>
@@ -103,9 +103,9 @@
     <!-- Footer -->
     <div class="footer">
       <p>Merci pour votre confiance !</p>
-      <p class="text-xs">
+      <!-- <p class="text-xs">
         Document généré automatiquement le {{ dateGeneration }}
-      </p>
+      </p> -->
     </div>
   </div>
 </template>
@@ -124,7 +124,7 @@ defineProps({
   date_echeance: String,
 });
 </script>
-<style>
+<style scoped>
 @page {
   margin: 15mm;
   size: A4;

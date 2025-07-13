@@ -28,7 +28,7 @@
 
         <form @submit.prevent="sauvegarderFacture" class="space-y-8">
               <h2 class="text-xl font-bold mb-4">Choisissez un modèle de facture</h2>
-              <TempateSelector v-model="facture.template" />
+              <TemplateSelector v-model="facture.template" />
           <!-- Toutes vos sections existantes restent identiques -->
           <!-- Section Dates -->
           <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -390,30 +390,54 @@
         </button>
       </div>
       
-      <FacturePreview
-        :societer="societer"
-        :client="client"
-        :produits="produits"
-        :totalHT="totalHT"
-        :totalTTC="totalTTC"
-        :montantReduction="montantReduction"
-        :reduction="reduction"
-        :suplement="suplement"
-        :date_emission="date_emission"
-        :date_echeance="date_echeance"
-      />
+    <component
+  :is="templateStore.getComponentById(facture.template)"
+  :societer="societer"
+  :client="client"
+  :produits="produits"
+  :totalHT="totalHT"
+  :totalTTC="totalTTC"
+  :montantReduction="montantReduction"
+  :reduction="reduction"
+  :suplement="suplement"
+  :date_emission="date_emission"
+  :date_echeance="date_echeance"
+/>
+
     </div>
   </div>
 </template>
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch,reactive } from 'vue'
 import Facture from '@/models/facture'
 import Produit from '@/models/produit'
 import Societer from '@/models/societer'
+import { useTemplateStore } from '../stores/template'
 import { useFacturesStore } from '@/stores/Facture'
 import FacturePreview from './FacturePreview.vue'
-import TempateSelector from './templates/TemplateSelector.vue'
+import TemplateSelector from './templates/TemplateSelector.vue'
+import FactureModerne from './templates/FactureModerne.vue'
+import FactureMinimaliste from './templates/FactureMinimaliste.vue'
+import FactureClassique from './templates/FactureClassique.vue'
+import { useRoute } from 'vue-router'
+const facture = reactive({
+  client: null,
+  produits: [],
+  template: null, // important
+  // ... autres champs
+})
+defineProps({
+  templateId: String
+})
+
+const route = useRoute()
+if (route.query.template) {
+  facture.template = route.query.template
+}
+
+
 const factureStore = useFacturesStore()
+const templateStore = useTemplateStore()
 
 // Données réactives
 const showPreview = ref(false)
@@ -428,6 +452,8 @@ const societer = ref(new Societer(
   'contact@entreprise.com',
   '0123456789'
 ))
+
+
 
 const date_emission = ref(new Date().toISOString().substring(0, 10))
 const date_echeance = ref('')

@@ -231,92 +231,107 @@
     </style>
 </head>
 <body>
-    <div class="invoice-container">
-        <!-- Header -->
-        <div class="header">
-            <div class="company-info">
-                <div class="company-logo">
-                    <!-- Logo ici si disponible -->
-                    <span style="font-weight: bold; color: #007acc;">LOGO</span>
-                </div>
-                <div class="company-name">{{societeNom}}</div>
-                <div class="company-details">
-                    {{societeEmail}}<br>
-                    {{societeAdresse}}
-                </div>
-            </div>
-            
-            <div class="invoice-info">
-                <div class="invoice-title">FACTURE</div>
-                <div class="invoice-details">
-                    <strong>N° {{factureId}}</strong><br>
-                    Émise le: {{dateEmission}}<br>
-                    <span class="important">À payer avant le: {{dateEcheance}}</span>
-                </div>
-            </div>
+  <div class="invoice-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="company-info">
+        <div class="company-logo">
+          <span style="font-weight: bold; color: #007acc;">LOGO</span>
         </div>
-
-        <!-- Client Information -->
-        <div class="client-section">
-            <div class="client-title">FACTURÉ À:</div>
-            <div class="client-info">
-                <strong>{{clientNom}}</strong><br>
-                {{clientEmail}}<br>
-                {{clientAdresse}}
-            </div>
+        <div class="company-name">Factgen SARL</div>
+        <div class="company-details">
+          contact@factgen.com<br />
+          Yaoundé, Cameroun
         </div>
+      </div>
 
-        <!-- Products Table -->
-        <table class="products-table">
-            <thead>
-                <tr>
-                    <th style="width: 40%;">DESCRIPTION</th>
-                    <th style="width: 15%;">QTÉ</th>
-                    <th style="width: 20%;">PRIX UNIT.</th>
-                    <th style="width: 25%;">TOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{produitsTable}}
-            </tbody>
-        </table>
-
-        <!-- Totals -->
-        <div class="totals-section">
-            <div style="width: 300px; margin-left: auto;">
-                <div class="total-line">
-                    <span>Sous-total HT:</span>
-                    <span>{{sousTotal}} €</span>
-                </div>
-                
-                <div class="total-line reduction-line" style="display: {{reductionDisplay}};">
-                    <span>Réduction:</span>
-                    <span>-{{reductionMontant}}</span>
-                </div>
-                
-                <div class="total-line">
-                    <span>Total HT:</span>
-                    <span>{{totalHT}} €</span>
-                </div>
-                
-                <div class="total-line">
-                    <span><strong>TOTAL TTC:</strong></span>
-                    <span><strong>{{montantTotal}} €</strong></span>
-                </div>
-            </div>
+      <div class="invoice-info">
+        <div class="invoice-title">FACTURE</div>
+        <div class="invoice-details">
+          <strong>N° 2024-001</strong><br />
+          Émise le: 10/07/2025<br />
+          <span class="important">À payer avant le: 17/07/2025</span>
         </div>
-
-        <!-- Notes -->
-        <div class="notes-section" style="display: {{notesDisplay}};">
-            <div class="notes-title">Informations complémentaires:</div>
-            <div class="notes-content">{{supplement}}</div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>Merci pour votre confiance !</p>
-            <p class="text-xs">Document généré automatiquement le {{dateGeneration}}</p>
-        </div>
+      </div>
     </div>
+
+    <!-- Client Information -->
+    <div class="client-section">
+      <div class="client-title">FACTURÉ À:</div>
+      <div class="client-info">
+        <strong>Jean Mbarga</strong><br />
+        jean.mbarga@example.com<br />
+        Bonamoussadi, Douala
+      </div>
+    </div>
+
+    <!-- Products Table -->
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th style="width: 40%;">DESCRIPTION</th>
+          <th style="width: 15%;">QTÉ</th>
+          <th style="width: 20%;">PRIX UNIT.</th>
+          <th style="width: 25%;">TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Création site vitrine</td>
+          <td>1</td>
+          <td>150 000</td>
+          <td>150 000</td>
+        </tr>
+        <tr>
+          <td>Hébergement 12 mois</td>
+          <td>1</td>
+          <td>30 000</td>
+          <td>30 000</td>
+        </tr>
+        <tr>
+          <td>Maintenance trimestrielle</td>
+          <td>1</td>
+          <td>20 000</td>
+          <td>20 000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals-section">
+      <div style="width: 300px; margin-left: auto;">
+        <div class="total-line">
+          <span>Sous-total HT:</span>
+          <span>200 000 €</span>
+        </div>
+        <div class="total-line reduction-line">
+          <span>Réduction:</span>
+          <span>-10 000 €</span>
+        </div>
+        <div class="total-line">
+          <span>Total HT:</span>
+          <span>190 000 €</span>
+        </div>
+        <div class="total-line">
+          <span><strong>TOTAL TTC:</strong></span>
+          <span><strong>190 000 €</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes-section">
+      <div class="notes-title">Informations complémentaires:</div>
+      <div class="notes-content">
+        Merci de régler cette facture dans un délai de 7 jours par virement bancaire.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Merci pour votre confiance !</p>
+      <p class="text-xs">Document généré automatiquement le 10/07/2025</p>
+    </div>
+  </div>
 </body>
 </html>

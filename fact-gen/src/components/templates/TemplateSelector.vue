@@ -7,7 +7,7 @@
       :class="{ 'ring-2 ring-blue-500': modelValue === tpl.id }"
       @click="$emit('update:modelValue', tpl.id)"
     >
-      <img :src="tpl.previewUrl" :alt="tpl.nom" class="w-full rounded-md mb-3 h-40 object-cover" />
+      <img :src="tpl.previewUrl" :alt="tpl.nom" class="w-full rounded-md mb-3 h-60 border object-cover" />
       <h3 class="font-semibold text-lg mb-1">{{ tpl.nom }}</h3>
       <p class="text-sm text-gray-500">{{ tpl.description }}</p>
     </div>

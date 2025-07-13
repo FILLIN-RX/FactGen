@@ -4,6 +4,7 @@ import Home from '../pages/HomePage.vue';
 import PrintLayout from '../components/layout/PrintLayout.vue';
 import FacTure from '../pages/FactureSauve.vue';
 import Login from '../pages/LoginPage.vue';
+import TemplatesSection from '../pages/TemplatesSection.vue';
 import clientFact from '../pages/clientFact.vue';
 import AppLayout from '../pages/AppLayout.vue';
 import RealLayout from '../pages/RealLayout.vue';
@@ -68,6 +69,11 @@ const routes = [
         path: '/statistics',
         name: 'statistics',
         component: StatisticS,
+        meta: { requiresAuth: true, showNavbarAndFooter: false }
+      },{
+        path: '/templates',
+        name: 'Templates',
+        component: TemplatesSection,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
       }
       
