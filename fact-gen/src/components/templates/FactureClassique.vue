@@ -30,9 +30,9 @@
     <div class="client-section">
       <div class="client-label">To :</div>
       <div class="client-info">
-        <div class="client-name">{{ client.nom || "Client Name" }}</div>
-        <div class="client-address">{{ client.address }}</div>
-        <div class="client-details">{{ client.details }}</div>
+        <div class="client-name">{{ client?.nom || "Client Name" }}</div>
+        <div class="client-address">{{ client?.address }}</div>
+        <div class="client-details">{{ client?.details }}</div>
       </div>
     </div>
 
@@ -54,7 +54,7 @@
           </td>
           <td class="price-cell">$ {{ Number(produit.prix).toFixed(2) }}</td>
           <td class="qty-cell">{{ produit.quantite }}</td>
-          <td class="total-cell">$ {{ (produit.prix * produit.quantite).toFixed(2) }}</td>
+          <td class="total-cell">$ {{ Number(produit.prix * produit.quantite).toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>
@@ -68,15 +68,15 @@
         </div>
         <div class="tax-line">
           <span>Tax VAT 15% :</span>
-          <span>$ {{ (sousTotal * 0.15).toFixed(2) }}</span>
+          <span>$ {{ Number(sousTotal * 0.15).toFixed(2) }}</span>
         </div>
         <div class="discount-line" v-if="montantReduction">
           <span>DISCOUNT 5% :</span>
-          <span>$ {{ montantReduction.toFixed(2) }}</span>
+          <span>$ {{ Number(montantReduction).toFixed(2) }}</span>
         </div>
         <div class="total-due">
           <span>TOTAL DUE :</span>
-          <span>$ {{ totalTTC.toFixed(2) }}</span>
+          <span>$ {{ Number(totalTTC).toFixed(2) }}</span>
         </div>
       </div>
     </div>

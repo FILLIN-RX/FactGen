@@ -537,7 +537,8 @@ const sauvegarderFacture = async () => {
       reduction: utiliseReduction.value === 'oui' ? reduction.value : null,
       suplement: suplement.value,
       date_emission: date_emission.value,
-      date_echeance: date_echeance.value
+      date_echeance: date_echeance.value,
+      template: facture.template.value
     })
 
     showToast('Facture créée avec succès !', 'success')

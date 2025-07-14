@@ -7,7 +7,8 @@ export default class Facture {
     suplement = null,
     user_id = null,
     date_emission,
-    date_echeance
+    date_echeance,
+    template
   ) {
     this.numero = this.genererNumero();
     this.client = client;
@@ -18,6 +19,7 @@ export default class Facture {
     this.user_id = user_id;
     this.date_emission = date_emission;
     this.date_echeance = date_echeance;
+    this.template = template;
   }
 
   getTotalHT() {
@@ -115,6 +117,7 @@ export default class Facture {
       created_at: new Date().toISOString(),
       date_emission: this.date_emission,
       date_echeance: this.date_echeance,
+      template: this.template,
     };
   }
 
@@ -130,6 +133,7 @@ export default class Facture {
       montantReduction: this.montantReduction,
       totalTTC: this.totalTTC,
       date: new Date().toISOString(),
+      template: this.template,
     };
 
     let factures = JSON.parse(localStorage.getItem("factures")) || [];
