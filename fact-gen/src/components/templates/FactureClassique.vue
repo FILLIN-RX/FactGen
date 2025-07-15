@@ -50,7 +50,7 @@
         <tr v-for="(produit, index) in produits" :key="index">
           <td class="description-cell">
             <div class="item-name">{{ produit.nom }}</div>
-            <div class="item-description">{{ produit.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt" }}</div>
+            <div class="item-description">{{ produit.description }}</div>
           </td>
           <td class="price-cell">$ {{ Number(produit.prix).toFixed(2) }}</td>
           <td class="qty-cell">{{ produit.quantite }}</td>

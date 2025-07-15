@@ -64,7 +64,7 @@
       <div style="width: 300px; margin-left: auto">
         <div class="total-line">
           <span>Sous-total HT:</span>
-          <span>{{ sousTotal }} €</span>
+          <span>{{ totalHT.toFixed(2) }} €</span>
         </div>
 
         <div
@@ -127,7 +127,7 @@ defineProps({
 <style scoped>
 @page {
   margin: 15mm;
-  size: A4;
+  /* size: A4; */
 }
 
 * {
@@ -147,6 +147,7 @@ body {
   max-width: 100%;
   margin: 0 auto;
   background: white;
+  padding: 20px;
 }
 
 .header {
