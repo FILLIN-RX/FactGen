@@ -80,8 +80,9 @@ router.post(
       numero,
       date_emission,
       date_echeance,
+      template
     } = req.body;
-
+    console.log("Template reçu:", req.body.template);
     console.log("✅ REQUÊTE POST /factures autorisée");
 
     try {
@@ -98,6 +99,7 @@ router.post(
             numero,
             date_emission,
             date_echeance,
+            template,
             user_id: req.user.id,
             created_at: new Date().toISOString(),
           },
@@ -142,6 +144,7 @@ router.put(
       numero,
       date_emission,
       date_echeance,
+      template
     } = req.body;
 
     const user_id = req.user.id;
@@ -163,6 +166,7 @@ router.put(
           numero,
           date_emission,
           date_echeance,
+          template
         })
         .eq("id", id)
         .eq("user_id", user_id)

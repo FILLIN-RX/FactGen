@@ -259,18 +259,20 @@
           <div class="h-full">
             <div class="p-3 sm:p-4 lg:p-6 xl:p-8 h-full">
               <div class="max-w-7xl mx-auto h-full">
-                <transition
-                  name="page"
-                  mode="out-in"
-                  enter-active-class="transition-all duration-300 ease-out"
-                  enter-from-class="opacity-0 transform translate-y-4"
-                  enter-to-class="opacity-100 transform translate-y-0"
-                  leave-active-class="transition-all duration-200 ease-in"
-                  leave-from-class="opacity-100 transform translate-y-0"
-                  leave-to-class="opacity-0 transform -translate-y-4"
-                >
-                  <router-view />
-                </transition>
+               <router-view v-slot="{ Component }">
+  <transition
+    name="page"
+    mode="out-in"
+    enter-active-class="transition-all duration-300 ease-out"
+    enter-from-class="opacity-0 transform translate-y-4"
+    enter-to-class="opacity-100 transform translate-y-0"
+    leave-active-class="transition-all duration-200 ease-in"
+    leave-from-class="opacity-100 transform translate-y-0"
+    leave-to-class="opacity-0 transform -translate-y-4"
+  >
+    <component :is="Component" />
+  </transition>
+</router-view>
               </div>
             </div>
           </div>

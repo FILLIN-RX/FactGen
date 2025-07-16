@@ -3,9 +3,10 @@ import axios from "axios";
 import { supabase } from "../lib/supabase";
 
 const API = axios.create({
-  baseURL: "https://factgen.onrender.com/api",
+  baseURL: " https://factgen.onrender.com/api",
 });
-
+// http://localhost:4000/api
+//
 API.interceptors.request.use(
   async (config) => {
     const { data, error } = await supabase.auth.getSession();

@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import { createI18n } from 'vue-i18n'
 import { supabase } from "./lib/supabase";
 import Toast, { POSITION } from 'vue-toastification';
 import "./style.css";
