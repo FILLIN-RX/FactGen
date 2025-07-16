@@ -104,9 +104,7 @@ export const useClientsStore = defineStore("clients", {
       const client = this.clients[idx];
       if (!client) return;
 
-      if (!confirm(`Êtes-vous sûr de vouloir supprimer le client "${client.nom}" ?`)) {
-        return;
-      }
+    
 
       this.loading = true;
       this.error = null;

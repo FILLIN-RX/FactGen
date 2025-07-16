@@ -228,6 +228,12 @@
       </div>
     </main>
   </div>
+     <Toast
+  v-if="showToast"
+  :message="toastMessage"
+  :type="toastType"
+  :duration="4000"
+/>
 </template>
 
 <script setup>
@@ -235,11 +241,19 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useToast } from "vue-toastification";
-
+import Toast from '../components/ToasT.vue';
 const toast = useToast();
 const router = useRouter();
 const authStore = useAuthStore();
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // success | error | warning | info
 
+const showToastMessage = (message, type = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+}
 // Form state
 const form = reactive({
   email: '',
@@ -261,14 +275,16 @@ async function onSubmit() {
   loading.value = true;
   
   try {
+     showToastMessage("Connexion  en cours...", 'level');
     await authStore.signIn({
       email: form.email,
       password: form.password
     });
-    
-   
+    showToastMessage("Connecté avec succès !", 'success');
+
     router.push({ name: 'Real' });
   } catch (error) {
+     showToastMessage("Échec de la connexion Google. Réessayez.",'error');
     errorMessage.value = error.message || 'Erreur de connexion';
 
   } finally {
@@ -281,12 +297,12 @@ async function signInWithGoogle() {
   loading.value = true;
   
   try {
-    toast.info("Connexion Google en cours...", { timeout: 2000 });
+    showToastMessage("Connexion Google en cours...", 'level');
     await authStore.signInWithGoogle();
-    toast.success("Connecté avec Google !", { timeout: 3000 });
+    showToastMessage("Connecté avec Google !", 'success');
 
   } catch (error) {
-    toast.error("Échec de la connexion Google. Réessayez.", { timeout: 5000 });
+    showToastMessage("Échec de la connexion Google. Réessayez.",'error');
     errorMessage.value = error.message;
   } finally {
     loading.value = false;

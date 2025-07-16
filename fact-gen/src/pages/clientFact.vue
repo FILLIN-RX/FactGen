@@ -293,7 +293,7 @@
       :client="clientStore.selectedClient"
       :stats="statsClient"
       @close="clientStore.fermerDetails"
-      @delete="handleDelete"
+      @delete="confirmerSuppression"
       @edit="handleEdit"
     />
 
@@ -344,7 +344,7 @@
 
           <p class="text-sm sm:text-base text-slate-700 mb-6">
             Supprimer le client
-            <span class="font-semibold">#{{ invoiceStore.selectedInvoice?.numero }}</span>
+            <span class="font-semibold">#{{ clientStore.selectedClient?.nom }}</span>
             ?
           </p>
 
@@ -354,7 +354,7 @@
               :disabled="isDeleting">
               Annuler
             </button>
-            <button @click="confirmerSuppression"
+            <button @click="supprimerClient"
               class="flex-1 px-3 py-2 sm:px-4 sm:py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
               :disabled="isDeleting">
               <div v-if="isDeleting"
@@ -383,9 +383,7 @@ import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 import { useToast } from "vue-toastification";
 import { useFacturesStore } from '../stores/Facture';
 import LoadinApp from '../components/LoadinApp.vue';
-
 import Toast from '../components/ToasT.vue';
-const toast = useToast();
 const router = useRouter();
 const clientStore = useClientsStore();
 const facturesStore = useFacturesStore();
@@ -468,11 +466,13 @@ const handleSubmit = async () => {
   }
 };
 
-const handleDelete = async () => {
+ async function supprimerClient() {
+  
   try {
-isDeleting.value = true;
+  isDeleting.value = true;
     await clientStore.supprimerClient();
     showDeleteConfirm.value = false
+    clientStore.fermerDetails()
     showToastMessage("Client supprimé avec succès !","success");
   } catch (error) {
     showToastMessage("Erreur lors de la suppression du client","error");

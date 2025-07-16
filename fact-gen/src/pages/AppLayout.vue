@@ -281,6 +281,12 @@
     </div>
    
   </div>
+      <Toast
+  v-if="showToast"
+  :message="toastMessage"
+  :type="toastType"
+  :duration="4000"
+/>
 </template>
 
 <script setup>
@@ -299,10 +305,18 @@ const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
-
+import Toast from '../components/ToasT.vue';
 // Get user on creation
 utilisateur.value = JSON.parse(localStorage.getItem("utilisateurConnecte"));
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // success | error | warning | info
 
+const showToastMessage = (message, type = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+}
 // Initialize auth on mount
 onMounted(() => {
   auth.initialize();
@@ -321,13 +335,9 @@ function logout() {
     isMobileMenuOpen.value = false;
     document.body.style.overflow = '';
     router.push("/login");
-    toast.success("Déconnexion réussie. À bientôt !", {
-      timeout: 3000,
-    });
+    showToastMessage("Déconnexion réussie. À bientôt !", 'success');
   } catch (error) {
-    toast.error("Erreur lors de la déconnexion. Réessayez.", {
-      timeout: 5000,
-    });
+    showToastMessage("Erreur lors de la déconnexion. Réessayez.", 'error');
   }
 }
 
