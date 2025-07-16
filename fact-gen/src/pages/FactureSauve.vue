@@ -299,6 +299,12 @@
       </div>
     </div>
   </div>
+    <Toast
+  v-if="showToast"
+  :message="toastMessage"
+  :type="toastType"
+  :duration="4000"
+/>
 </template>
 
 <script setup>
@@ -310,10 +316,9 @@ import { telechargerPDF, getInfoEntreprise } from "@/services/api";
 import FactureTemp from "../components/FactureTemp.vue";
 import { useToast } from "vue-toastification";
 import { useAppStore } from "../stores/app";
-import { showToast } from "../composables/useToast";
 import FactureForm from "../components/FactureForm.vue";
 import { useRoute } from "vue-router";
-
+import Toast from "../components/ToasT.vue";
 const toast = useToast();
 
 // Variables réactives
@@ -328,6 +333,15 @@ const isDeleting = ref(false);
 const infoEntreprise = ref(null);
 const showFilters = ref(false);
 const route = useRoute()
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // success | error | warning | info
+
+const showToastMessage = (message, type = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+}
 
 // Détection mobile améliorée
 const isMobile = computed(() => {
@@ -419,10 +433,10 @@ async function supprimerFacture() {
     await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
     showDeleteConfirm.value = false;
     invoiceStore.clearSelection();
-    showToast("Facture supprimée avec succès !", "success");
+    showToastMessage("Facture supprimée avec succès !", "warning");
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
-    showToast("Erreur lors de la suppression de la facture", "error");
+    showToastMessage("Erreur lors de la suppression de la facture", "error");
   } finally {
     isDeleting.value = false;
   }

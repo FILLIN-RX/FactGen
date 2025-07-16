@@ -78,7 +78,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import supabase from "../lib/supabase";
+import {supabase} from "../lib/supabase";
 import FactureTemp from "../components/FactureTemp.vue";
 import ClientFormModal from "../components/client/ClientFormModal .vue";
 import { useOperationsStore } from "../stores/ui";
@@ -96,29 +96,6 @@ const router = useRouter();
 // Données réactives
 const utilisateur = ref(null);
 const showRecentActivity = ref(false);
-const accounts = ref([
-  {
-    amount: 15420,
-    currency: 'EUR',  
-    names: 'Compte Principal',
-    percent: '12',
-    color: '#3B82F6'
-  },
-  {
-    amount: 8750,
-    currency: 'USD',
-    names: 'Épargne Plus',
-    percent: '8',
-    color: '#10B981'
-  },
-  {
-    amount: 3200,
-    currency: 'EUR',
-    names: 'Investissements',
-    percent: '24',
-    color: '#F59E0B'
-  },
-]);
 
 // Fonctions
 function formatCurrency(amount) {

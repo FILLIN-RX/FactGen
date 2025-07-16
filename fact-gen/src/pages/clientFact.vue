@@ -322,6 +322,12 @@
     </div>
   </div>
   </div>
+   <Toast
+  v-if="showToast"
+  :message="toastMessage"
+  :type="toastType"
+  :duration="4000"
+/>
 </template>
 
 <script setup>
@@ -333,7 +339,8 @@ import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 import { useToast } from "vue-toastification";
 import { useFacturesStore } from '../stores/Facture';
 import LoadinApp from '../components/LoadinApp.vue';
-import { showToast } from '../composables/useToast';
+
+import Toast from '../components/ToasT.vue';
 const toast = useToast();
 const router = useRouter();
 const clientStore = useClientsStore();
@@ -341,6 +348,16 @@ const facturesStore = useFacturesStore();
 const sortBy = ref('date')        // Défini la variable
 const sortOrder = ref('asc')
 const clientsActifs = ref(0)
+
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // success | error | warning | info
+
+const showToastMessage = (message, type = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+}
 
 function handleEdit(id) {
   console.log('Edit client', id)
@@ -379,13 +396,13 @@ onMounted(async () => {
   try {
     await clientStore.chargerClients();
     await facturesStore.chargerFactures();
-    showToast("Client charger avec success","success")
+    showToastMessage("Client charger avec success","success")
     // Toast si liste vide
     if (clientStore.clients.length === 0) {
-      showToast("Aucun client trouvé. Ajoutez-en un !", "info");
+      showToastMessage("Aucun client trouvé. Ajoutez-en un !", "info");
     }
   } catch (error) {
-    showToast("Erreur lors du chargement des clients", "error");
+    showToastMessage("Erreur lors du chargement des clients", "error");
     console.error(error);
   }
 });
@@ -393,13 +410,13 @@ onMounted(async () => {
 const handleSubmit = async () => {
   try {
     await clientStore.ajouterClient();
-    showToast("Client enregistré avec succès !","success");
+    showToastMessage("Client enregistré avec succès !","success");
   } catch (error) {
     if (error.message.includes("session")) {
-      showToast("Votre session a expiré, veuillez vous reconnecter","error");
+      showToastMessage("Votre session a expiré, veuillez vous reconnecter","error");
       router.push('/login');
     } else {
-      showToast("Erreur lors de la création du client","error");
+      showToastMessage("Erreur lors de la création du client","error");
     }
   }
 };
@@ -407,9 +424,9 @@ const handleSubmit = async () => {
 const handleDelete = async () => {
   try {
     await clientStore.supprimerClient();
-    showToast("Client supprimé avec succès !","success");
+    showToastMessage("Client supprimé avec succès !","success");
   } catch (error) {
-    showToast("Erreur lors de la suppression du client","error");
+    showToastMessage("Erreur lors de la suppression du client","error");
   }
 };
 </script>

@@ -411,6 +411,7 @@
   v-if="showToast"
   :message="toastMessage"
   :type="toastType"
+  :duration="4000"
 />
 
 </template>
@@ -428,7 +429,7 @@ import FactureMinimaliste from './templates/FactureMinimaliste.vue'
 import FactureClassique from './templates/FactureClassique.vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
-import Toast from './Toast.vue'
+import Toast from './ToasT.vue'
 const selectedTemplate = ref(route.query.template)
 defineProps({
   templateId: String
@@ -535,7 +536,7 @@ const resetForm = () => {
 
 const sauvegarderFacture = async () => {
   if (!isFormValid.value) {
-   showToastMessage('Veuillez remplir tous les champs obligatoires', 'error')
+   showToastMessage('Veuillez remplir tous les champs obligatoires', 'warning')
 
     return
   }
