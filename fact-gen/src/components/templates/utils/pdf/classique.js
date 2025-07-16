@@ -1,29 +1,9 @@
 export function genererPDF(invoice) {
-  const productsHTML = invoice.produits.map(produit => `
-    <tr>
-      <td class="description-cell">
-        <div class="item-name">${produit.nom}</div>
-        <div class="item-description">${produit.description || ''}</div>
-      </td>
-      <td class="price-cell">$ ${formatPrice(produit.prix)}</td>
-      <td class="qty-cell">${produit.quantite}</td>
-      <td class="total-cell">$ ${formatPrice(produit.prix * produit.quantite)}</td>
-    </tr>
-  `).join('');
-
-  const discountHTML = props.montantReduction ? `
-    <div class="discount-line">
-      <span>DISCOUNT 5% :</span>
-      <span>$ ${formatPrice(props.montantReduction)}</span>
-    </div>
-  ` : '';
-
-  const noteHTML = props.suplement ? `
-    <div class="note-section">
-      <div class="note-title">Note:</div>
-      <div class="note-content">${props.suplement}</div>
-    </div>
-  ` : '';
+  const formatDate = (d) => new Date(d).toLocaleDateString();
+  const formatPrice = (n) => {
+    const num = Number(n);
+    return isNaN(num) ? "0,00" : num.toFixed(2).replace(".", ",");
+  };
 
   return `
     <!DOCTYPE html>
@@ -293,11 +273,37 @@ export function genererPDF(invoice) {
         }
 
         @media print {
-          .invoice-container {
-            padding: 20px;
-            background: white;
-          }
-        }
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .invoice-container {
+    padding: 0;
+    background: white;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Éviter les coupures dans les tableaux */
+  table {
+    page-break-inside: avoid;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  
+  /* Espacement pour l'impression */
+  .page-break {
+    page-break-after: always;
+  }
+}
       </style>
     </head>
     <body>
@@ -305,26 +311,27 @@ export function genererPDF(invoice) {
         <!-- Header -->
         <div class="header">
           <div class="company-info">
-            <div class="company-logo">
-              <svg width="40" height="40" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="18" fill="none" stroke="#6B46C1" stroke-width="3"/>
-                <circle cx="20" cy="20" r="10" fill="none" stroke="#6B46C1" stroke-width="3"/>
-                <circle cx="20" cy="20" r="3" fill="#6B46C1"/>
-              </svg>
-            </div>
+              <div class="company-logo">
+  ${
+    invoice.societer?.logo
+      ? `<img src="${invoice.societer.logo}" alt="Logo" style="height: 60px; max-width: 200px;" />`
+      : ""
+  }
+</div>
             <div class="company-details">
-              <div class="company-name">${props.societer?.nom || "Business Name."}</div>
+              <div class="company-name">${invoice.societer?.nom || "Business Name."
+    }</div>
               <div class="company-address">
-                <div>${props.societer?.adresse || ''}</div>
-                <div>${props.societer?.ville || ''}</div>
-                <div>${props.societer?.telephone || ''}</div>
+                <div>${invoice.societer?.adresse || ""}</div>
+                <div>${invoice.societer?.ville || ""}</div>
+                <div>${invoice.societer?.telephone || ""}</div>
               </div>
             </div>
           </div>
 
           <div class="invoice-info">
             <div class="invoice-title">INVOICE</div>
-            <div class="invoice-date">${props.date_emission || ''}</div>
+            <div class="invoice-date">${invoice.date_emission || ""}</div>
           </div>
         </div>
 
@@ -332,9 +339,10 @@ export function genererPDF(invoice) {
         <div class="client-section">
           <div class="client-label">To :</div>
           <div class="client-info">
-            <div class="client-name">${props.client?.nom || "Client Name"}</div>
-            <div class="client-address">${props.client?.address || ''}</div>
-            <div class="client-details">${props.client?.details || ''}</div>
+            <div class="client-name">${invoice.client?.nom || "Client Name"
+    }</div>
+            <div class="client-address">${invoice.client?.address || ""}</div>
+            <div class="client-details">${invoice.client?.details || ""}</div>
           </div>
         </div>
 
@@ -349,7 +357,21 @@ export function genererPDF(invoice) {
             </tr>
           </thead>
           <tbody>
-            ${productsHTML}
+            ${invoice.produits
+      ?.map(
+        (produit) => `
+        <tr>
+          <td>${produit.nom || ""}</td>
+          <td class="text-right">${formatPrice(produit.prix || 0)} €</td>
+          <td class="text-center">${produit.quantite || 0}</td>
+          <td class="text-right">${formatPrice(
+          (produit.prix || 0) * (produit.quantite || 0)
+        )} €</td>
+        </tr>
+        `
+      )
+      .join("") || ""
+    }
           </tbody>
         </table>
 
@@ -358,22 +380,34 @@ export function genererPDF(invoice) {
           <div class="totals-container">
             <div class="subtotal-line">
               <span>SUBTOTAL :</span>
-              <span>$ ${formatPrice(props.sousTotal)}</span>
+              <span>$ ${formatPrice(invoice.totalHT)}</span>
             </div>
-            <div class="tax-line">
-              <span>Tax VAT 15% :</span>
-              <span>$ ${formatPrice(props.sousTotal * 0.15)}</span>
-            </div>
-            ${discountHTML}
+           ${invoice.montantReduction
+      ? `
+        <div class="total-line reduction-line">
+          <span>Réduction:</span>
+          <span>-${formatPrice(invoice.montantReduction)} €</span>
+        </div>
+      `
+      : ""
+    }
             <div class="total-due">
               <span>TOTAL DUE :</span>
-              <span>$ ${formatPrice(props.totalTTC)}</span>
+              <span>$ ${formatPrice(invoice.totalTTC)}</span>
             </div>
           </div>
         </div>
 
-        <!-- Note Section -->
-        ${noteHTML}
+       <!-- Notes -->
+    ${invoice.suplement
+      ? `
+      <div class="notes-section">
+        <div class="notes-title">Informations complémentaires:</div>
+        <div class="notes-content">${invoice.suplement}</div>
+      </div>
+    `
+      : ""
+    }
 
         <!-- Thank You -->
         <div class="thank-you">
@@ -385,24 +419,27 @@ export function genererPDF(invoice) {
           <div class="footer-section">
             <div class="footer-title">Questions?</div>
             <div class="footer-content">
-              <div>Email us : ${props.societer?.email || ''}</div>
-              <div>Call us : ${props.societer?.telephone || ''}</div>
+              <div>Email us : ${invoice.societer?.email || ""}</div>
+              <div>Call us : ${invoice.societer?.telephone || ""}</div>
             </div>
           </div>
           
           <div class="footer-section">
             <div class="footer-title">Payment Info :</div>
             <div class="footer-content">
-              <div>Account : ${props.societer?.compte || "123 456 789"}</div>
-              <div>A/C Name : ${props.societer?.nom || ''}</div>
-              <div>Bank Details : ${props.societer?.banque || "Bank Principal"}</div>
+              <div>Account : ${invoice.societer?.compte || "123 456 789"}</div>
+              <div>A/C Name : ${invoice.societer?.nom || ""}</div>
+              <div>Bank Details : ${invoice.societer?.banque || "Bank Principal"
+    }</div>
             </div>
           </div>
           
           <div class="footer-section">
             <div class="footer-title">Terms & Conditions/Note:</div>
             <div class="footer-content">
-              <div>${props.conditions || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt."}</div>
+              <div>${invoice.conditions ||
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt."
+    }</div>
             </div>
           </div>
         </div>

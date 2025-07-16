@@ -7,20 +7,19 @@ import ClientFormModal from "./client/ClientFormModal .vue";
 const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
-const showNewInvoice = ref(false)
-const showNewClient = ref(false)
-const emit = defineEmits(['openInvoice', 'openClient'])
+const showNewInvoice = ref(false);
+const showNewClient = ref(false);
+const emit = defineEmits(["openInvoice", "openClient"]);
 import { useOperationsStore } from "../stores/ui";
 const operationsStore = useOperationsStore();
 
 function openInvoice() {
-  operationsStore.openNewInvoiceModal()
+  operationsStore.openNewInvoiceModal();
 }
 
 function openClient() {
-  operationsStore.openNewClientModal()
+  operationsStore.openNewClientModal();
 }
-
 
 const menuItems = ref([
   {
@@ -46,6 +45,13 @@ const menuItems = ref([
   },
   {
     id: 6,
+    icon: "store",
+    label: "Templates",
+    route: "/templates",
+    active: false,
+  },
+  {
+    id: 7,
     icon: "setting",
     label: "Paramètres",
     route: "/setting",
@@ -95,15 +101,18 @@ async function navigateToRoute(item: any) {
 </script>
 
 <template>
-
   <div class="flex h-screen fixed flex-col h-full bg-white">
     <!-- Header Section -->
     <div class="px-6 py-8">
       <div class="text-center">
-        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div
+          class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
+        >
           <span class="text-white font-bold text-xl">F</span>
         </div>
-        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1
+          class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+        >
           FactGen
         </h1>
         <p class="text-xs text-slate-500 mt-1">Gestion de facturation</p>
@@ -124,10 +133,14 @@ async function navigateToRoute(item: any) {
               : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:translate-x-1 hover:shadow-sm'
           "
         >
-          <div class="flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200"
-               :class="$route.path === item.route 
-                 ? 'bg-blue-100 text-blue-600' 
-                 : 'text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600'">
+          <div
+            class="flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200"
+            :class="
+              $route.path === item.route
+                ? 'bg-blue-100 text-blue-600'
+                : 'text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600'
+            "
+          >
             <!-- Dashboard icon -->
             <svg
               v-if="item.icon === 'dashboard'"
@@ -175,6 +188,23 @@ async function navigateToRoute(item: any) {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
+            <!-- store icon -->
+            <svg
+              v-else-if="item.icon === 'store'"
+              class="w-6 h-6  "
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.535 7.677c.313-.98.687-2.023.926-2.677H17.46c.253.63.646 1.64.977 2.61.166.487.312.953.416 1.347.11.42.148.675.148.779 0 .18-.032.355-.09.515-.06.161-.144.3-.243.412-.1.111-.21.192-.324.245a.809.809 0 0 1-.686 0 1.004 1.004 0 0 1-.324-.245c-.1-.112-.183-.25-.242-.412a1.473 1.473 0 0 1-.091-.515 1 1 0 1 0-2 0 1.4 1.4 0 0 1-.333.927.896.896 0 0 1-.667.323.896.896 0 0 1-.667-.323A1.401 1.401 0 0 1 13 9.736a1 1 0 1 0-2 0 1.4 1.4 0 0 1-.333.927.896.896 0 0 1-.667.323.896.896 0 0 1-.667-.323A1.4 1.4 0 0 1 9 9.74v-.008a1 1 0 0 0-2 .003v.008a1.504 1.504 0 0 1-.18.712 1.22 1.22 0 0 1-.146.209l-.007.007a1.01 1.01 0 0 1-.325.248.82.82 0 0 1-.316.08.973.973 0 0 1-.563-.256 1.224 1.224 0 0 1-.102-.103A1.518 1.518 0 0 1 5 9.724v-.006a2.543 2.543 0 0 1 .029-.207c.024-.132.06-.296.11-.49.098-.385.237-.85.395-1.344ZM4 12.112a3.521 3.521 0 0 1-1-2.376c0-.349.098-.8.202-1.208.112-.441.264-.95.428-1.46.327-1.024.715-2.104.958-2.767A1.985 1.985 0 0 1 6.456 3h11.01c.803 0 1.539.481 1.844 1.243.258.641.67 1.697 1.019 2.72a22.3 22.3 0 0 1 .457 1.487c.114.433.214.903.214 1.286 0 .412-.072.821-.214 1.207A3.288 3.288 0 0 1 20 12.16V19a2 2 0 0 1-2 2h-6a1 1 0 0 1-1-1v-4H8v4a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2v-6.888ZM13 15a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2Z"
+                clip-rule="evenodd"
+              />
+            </svg>
 
             <!-- Setting icon -->
             <svg
@@ -210,23 +240,48 @@ async function navigateToRoute(item: any) {
 
       <!-- Section Raccourcis -->
       <div class="mb-6">
-        <h3 class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+        <h3
+          class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3"
+        >
           Raccourcis
         </h3>
         <div class="space-y-1">
-          <div class="px-4 py-2 text-sm text-slate-600 hover:text-blue-600 cursor-pointer rounded-lg hover:bg-slate-50 transition-colors">
+          <div
+            class="px-4 py-2 text-sm text-slate-600 hover:text-blue-600 cursor-pointer rounded-lg hover:bg-slate-50 transition-colors"
+          >
             <div class="flex items-center" @click="openInvoice">
-              <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              <svg
+                class="w-4 h-4 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
               </svg>
               Nouvelle facture
             </div>
           </div>
-          <div class="px-4 py-2 text-sm text-slate-600 hover:text-blue-600 cursor-pointer rounded-lg hover:bg-slate-50 transition-colors">
+          <div
+            class="px-4 py-2 text-sm text-slate-600 hover:text-blue-600 cursor-pointer rounded-lg hover:bg-slate-50 transition-colors"
+          >
             <div class="flex items-center" @click="openClient">
-
-              <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+              <svg
+                class="w-4 h-4 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                />
               </svg>
               Nouveau client
             </div>
@@ -238,17 +293,19 @@ async function navigateToRoute(item: any) {
     <!-- Footer Section avec profil utilisateur -->
     <div class="border-t border-slate-200 p-4">
       <div class="flex items-center space-x-3 mb-4">
-        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+        <div
+          class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0"
+        >
           <span class="text-white font-semibold text-sm">
-            {{ utilisateur?.nom?.charAt(0) || 'U' }}
+            {{ utilisateur?.nom?.charAt(0) || "U" }}
           </span>
         </div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-slate-900 truncate">
-            {{ utilisateur?.nom || 'Utilisateur' }}
+            {{ utilisateur?.nom || "Utilisateur" }}
           </p>
           <p class="text-xs text-slate-500 truncate">
-            {{ auth.user?.email || 'email@example.com' }}
+            {{ auth.user?.email || "email@example.com" }}
           </p>
         </div>
       </div>
@@ -257,7 +314,12 @@ async function navigateToRoute(item: any) {
         @click="handleLogout"
         class="w-full flex items-center justify-center px-4 py-2.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all duration-200 hover:shadow-sm group"
       >
-        <svg class="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          class="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -269,7 +331,6 @@ async function navigateToRoute(item: any) {
       </button>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -296,7 +357,7 @@ async function navigateToRoute(item: any) {
   .transition-all {
     transition-duration: 0.15s;
   }
-  
+
   button,
   .router-link-active {
     -webkit-tap-highlight-color: transparent;
@@ -319,8 +380,16 @@ async function navigateToRoute(item: any) {
   animation: slideIn 0.3s ease-out forwards;
 }
 
-.space-y-2 > *:nth-child(2) { animation-delay: 0.1s; }
-.space-y-2 > *:nth-child(3) { animation-delay: 0.2s; }
-.space-y-2 > *:nth-child(4) { animation-delay: 0.3s; }
-.space-y-2 > *:nth-child(5) { animation-delay: 0.4s; }
+.space-y-2 > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.space-y-2 > *:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.space-y-2 > *:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.space-y-2 > *:nth-child(5) {
+  animation-delay: 0.4s;
+}
 </style>

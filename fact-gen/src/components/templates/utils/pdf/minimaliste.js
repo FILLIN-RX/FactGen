@@ -1,6 +1,9 @@
 export function genererPDF(invoice) {
   const formatDate = (d) => d ? new Date(d).toLocaleDateString('fr-FR') : '';
-  const formatPrice = (n) => Number(n).toFixed(2).replace('.', ',');
+  const formatPrice = (n) => {
+    const num = Number(n);
+    return isNaN(num) ? '0,00' : num.toFixed(2).replace('.', ',');
+  };
   
   return `<!DOCTYPE html>
 <html>
@@ -253,16 +256,38 @@ export function genererPDF(invoice) {
       line-height: 1.4;
     }
 
-    @media print {
-      body {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      .no-print {
-        display: none;
-      }
-    }
+   @media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .invoice-container {
+    padding: 0;
+    background: white;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Éviter les coupures dans les tableaux */
+  table {
+    page-break-inside: avoid;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  
+  /* Espacement pour l'impression */
+  .page-break {
+    page-break-after: always;
+  }
+}
   </style>
 </head>
 <body>
@@ -270,9 +295,13 @@ export function genererPDF(invoice) {
     <!-- Header -->
     <div class="header">
       <div class="company-info">
-        <div class="company-logo">
-          <span class="logo-text">Logo</span>
-        </div>
+          <div class="company-logo">
+  ${
+    invoice.societer?.logo
+      ? `<img src="${invoice.societer.logo}" alt="Logo" style="height: 60px; max-width: 200px;" />`
+      : ""
+  }
+</div>
         <div class="company-details">
           <div class="company-name">${invoice.societer?.nom || ''}</div>
           <div class="company-address">
@@ -283,7 +312,7 @@ export function genererPDF(invoice) {
       </div>
 
       <div class="invoice-info">
-        <div class="invoice-title">FACTURE - ${invoice.factureId || ''}</div>
+        <div class="invoice-title">FACTURE - ${invoice.id || ''}</div>
         <div class="invoice-dates">
           <div>Date de facturation: ${formatDate(invoice.date_emission)}</div>
           <div>Échéance: ${formatDate(invoice.date_echeance)}</div>

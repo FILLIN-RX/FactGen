@@ -5,7 +5,14 @@
       <div class="company-info">
         <div class="company-logo">
           <!-- Logo ici si disponible -->
-          <span style="font-weight: bold; color: #007acc">LOGO</span>
+          <span style="font-weight: bold; color: #007acc"
+            ><img
+              v-if="societer.logo"
+              :src="societer.logo"
+              alt="Logo de l'entreprise"
+              class="h-16 w-auto mb-2"
+            />
+          </span>
         </div>
         <div class="company-name">{{ societer.nom }}</div>
         <div class="company-details">
@@ -48,15 +55,14 @@
       </thead>
       <tbody>
         <tr v-for="(produit, index) in produits" :key="index">
-        <td style="width: 40%">{{ produit.nom }}</td>
-        <td style="width: 15%">{{ produit.quantite }}</td>
-        <td style="width: 20%">{{ Number(produit.prix).toFixed(2) }} $</td>
-        <td style="width: 25%">
-          {{ (produit.prix * produit.quantite).toFixed(2) }} €
-        </td>
-      </tr>
+          <td style="width: 40%">{{ produit.nom }}</td>
+          <td style="width: 15%">{{ produit.quantite }}</td>
+          <td style="width: 20%">{{ Number(produit.prix).toFixed(2) }} $</td>
+          <td style="width: 25%">
+            {{ (produit.prix * produit.quantite).toFixed(2) }} €
+          </td>
+        </tr>
       </tbody>
-      
     </table>
 
     <!-- Totals -->
@@ -70,7 +76,6 @@
         <div
           v-if="montantReduction"
           class="total-line reduction-line"
-          :style="{ display: reductionDisplay }"
         >
           <span>Réduction:</span>
           <span>-{{ montantReduction.toFixed(2) }} €</span>
@@ -94,7 +99,6 @@
     <div
       v-if="suplement"
       class="notes-section"
-      :style="{ display: notesDisplay }"
     >
       <div class="notes-title">Informations complémentaires:</div>
       <div class="notes-content">{{ suplement }}</div>
@@ -110,25 +114,22 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const invoice = defineProps([
-  'societer',
-  'client', 
-  'produits',
-  'totalHT',
-  'totalTTC',
-  'montantReduction',
-  'suplement',
-  'date_emission',
-  'date_echeance',
-  'factureId'
+  "societer",
+  "client",
+  "produits",
+  "totalHT",
+  "totalTTC",
+  "montantReduction",
+  "suplement",
+  "date_emission",
+  "date_echeance",
+  "factureId",
 ]);
 
 // Cette fonction va générer le HTML pour ce template spécifique
-
-
-
 </script>
 <style scoped>
 @page {

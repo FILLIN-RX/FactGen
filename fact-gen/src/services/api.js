@@ -12,11 +12,16 @@ export async function upsertClient(clientData) {
 
 // ✅ Facture : Télécharger PDF (méthode existante améliorée)
 export async function telechargerPDF({ html, id, invoiceDate, clientName }) {
+   console.log("Début de la génération du PDF...");
+  console.log("ID Facture:", id);
+  console.log("Date facture:", invoiceDate);
+  console.log("Client:", clientName);
+  
   try {
     const res = await API.post("/pdf/from-python", { html, id }, {
       responseType: "blob",
     });
-
+    console.log("Réponse PDF reçue, création du blob...");
     const blob = new Blob([res.data], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
 
@@ -44,6 +49,7 @@ export async function telechargerPDF({ html, id, invoiceDate, clientName }) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    console.log("PDF généré et téléchargé avec succès");
   } catch (err) {
     console.error("❌ Erreur génération PDF Flask :", err.message);
     throw err;

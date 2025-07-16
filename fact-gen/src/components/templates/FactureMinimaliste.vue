@@ -4,7 +4,14 @@
     <div class="header">
       <div class="company-info">
         <div class="company-logo">
-          <span class="logo-text">Logo</span>
+          <span class="logo-text"
+            ><img
+              v-if="societer.logo"
+              :src="societer.logo"
+              alt="Logo de l'entreprise"
+              class="h-16 w-auto mb-2"
+            />
+          </span>
         </div>
         <div class="company-details">
           <div class="company-name">{{ societer.nom }}</div>
@@ -27,11 +34,12 @@
     <!-- Client Information -->
     <div class="client-section">
       <div class="client-info">
-        <strong>{{ client.nom || "Nom du client" }}</strong><br />
+        <strong>{{ client.nom || "Nom du client" }}</strong
+        ><br />
         {{ client.address }}<br />
         {{ client.email }}
       </div>
-      
+
       <div class="client-additional" v-if="client.siret || client.tva">
         <div v-if="client.siret">Numéro de SIRET: {{ client.siret }}</div>
         <div v-if="client.tva">Numéro de TVA: {{ client.tva }}</div>
@@ -56,10 +64,12 @@
           <td>{{ produit.nom }}</td>
           <td>{{ produit.date || date_emission }}</td>
           <td class="text-center">{{ produit.quantite }}</td>
-          <td class="text-center">{{ produit.unite || 'h' }}</td>
+          <td class="text-center">{{ produit.unite || "h" }}</td>
           <td class="text-right">{{ Number(produit.prix).toFixed(2) }} €</td>
-          <td class="text-center">{{ produit.tva || '20,0' }} %</td>
-          <td class="text-right">{{ (produit.prix * produit.quantite).toFixed(2) }} €</td>
+          <td class="text-center">{{ produit.tva || "20,0" }} %</td>
+          <td class="text-right">
+            {{ (produit.prix * produit.quantite).toFixed(2) }} €
+          </td>
         </tr>
       </tbody>
     </table>
@@ -77,7 +87,9 @@
         </div>
         <div class="total-line total-final">
           <span><strong>Total (TTC)</strong></span>
-          <span><strong>{{ totalTTC.toFixed(2) }} €</strong></span>
+          <span
+            ><strong>{{ totalTTC.toFixed(2) }} €</strong></span
+          >
         </div>
       </div>
     </div>
@@ -93,7 +105,7 @@
           IBAN: FR12 2132 1313 2131 2312 2131 2312 12
         </div>
       </div>
-      
+
       <div class="payment-terms">
         <div class="payment-title">Conditions de paiement:</div>
         <div class="payment-details">30 jours</div>
@@ -111,7 +123,8 @@
     <!-- Footer -->
     <div class="footer">
       <div class="footer-company">
-        <strong>{{ societer.nom }}</strong><br />
+        <strong>{{ societer.nom }}</strong
+        ><br />
         {{ societer.adresse }}<br />
         <span v-if="societer.siret">Numéro de SIRET: {{ societer.siret }}</span>
         <span v-if="societer.tva"> - Numéro de TVA: {{ societer.tva }}</span>
@@ -121,12 +134,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
-const invoice = defineProps(['invoice', 'client', 'societer', 'produits', 'totalHT', 'totalTTC', 'montantReduction', 'suplement', 'date_emission', 'date_echeance', 'factureId']);
-
-
-
+const invoice = defineProps([
+  "invoice",
+  "client",
+  "societer",
+  "produits",
+  "totalHT",
+  "totalTTC",
+  "montantReduction",
+  "suplement",
+  "date_emission",
+  "date_echeance",
+  "factureId",
+]);
 </script>
 <style scoped>
 @page {
@@ -170,7 +192,7 @@ body {
 .company-logo {
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #FFA500, #FF8C00);
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
   border-radius: 50%;
   display: flex;
   align-items: center;

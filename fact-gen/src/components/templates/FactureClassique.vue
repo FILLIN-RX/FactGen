@@ -4,15 +4,18 @@
     <div class="header">
       <div class="company-info">
         <div class="company-logo">
-          <svg width="40" height="40" viewBox="0 0 40 40">
-            <circle cx="20" cy="20" r="18" fill="none" stroke="#6B46C1" stroke-width="3"/>
-            <circle cx="20" cy="20" r="10" fill="none" stroke="#6B46C1" stroke-width="3"/>
-            <circle cx="20" cy="20" r="3" fill="#6B46C1"/>
-          </svg>
+          <img
+              v-if="societer.logo"
+              :src="societer.logo"
+              alt="Logo de l'entreprise"
+              class="h-16 w-auto mb-2"
+            />
         </div>
         <div class="company-details">
-          <div class="company-name">{{ societer.nom || "Business Name." }}</div>
+          <div class="company-name">{{ societer.nom  }}</div>
           <div class="company-address">
+           
+
             <div>{{ societer.adresse }}</div>
             <div>{{ societer.ville }}</div>
             <div>{{ societer.telephone }}</div>
@@ -52,7 +55,9 @@
           </td>
           <td class="price-cell">$ {{ Number(produit.prix).toFixed(2) }}</td>
           <td class="qty-cell">{{ produit.quantite }}</td>
-          <td class="total-cell">$ {{ Number(produit.prix * produit.quantite).toFixed(2) }}</td>
+          <td class="total-cell">
+            $ {{ Number(produit.prix * produit.quantite).toFixed(2) }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -83,9 +88,7 @@
       <div class="note-content">{{ suplement }}</div>
     </div>
 
-    <div class="thank-you">
-      Thank you for your Business
-    </div>
+    <div class="thank-you">Thank you for your Business</div>
 
     <div class="footer-info">
       <div class="footer-section">
@@ -95,7 +98,7 @@
           <div>Call us : {{ societer.telephone }}</div>
         </div>
       </div>
-      
+
       <div class="footer-section">
         <div class="footer-title">Payment Info :</div>
         <div class="footer-content">
@@ -104,11 +107,16 @@
           <div>Bank Details : {{ societer.banque || "Bank Principal" }}</div>
         </div>
       </div>
-      
+
       <div class="footer-section">
         <div class="footer-title">Terms & Conditions/Note:</div>
         <div class="footer-content">
-          <div>{{ conditions || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt." }}</div>
+          <div>
+            {{
+              conditions ||
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt."
+            }}
+          </div>
         </div>
       </div>
     </div>
@@ -116,8 +124,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import societer from "../../models/societer";
+import { ref } from "vue";
+
 
 const props = defineProps({
   societer: Object,
@@ -131,12 +139,12 @@ const props = defineProps({
   conditions: String,
   date_emission: String,
   date_echeance: String,
-  factureId: String
+  factureId: String,
 });
 
 // Fonctions utilitaires
 const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('fr-FR');
+  return new Date(date).toLocaleDateString("fr-FR");
 };
 
 const formatPrice = (price) => {
@@ -146,7 +154,6 @@ const formatPrice = (price) => {
 // Fonction pour générer le HTML pur
 
 // Expose la fonction pour l'utiliser depuis le parent
-
 </script>
 
 <style scoped>
@@ -164,10 +171,10 @@ const formatPrice = (price) => {
 .invoice-container {
   max-width: 100%;
   margin: 0 auto;
-  background: #F8F9FA;
+  background: #f8f9fa;
   padding: 40px;
   min-height: 100vh;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .header {
@@ -194,13 +201,13 @@ const formatPrice = (price) => {
 .company-name {
   font-size: 24px;
   font-weight: bold;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 15px;
 }
 
 .company-address {
   font-size: 13px;
-  color: #6B7280;
+  color: #6b7280;
   line-height: 1.6;
 }
 
@@ -211,13 +218,13 @@ const formatPrice = (price) => {
 .invoice-title {
   font-size: 32px;
   font-weight: bold;
-  color: #6B46C1;
+  color: #6b46c1;
   margin-bottom: 8px;
 }
 
 .invoice-date {
   font-size: 14px;
-  color: #1F2937;
+  color: #1f2937;
   font-weight: 500;
 }
 
@@ -227,7 +234,7 @@ const formatPrice = (price) => {
 
 .client-label {
   font-size: 14px;
-  color: #1F2937;
+  color: #1f2937;
   font-weight: 600;
   margin-bottom: 8px;
 }
@@ -235,13 +242,14 @@ const formatPrice = (price) => {
 .client-name {
   font-size: 16px;
   font-weight: bold;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 5px;
 }
 
-.client-address, .client-details {
+.client-address,
+.client-details {
   font-size: 13px;
-  color: #6B7280;
+  color: #6b7280;
   line-height: 1.5;
 }
 
@@ -256,7 +264,7 @@ const formatPrice = (price) => {
 }
 
 .products-table thead {
-  background: #6B46C1;
+  background: #6b46c1;
   color: white;
 }
 
@@ -271,7 +279,9 @@ const formatPrice = (price) => {
   width: 50%;
 }
 
-.price-col, .qty-col, .total-col {
+.price-col,
+.qty-col,
+.total-col {
   width: 16.66%;
   text-align: center;
 }
@@ -282,7 +292,7 @@ const formatPrice = (price) => {
 
 .products-table td {
   padding: 20px 15px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
   font-size: 13px;
 }
 
@@ -292,26 +302,27 @@ const formatPrice = (price) => {
 
 .item-name {
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 5px;
 }
 
 .item-description {
-  color: #6B7280;
+  color: #6b7280;
   font-size: 12px;
   line-height: 1.4;
 }
 
-.price-cell, .qty-cell {
+.price-cell,
+.qty-cell {
   text-align: center;
   font-weight: 500;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .total-cell {
   text-align: right;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .totals-section {
@@ -328,12 +339,14 @@ const formatPrice = (price) => {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.subtotal-line, .tax-line, .discount-line {
+.subtotal-line,
+.tax-line,
+.discount-line {
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
   font-size: 14px;
-  color: #6B7280;
+  color: #6b7280;
 }
 
 .total-due {
@@ -341,11 +354,11 @@ const formatPrice = (price) => {
   justify-content: space-between;
   padding: 15px 0;
   margin-top: 10px;
-  border-top: 2px solid #6B46C1;
+  border-top: 2px solid #6b46c1;
   font-weight: bold;
   font-size: 16px;
   color: white;
-  background: #6B46C1;
+  background: #6b46c1;
   margin: 10px -20px -20px -20px;
   padding: 15px 20px;
   border-radius: 0 0 8px 8px;
@@ -358,13 +371,13 @@ const formatPrice = (price) => {
 .note-title {
   font-size: 14px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 8px;
 }
 
 .note-content {
   font-size: 13px;
-  color: #6B7280;
+  color: #6b7280;
   line-height: 1.5;
 }
 
@@ -372,10 +385,10 @@ const formatPrice = (price) => {
   text-align: center;
   font-size: 18px;
   font-weight: 600;
-  color: #6B46C1;
+  color: #6b46c1;
   margin: 40px 0;
   padding: 20px 0;
-  border-top: 2px solid #E5E7EB;
+  border-top: 2px solid #e5e7eb;
 }
 
 .footer-info {
@@ -392,13 +405,13 @@ const formatPrice = (price) => {
 .footer-title {
   font-size: 14px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 10px;
 }
 
 .footer-content {
   font-size: 12px;
-  color: #6B7280;
+  color: #6b7280;
   line-height: 1.5;
 }
 
@@ -411,7 +424,7 @@ const formatPrice = (price) => {
     padding: 20px;
     background: white;
   }
-  
+
   body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

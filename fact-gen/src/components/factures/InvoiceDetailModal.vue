@@ -95,7 +95,7 @@ const date_echeance = computed(() => props.invoice?.date_echeance || "");
 const toast = useToast();
 const isDownloading = ref(false);
 const factureHtmlRef = ref(null);
-const infoEntreprise = ref(null);
+
 const currentTemplateComponent = computed(() => {
   return templateComponents[props.invoice.template || "moderne"];
 });
@@ -108,17 +108,19 @@ const props = defineProps({
 // Events
 const emit = defineEmits(["close", "download", "delete"]);
 
-// Récupération des infos entreprise si pas passées en props
+const infoEntreprise = ref(null); // <- renommé pour stocker les données récupérées
+
+// Si l'info n’est pas passée en props, on la récupère
 onMounted(async () => {
-  if (!props.societer) {
-    try {
-      infoEntreprise.value = await getInfoEntreprise();
-    } catch (error) {
-      console.error("Erreur récupération infos entreprise", error);
+  try {
+    const data = await getInfoEntreprise();
+    if (data) {
+      infoEntreprise.value = data;
     }
+  } catch (err) {
+    console.error("Erreur lors de la récupération de l'entreprise :", err);
   }
 });
-
 // Computed pour les informations de l'entreprise
 const companyInfo = computed(() => {
   return (
@@ -469,7 +471,12 @@ const downloadPDF = async () => {
   try {
     isDownloading.value = true;
     console.log("template utilisé pour PDF :", props.invoice?.template);
-    const htmlContent = genererPDFs(props.invoice?.template, props.invoice);
+     // Génération du HTML
+    const htmlContent = genererPDFs(props.invoice.template, {
+      ...props.invoice,
+      client_data: props.invoice.client_data || {},
+      societer: companyInfo.value
+    });
 
     await telechargerPDF({
       html: htmlContent,

@@ -28,7 +28,7 @@
 
         <form @submit.prevent="sauvegarderFacture" class="space-y-8">
               <h2 class="text-xl font-bold mb-4">Choisissez un modèle de facture</h2>
-              <TemplateSelector v-model="facture.template" />
+              <TemplateSelector v-model="selectedTemplate" />
           <!-- Toutes vos sections existantes restent identiques -->
           <!-- Section Dates -->
           <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -390,8 +390,9 @@
         </button>
       </div>
       
-    <component
-  :is="templateStore.getComponentById(facture.template)"
+  <component
+  v-if="templateStore.getComponentById(selectedTemplate)"
+  :is="templateStore.getComponentById(selectedTemplate)"
   :societer="societer"
   :client="client"
   :produits="produits"
@@ -401,7 +402,7 @@
   :reduction="reduction"
   :suplement="suplement"
   :date_emission="date_emission"
-  :date_echeance="date_echeance"
+  :date_echeance="date_echeance",
 />
 
     </div>
@@ -420,20 +421,14 @@ import FactureModerne from './templates/FactureModerne.vue'
 import FactureMinimaliste from './templates/FactureMinimaliste.vue'
 import FactureClassique from './templates/FactureClassique.vue'
 import { useRoute } from 'vue-router'
-const facture = reactive({
-  client: null,
-  produits: [],
-  template: null, // important
-  // ... autres champs
-})
+const route = useRoute()
+const selectedTemplate = ref(route.query.template)
 defineProps({
   templateId: String
 })
 
-const route = useRoute()
-if (route.query.template) {
-  facture.template = route.query.template
-}
+
+
 
 
 const factureStore = useFacturesStore()
@@ -529,6 +524,7 @@ const sauvegarderFacture = async () => {
   }
 
   try {
+    console.log("Template sélectionné:", selectedTemplate.value);
     isSaving.value = true
     await factureStore.creerFactureComplete({
       client: client.value,
@@ -538,7 +534,7 @@ const sauvegarderFacture = async () => {
       suplement: suplement.value,
       date_emission: date_emission.value,
       date_echeance: date_echeance.value,
-      template: facture.template.value
+      template: selectedTemplate.value
     })
 
     showToast('Facture créée avec succès !', 'success')

@@ -34,7 +34,7 @@ export async function authenticateUser(req, res, next) {
     
     // 🔧 AMÉLIORATION: Gestion d'erreurs plus précise
     if (error) {
-      console.error("Erreur d'authentification:", error);
+
       return res.status(401).json({ 
         error: "Token invalide",
         type: "auth_error",
@@ -53,8 +53,8 @@ export async function authenticateUser(req, res, next) {
     req.user = user;
     req.userId = user.id; 
     req.supabase = supabase;
-     console.log("✅ Utilisateur connecté :", user);
-     console.log("user_id reçu :", user.id);
+
+    
 
     next();
    
