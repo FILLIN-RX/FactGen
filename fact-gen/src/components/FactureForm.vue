@@ -407,6 +407,12 @@
 
     </div>
   </div>
+  <Toast
+  v-if="showToast"
+  :message="toastMessage"
+  :type="toastType"
+/>
+
 </template>
 <script setup>
 import { ref, computed, watch,reactive } from 'vue'
@@ -422,12 +428,22 @@ import FactureMinimaliste from './templates/FactureMinimaliste.vue'
 import FactureClassique from './templates/FactureClassique.vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
+import Toast from './Toast.vue'
 const selectedTemplate = ref(route.query.template)
 defineProps({
   templateId: String
 })
 
 
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // success | error | warning | info
+
+const showToastMessage = (message, type = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+}
 
 
 
@@ -519,7 +535,8 @@ const resetForm = () => {
 
 const sauvegarderFacture = async () => {
   if (!isFormValid.value) {
-    showToast('Veuillez remplir tous les champs obligatoires', 'error')
+   showToastMessage('Veuillez remplir tous les champs obligatoires', 'error')
+
     return
   }
 
@@ -537,11 +554,13 @@ const sauvegarderFacture = async () => {
       template: selectedTemplate.value
     })
 
-    showToast('Facture créée avec succès !', 'success')
+showToastMessage('Facture créée avec succès !', 'success')
+
     resetForm()
   } catch (error) {
     console.error('❌ Erreur :', error)
-    showToast('Erreur lors de la création de la facture', 'error')
+    showToastMessage('Erreur lors de la création de la facture', 'error')
+
   } finally {
     isSaving.value = false
   }
