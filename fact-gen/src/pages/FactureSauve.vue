@@ -433,7 +433,7 @@ async function supprimerFacture() {
     await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
     showDeleteConfirm.value = false;
     invoiceStore.clearSelection();
-    showToastMessage("Facture supprimée avec succès !", "warning");
+    showToastMessage("Facture supprimée avec succès !", "success");
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
     showToastMessage("Erreur lors de la suppression de la facture", "error");
