@@ -78,7 +78,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import { supabase } from "../lib/supabase";
+import supabase from "../lib/supabase";
 import FactureTemp from "../components/FactureTemp.vue";
 import ClientFormModal from "../components/client/ClientFormModal .vue";
 import { useOperationsStore } from "../stores/ui";
@@ -99,7 +99,7 @@ const showRecentActivity = ref(false);
 const accounts = ref([
   {
     amount: 15420,
-    currency: 'EUR',
+    currency: 'EUR',  
     names: 'Compte Principal',
     percent: '12',
     color: '#3B82F6'
