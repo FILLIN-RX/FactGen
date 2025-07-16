@@ -110,19 +110,25 @@
   </div>
 </template>
 <script setup>
-import societer from "../../models/societer";
+import { ref } from 'vue';
 
-defineProps({
-  societer: Object,
-  client: Object,
-  produits: Array,
-  totalHT: Number,
-  totalTTC: Number,
-  montantReduction: Number,
-  suplement: String,
-  date_emission: String,
-  date_echeance: String,
-});
+const invoice = defineProps([
+  'societer',
+  'client', 
+  'produits',
+  'totalHT',
+  'totalTTC',
+  'montantReduction',
+  'suplement',
+  'date_emission',
+  'date_echeance',
+  'factureId'
+]);
+
+// Cette fonction va générer le HTML pour ce template spécifique
+
+
+
 </script>
 <style scoped>
 @page {

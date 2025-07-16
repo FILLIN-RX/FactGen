@@ -80,7 +80,7 @@ import { showToast } from "../../composables/useToast";
 import { templateComponents } from "../../components/templates";
 import { useFacturesStore } from "../../stores/Facture";
 import Client from "../../models/client";
-
+import { genererPDFs } from "../templates/utils/generateTemplates";
 const factureStore = useFacturesStore();
 const invoice = computed(() => factureStore.selectedFacture);
 const client = computed(() => props.invoice?.client_data || {});
@@ -468,15 +468,8 @@ const companyInfo = computed(() => {
 const downloadPDF = async () => {
   try {
     isDownloading.value = true;
-
-    // Récupérer le contenu HTML visible dans le DOM
-    const element = factureHtmlRef.value;
-
-    if (!element) {
-      throw new Error("Composant facture non trouvé dans le DOM.");
-    }
-
-    const htmlContent = element.innerHTML; // ✅ contenu HTML réel rendu
+    console.log("template utilisé pour PDF :", props.invoice?.template);
+    const htmlContent = genererPDFs(props.invoice?.template, props.invoice);
 
     await telechargerPDF({
       html: htmlContent,

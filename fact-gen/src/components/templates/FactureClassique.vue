@@ -1,6 +1,6 @@
 <template>
   <div class="invoice-container">
-    <!-- Header -->
+    <!-- Votre template existant reste inchangé -->
     <div class="header">
       <div class="company-info">
         <div class="company-logo">
@@ -26,7 +26,6 @@
       </div>
     </div>
 
-    <!-- Client Information -->
     <div class="client-section">
       <div class="client-label">To :</div>
       <div class="client-info">
@@ -36,7 +35,6 @@
       </div>
     </div>
 
-    <!-- Products Table -->
     <table class="products-table">
       <thead>
         <tr>
@@ -59,7 +57,6 @@
       </tbody>
     </table>
 
-    <!-- Totals Section -->
     <div class="totals-section">
       <div class="totals-container">
         <div class="subtotal-line">
@@ -81,18 +78,15 @@
       </div>
     </div>
 
-    <!-- Note Section -->
     <div class="note-section" v-if="suplement">
       <div class="note-title">Note:</div>
       <div class="note-content">{{ suplement }}</div>
     </div>
 
-    <!-- Thank You -->
     <div class="thank-you">
       Thank you for your Business
     </div>
 
-    <!-- Footer Information -->
     <div class="footer-info">
       <div class="footer-section">
         <div class="footer-title">Questions?</div>
@@ -122,9 +116,10 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import societer from "../../models/societer";
 
-defineProps({
+const props = defineProps({
   societer: Object,
   client: Object,
   produits: Array,
@@ -138,6 +133,20 @@ defineProps({
   date_echeance: String,
   factureId: String
 });
+
+// Fonctions utilitaires
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('fr-FR');
+};
+
+const formatPrice = (price) => {
+  return Number(price).toFixed(2);
+};
+
+// Fonction pour générer le HTML pur
+
+// Expose la fonction pour l'utiliser depuis le parent
+
 </script>
 
 <style scoped>
