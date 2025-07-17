@@ -76,7 +76,7 @@
 import { telechargerPDF, getInfoEntreprise } from "../../services/api";
 import { computed, ref, onMounted } from "vue";
 import { useToast } from "vue-toastification";
-import { showToast } from "../../composables/useToast";
+import { showToastMessage } from "../../composables/useToast";
 import { templateComponents } from "../../components/templates";
 import { useFacturesStore } from "../../stores/Facture";
 import Client from "../../models/client";
@@ -486,10 +486,10 @@ const downloadPDF = async () => {
     });
 
     emit("close");
-    showToast("PDF téléchargé avec succès !", "success");
+    showToastMessage("PDF téléchargé avec succès !", "success");
   } catch (error) {
     console.error("Erreur de téléchargement du PDF", error);
-    showToast("Erreur lors du téléchargement du PDF", "error");
+    showToastMessage("Erreur lors du téléchargement du PDF", "error");
   } finally {
     isDownloading.value = false;
   }

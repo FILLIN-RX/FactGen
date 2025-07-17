@@ -87,7 +87,8 @@ export const useFacturesStore = defineStore("factures", {
       suplement,
       date_emission,
       date_echeance,
-      template
+      template,
+      statut
     }) {
 
       this.loading = true;
@@ -109,7 +110,8 @@ export const useFacturesStore = defineStore("factures", {
           null,
           date_emission,
           date_echeance,
-          template
+          template,
+          statut
         );
 
         facture.validate();
@@ -140,7 +142,8 @@ export const useFacturesStore = defineStore("factures", {
           date_emission,
           date_echeance,
           user_id: authStore.userId,
-          template: template
+          template: template,
+          statut: statut || "en_attente", // "en_attente", "paye", "annule"
         };
         console.log("🧾 Données envoyées :", factureData);
 

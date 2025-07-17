@@ -299,12 +299,7 @@
       </div>
     </div>
   </div>
-    <Toast
-  v-if="showToast"
-  :message="toastMessage"
-  :type="toastType"
-  :duration="4000"
-/>
+  
 </template>
 
 <script setup>
@@ -318,7 +313,8 @@ import { useToast } from "vue-toastification";
 import { useAppStore } from "../stores/app";
 import FactureForm from "../components/FactureForm.vue";
 import { useRoute } from "vue-router";
-import Toast from "../components/ToasT.vue";
+import { showToastMessage } from '../composables/useToast';
+
 const toast = useToast();
 
 // Variables réactives
@@ -332,16 +328,7 @@ const showDeleteConfirm = ref(false);
 const isDeleting = ref(false);
 const infoEntreprise = ref(null);
 const showFilters = ref(false);
-const route = useRoute()
-const showToast = ref(false)
-const toastMessage = ref('')
-const toastType = ref('success') // success | error | warning | info
-
-const showToastMessage = (message, type = 'success') => {
-  toastMessage.value = message
-  toastType.value = type
-  showToast.value = true
-}
+const route = useRoute();
 
 // Détection mobile améliorée
 const isMobile = computed(() => {

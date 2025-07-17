@@ -281,12 +281,7 @@
     </div>
    
   </div>
-      <Toast
-  v-if="showToast"
-  :message="toastMessage"
-  :type="toastType"
-  :duration="4000"
-/>
+ 
 </template>
 
 <script setup>

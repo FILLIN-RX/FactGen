@@ -528,8 +528,7 @@ import Facture from "../models/facture";
 import societer from "../models/societer";
 import Produit from "../models/produit";
 import { useFacturesStore } from "../stores/Facture";
-import { showToast } from "../composables/useToast";
-
+import { showToastMessage } from "../composables/useToast";
 export default {
   data() {
     return {

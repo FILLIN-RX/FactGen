@@ -8,7 +8,8 @@ export default class Facture {
     user_id = null,
     date_emission,
     date_echeance,
-    template
+    template,
+     statut = "en_attente"
   ) {
     this.numero = this.genererNumero();
     this.client = client;
@@ -20,6 +21,7 @@ export default class Facture {
     this.date_emission = date_emission;
     this.date_echeance = date_echeance;
     this.template = template;
+    this.statut = statut; // "en_attente", "paye", "annule"
   }
 
   getTotalHT() {
@@ -118,6 +120,7 @@ export default class Facture {
       date_emission: this.date_emission,
       date_echeance: this.date_echeance,
       template: this.template,
+      statut:this.statut, // "en_attente", "paye", "annule"
     };
   }
 
@@ -134,6 +137,7 @@ export default class Facture {
       totalTTC: this.totalTTC,
       date: new Date().toISOString(),
       template: this.template,
+      statut: this.statut, // "en_attente", "paye", "annule"
     };
 
     let factures = JSON.parse(localStorage.getItem("factures")) || [];

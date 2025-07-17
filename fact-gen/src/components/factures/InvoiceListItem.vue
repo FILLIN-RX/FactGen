@@ -118,6 +118,51 @@ const clientsStore = useClientsStore();
 const props = defineProps({
   invoice: Object
 });
+const StatusBadge = {
+  props: { status: String },
+  setup(props) {
+    const getStatusConfig = (status) => {
+      const configs = {
+        'payee': {
+          label: 'Payée',
+          classes: 'bg-green-100 text-green-800 border-green-200',
+          icon: 'M5 13l4 4L19 7'
+        },
+        'en_attente': {
+          label: 'En attente',
+          classes: 'bg-amber-100 text-amber-800 border-amber-200',
+          icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+        },
+        'en_retard': {
+          label: 'En retard',
+          classes: 'bg-red-100 text-red-800 border-red-200',
+          icon: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+        },
+        'brouillon': {
+          label: 'Brouillon',
+          classes: 'bg-gray-100 text-gray-800 border-gray-200',
+          icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
+        }
+      };
+      return configs[status] || {
+        label: status || 'Non défini',
+        classes: 'bg-gray-100 text-gray-800 border-gray-200',
+        icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+      };
+    };
+    return { getStatusConfig };
+  },
+  template: `
+    <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
+         :class="getStatusConfig(status).classes">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getStatusConfig(status).icon" />
+      </svg>
+      <span>{{ getStatusConfig(status).label }}</span>
+    </div>
+  `
+};
+defineExpose({ StatusBadge });
 
 defineEmits(['select']);
 

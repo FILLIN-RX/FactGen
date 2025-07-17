@@ -366,12 +366,7 @@
       </div>
     </div>
   </div>
-   <Toast
-  v-if="showToast"
-  :message="toastMessage"
-  :type="toastType"
-  :duration="4000"
-/>
+ 
 </template>
 
 <script setup>
@@ -380,7 +375,7 @@ import { useRouter } from 'vue-router';
 import { useClientsStore } from '../stores/client';
 import ClientFormModal from '../components/client/ClientFormModal .vue';
 import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
-import { useToast } from "vue-toastification";
+import { showToastMessage } from '../composables/useToast';
 import { useFacturesStore } from '../stores/Facture';
 import LoadinApp from '../components/LoadinApp.vue';
 import Toast from '../components/ToasT.vue';
@@ -391,18 +386,11 @@ const sortBy = ref('date')        // Défini la variable
 const sortOrder = ref('asc')
 const clientsActifs = ref(0)
 const showDeleteConfirm = ref(false)
-const showToast = ref(false)
 const isDeleting = ref(false);
-const toastMessage = ref('')
-const toastType = ref('success') // success | error | warning | info
 function confirmerSuppression() {
   showDeleteConfirm.value = true;
 }
-const showToastMessage = (message, type = 'success') => {
-  toastMessage.value = message
-  toastType.value = type
-  showToast.value = true
-}
+
 
 function handleEdit(id) {
   console.log('Edit client', id)

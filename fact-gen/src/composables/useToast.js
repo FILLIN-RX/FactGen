@@ -1,32 +1,24 @@
-// toast.js
-import { ref } from 'vue'
+// src/composables/useToast.js
+import { ref } from "vue";
 
-const toast = ref({
-  message: '',
-  type: 'info',
-  visible: false,
-  duration: 4000,
-  persistent: false,
-  closable: true,
-  description: '',
-})
+const showToast = ref(false);
+const toastMessage = ref("");
+const toastType = ref("success"); // success | error | warning | info
 
-function showToast({ message, type = 'info', duration = 4000, description = '' }) {
-  toast.value = {
-    message,
-    type,
-    visible: true,
-    duration,
-    description,
-    persistent: false,
-    closable: true,
-  }
+export function showToastMessage(message, type = "success", duration = 4000) {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
 
-  if (!toast.value.persistent) {
-    setTimeout(() => {
-      toast.value.visible = false
-    }, duration)
-  }
+  setTimeout(() => {
+    showToast.value = false;
+  }, duration);
 }
 
-export { toast, showToast }
+export function useToastState() {
+  return {
+    showToast,
+    toastMessage,
+    toastType,
+  };
+}
