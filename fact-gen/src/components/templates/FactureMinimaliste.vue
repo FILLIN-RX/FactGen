@@ -65,10 +65,10 @@
           <td>{{ produit.date || date_emission }}</td>
           <td class="text-center">{{ produit.quantite }}</td>
           <td class="text-center">{{ produit.unite || "h" }}</td>
-          <td class="text-right">{{ Number(produit.prix).toFixed(2) }} €</td>
+          <td class="text-right">{{ format(produit.prix) }}</td>
           <td class="text-center">{{ produit.tva || "20,0" }} %</td>
           <td class="text-right">
-            {{ (produit.prix * produit.quantite).toFixed(2) }} €
+            {{ format(produit.prix * produit.quantite) }}
           </td>
         </tr>
       </tbody>
@@ -79,16 +79,16 @@
       <div class="totals-container">
         <div class="total-line">
           <span>Total HT</span>
-          <span>{{ totalHT.toFixed(2) }} €</span>
+          <span>{{ format(totalHT) }}</span>
         </div>
         <div class="total-line">
           <span>TVA 20,0 %</span>
-          <span>{{ (totalTTC - totalHT).toFixed(2) }} €</span>
+          <span>{{ format(totalTTC - totalHT) }}</span>
         </div>
         <div class="total-line total-final">
           <span><strong>Total (TTC)</strong></span>
           <span
-            ><strong>{{ totalTTC.toFixed(2) }} €</strong></span
+            ><strong>{{ format( totalTTC) }}</strong></span
           >
         </div>
       </div>
@@ -135,6 +135,11 @@
 
 <script setup>
 import { ref } from "vue";
+import { formatCurrency } from "../../utils/format";
+import { useSettingsStore } from "../../stores/setting";
+
+const setting = useSettingsStore();
+const format = (val) => formatCurrency(val, setting.currency)
 
 const invoice = defineProps([
   "invoice",

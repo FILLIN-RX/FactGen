@@ -96,7 +96,7 @@
           <StatusBadge :status="invoice.statut" />
           
           <div class="text-right">
-            <div class="text-2xl font-bold text-gray-900">{{ formatPrice(invoice.montant_total) }} €</div>
+            <div class="text-2xl font-bold text-gray-900">{{ format(invoice.montant_total) }} </div>
             <div class="text-sm text-gray-500">TTC</div>
           </div>
           
@@ -112,9 +112,11 @@
 <script setup>
 import { computed } from 'vue'
 import { useClientsStore } from '@/stores/client.js'
-
+import { formatCurrency } from '../../utils/format';
+import { useSettingsStore } from '@/stores/setting.js';
 const clientsStore = useClientsStore();
-
+const settingsStore = useSettingsStore();
+const format = (val) => formatCurrency(val, settingsStore.currency)
 const props = defineProps({
   invoice: Object
 });

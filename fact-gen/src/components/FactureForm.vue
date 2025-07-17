@@ -356,7 +356,7 @@
                             Number(produit.prix) * Number(produit.quantite)
                           ).toFixed(2)
                         }}
-                        €
+                        {{ setting.currency }}
                       </div>
                     </div>
                   </div>
@@ -448,7 +448,7 @@
                     class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="pourcentage">Pourcentage (%)</option>
-                    <option value="montant">Montant fixe (€)</option>
+                    <option value="montant">Montant fixe {{ setting.currency }}</option>
                   </select>
                 </div>
 
@@ -645,6 +645,9 @@ import FactureModerne from "./templates/FactureModerne.vue";
 import FactureMinimaliste from "./templates/FactureMinimaliste.vue";
 import FactureClassique from "./templates/FactureClassique.vue";
 import { useRoute } from "vue-router";
+import { useSettingsStore } from "../stores/setting";
+import { formatCurrency } from "../utils/format";
+const setting = useSettingsStore();
 const route = useRoute();
 import { showToastMessage } from "../composables/useToast";
 const selectedTemplate = ref(route.query.template);

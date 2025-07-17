@@ -53,10 +53,10 @@
             <div class="item-name">{{ produit.nom }}</div>
             <div class="item-description">{{ produit.description }}</div>
           </td>
-          <td class="price-cell">$ {{ Number(produit.prix).toFixed(2) }}</td>
+          <td class="price-cell">$ {{ format(produit.prix) }}</td>
           <td class="qty-cell">{{ produit.quantite }}</td>
           <td class="total-cell">
-            $ {{ Number(produit.prix * produit.quantite).toFixed(2) }}
+             {{ format(produit.prix * produit.quantite) }}
           </td>
         </tr>
       </tbody>
@@ -74,7 +74,7 @@
         </div>
         <div class="discount-line" v-if="montantReduction">
           <span>DISCOUNT 5% :</span>
-          <span>$ {{ Number(montantReduction).toFixed(2) }}</span>
+          <span>$ {{ format(montantReduction) }}</span>
         </div>
         <div class="total-due">
           <span>TOTAL DUE :</span>
@@ -126,6 +126,11 @@
 <script setup>
 import { ref } from "vue";
 
+import { formatCurrency } from "../../utils/format";
+import { useSettingsStore } from "../../stores/setting";
+
+const setting = useSettingsStore();
+const format = (val) => formatCurrency(val, setting.currency)
 
 const props = defineProps({
   societer: Object,

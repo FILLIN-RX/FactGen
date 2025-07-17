@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from "vue";
 import { Bar, Line } from "vue-chartjs";
+import { formatCurrency } from "../utils/format";
+import { useSettingsStore } from "../stores/setting";
+
 import {
   Chart as ChartJS,
   Title,
@@ -18,7 +21,7 @@ import { useFacturesStore } from "../stores/Facture";
 import RevenueBreakchart from "./RevenueBreakchart.vue";
 import { useAuthStore } from "../stores/auth";
 import ActiviterRecente from "./ActiviterRecente.vue";
-
+ const settings = useSettingsStore();
 ChartJS.register(
   Title,
   Tooltip,
@@ -183,7 +186,7 @@ const chartOptions = computed(() => ({
           return context[0].label;
         },
         label: function (context) {
-          return `💰 ${context.parsed.y.toLocaleString()} FCFA`;
+          return `💰 ${context.parsed.y.toLocaleString()} ${settings.currency}`;
         },
       },
       displayColors: false,

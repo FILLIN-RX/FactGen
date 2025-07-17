@@ -9,7 +9,10 @@ import StatisticS from '../views/StatisticS.vue'
 const clientsStore = useClientsStore()
 const facturesStore = useFacturesStore()
 const statsStore = useStatsStore()
-
+import { formatCurrency } from '../utils/format'
+import { useSettingsStore } from '../stores/setting'
+const setting = useSettingsStore()
+const format = (val) => formatCurrency(val, setting.currency)
 onMounted(async () => {
   const auth = useAuthStore();
   await auth.initialize();
@@ -82,7 +85,7 @@ const statsCards = computed(() => [
   {
     id: 'revenus',
     title: 'Chiffre d\'affaires',
-    value: formatPrice(statsStore.totalRevenu || 0),
+    value: statsStore.totalRevenu || 0,
     icon: 'currency',
     color: 'purple',
     bgGradient: 'from-purple-500 to-purple-600',
@@ -110,23 +113,7 @@ const statsCards = computed(() => [
 ]);
 
 // Format value based on type
-const formatValue = (value, format) => {
-  if (!value && value !== 0) return '-';
-  
-  switch (format) {
-    case 'currency':
-      return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'XOF',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(value).replace('XOF', 'FCFA');
-    case 'percentage':
-      return `${value}%`;
-    default:
-      return new Intl.NumberFormat('fr-FR').format(value);
-  }
-};
+
 
 // Get icon SVG
 const getIcon = (iconName) => {
@@ -236,7 +223,9 @@ const getIcon = (iconName) => {
               
               <!-- Success State -->
               <p v-else class="text-lg font-bold text-gray-900 leading-tight group-hover:scale-105 transition-transform duration-200 sm:text-xl">
-                {{ formatValue(card.value, card.format) }}
+                <span v-if="card.format==='currency'">{{ format(card.value) }}</span>
+                <span v-else-if="card.format === 'percentage'">{{ card.value }} %</span>
+                <span v-else>{{ card.value }}</span>
               </p>
             </div>
 

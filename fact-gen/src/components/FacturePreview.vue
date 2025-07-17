@@ -86,10 +86,10 @@
                 {{ produit.quantite }}
               </div>
               <div class="col-span-2 text-right text-slate-800">
-                {{ Number(produit.prix).toFixed(2) }} €
+                {{ Number(produit.prix).toFixed(2) }} {{setting.currency}}
               </div>
               <div class="col-span-2 text-right font-semibold text-slate-800">
-                {{ (produit.prix * produit.quantite).toFixed(2) }} €
+                {{ (produit.prix * produit.quantite).toFixed(2) }} {{setting.currency}}
               </div>
             </div>
           </div>
@@ -102,7 +102,7 @@
       <div class="space-y-3">
         <div class="flex justify-between text-slate-600">
           <span>Sous-total HT</span>
-          <span class="font-medium">{{ totalHT.toFixed(2) }} €</span>
+          <span class="font-medium">{{ totalHT.toFixed(2) }} {{setting.currency}}</span>
         </div>
 
         <div
@@ -115,13 +115,13 @@
               reduction.type === "pourcentage" ? `(${reduction.valeur}%)` : ""
             }}</span
           >
-          <span class="font-medium">-{{ montantReduction.toFixed(2) }} €</span>
+          <span class="font-medium">-{{ montantReduction.toFixed(2) }} {{setting.currency}}</span>
         </div>
 
         <div class="border-t border-slate-200 pt-3">
           <div class="flex justify-between text-lg font-bold text-slate-800">
             <span>Total TTC</span>
-            <span>{{ totalTTC.toFixed(2) }} €</span>
+            <span>{{ totalTTC.toFixed(2) }} {{setting.currency}}</span>
           </div>
         </div>
       </div>
@@ -151,6 +151,9 @@
 import { ref } from "vue";
 import societer from "../models/societer";
 import Facture from "../models/facture";
+import { formatCurrency } from "../utils/format";
+import { useSettingsStore } from "../stores/setting";
+const setting = useSettingsStore();
 // Props :
 defineProps({
   societer: Object,

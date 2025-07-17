@@ -4,18 +4,23 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useStatsStore } from "@/stores/stats";
 import API from "@/api/axios";
-
+import { formatCurrency } from "../utils/format";
+import { useSettingsStore } from "../stores/setting";
 // Import the new components
+
 import DashboardHeader from '../views/statistics/DashboardHeader.vue';
 import DashboardQuickAnalyses from '../views/statistics/DashboardQuickAnalyses.vue' ;
 import ClientsTable from '../views/statistics/ClientsTable.vue';
 import FacturesTable from '../views/statistics/FacturesTable.vue';
 import AnalyticsChart from '../views/statistics/AnalyticsChart.vue';
 import AnalyticsInsights from '../views/statistics/AnalyticsInsights.vue';
+import DashboardKpiCards from '../views/statistics/DashboardKpiCards.vue';
+const formatWithCurrency = (value) => formatCurrency(value, settings.currency);
 
 const router = useRouter();
 const auth = useAuthStore();
 const statsStore = useStatsStore();
+const settings = useSettingsStore();
 
 const isLoading = ref(true);
 const error = ref(null);
@@ -137,14 +142,7 @@ const advancedAnalytics = computed(() => {
 });
 
 // Utility functions (keep them here or move to a separate utility file if used globally)
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'XOF',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(value).replace('XOF', 'FCFA');
-};
+
 
 const formatDate = (date) => {
     return new Date(date).toLocaleDateString('fr-FR', {
@@ -246,7 +244,7 @@ const tabs = [
             <div v-if="activeTab === 'factures'" class="space-y-6">
                 <FacturesTable
                     :factures="factures"
-                    :formatCurrency="formatCurrency"
+                    :formatCurrency="formatWithCurrency"
                     :formatDate="formatDate"
                     :getStatusColor="getStatusColor"
                 />
@@ -261,7 +259,7 @@ const tabs = [
                 <AnalyticsInsights
                     :stats="stats"
                     :statsStoreMoisLength="statsStore.mois.length"
-                    :formatCurrency="formatCurrency"
+                    :formatCurrency="formatWithCurrency"
                 />
             </div>
         </div>

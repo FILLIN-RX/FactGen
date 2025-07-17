@@ -5,8 +5,8 @@
       <div class="company-info">
         <div class="company-logo">
           <!-- Logo ici si disponible -->
-          <span style="font-weight: bold; color: #007acc"
-            ><img
+          <span style="font-weight: bold; color: #007acc">
+            <img
               v-if="societer.logo"
               :src="societer.logo"
               alt="Logo de l'entreprise"
@@ -24,8 +24,7 @@
       <div class="invoice-info">
         <div class="invoice-title">FACTURE</div>
         <div class="invoice-details">
-          <strong>N° {{ factureId }}</strong
-          ><br />
+          <strong>N° {{ factureId }}</strong><br />
           Émise le: {{ date_emission }}<br />
           <span class="important">À payer avant le: {{ date_echeance }}</span>
         </div>
@@ -36,8 +35,7 @@
     <div class="client-section">
       <div class="client-title">FACTURÉ À:</div>
       <div class="client-info">
-        <strong>{{ client.nom || "Nom du client" }}</strong
-        ><br />
+        <strong>{{ client.nom || "Nom du client" }}</strong><br />
         {{ client.email }}<br />
         {{ client.address }}
       </div>
@@ -57,9 +55,11 @@
         <tr v-for="(produit, index) in produits" :key="index">
           <td style="width: 40%">{{ produit.nom }}</td>
           <td style="width: 15%">{{ produit.quantite }}</td>
-          <td style="width: 20%">{{ Number(produit.prix).toFixed(2) }} $</td>
+          <td style="width: 20%">
+            {{ formatCurrency(produit.prix, setting.currency) }}
+          </td>
           <td style="width: 25%">
-            {{ (produit.prix * produit.quantite).toFixed(2) }} €
+            {{ formatCurrency(produit.prix * produit.quantite, setting.currency) }}
           </td>
         </tr>
       </tbody>
@@ -70,36 +70,28 @@
       <div style="width: 300px; margin-left: auto">
         <div class="total-line">
           <span>Sous-total HT:</span>
-          <span>{{ totalHT.toFixed(2) }} €</span>
+          <span>{{ formatCurrency(totalHT, setting.currency) }}</span>
         </div>
 
-        <div
-          v-if="montantReduction"
-          class="total-line reduction-line"
-        >
+        <div v-if="montantReduction" class="total-line reduction-line">
           <span>Réduction:</span>
-          <span>-{{ montantReduction.toFixed(2) }} €</span>
+          <span>-{{ formatCurrency(montantReduction, setting.currency) }}</span>
         </div>
 
         <div class="total-line">
           <span>Total HT:</span>
-          <span>{{ totalHT.toFixed(2) }} €</span>
+          <span>{{ formatCurrency(totalHT, setting.currency) }}</span>
         </div>
 
         <div class="total-line">
           <span><strong>TOTAL TTC:</strong></span>
-          <span
-            ><strong>{{ totalTTC.toFixed(2) }} €</strong></span
-          >
+          <span><strong>{{ formatCurrency(totalTTC, setting.currency) }}</strong></span>
         </div>
       </div>
     </div>
 
     <!-- Notes -->
-    <div
-      v-if="suplement"
-      class="notes-section"
-    >
+    <div v-if="suplement" class="notes-section">
       <div class="notes-title">Informations complémentaires:</div>
       <div class="notes-content">{{ suplement }}</div>
     </div>
@@ -107,30 +99,30 @@
     <!-- Footer -->
     <div class="footer">
       <p>Merci pour votre confiance !</p>
-      <!-- <p class="text-xs">
-        Document généré automatiquement le {{ dateGeneration }}
-      </p> -->
     </div>
   </div>
 </template>
+
 <script setup>
-import { ref } from "vue";
+import { formatCurrency } from '@/utils/format'
+import { useSettingsStore } from '@/stores/setting'
 
-const invoice = defineProps([
-  "societer",
-  "client",
-  "produits",
-  "totalHT",
-  "totalTTC",
-  "montantReduction",
-  "suplement",
-  "date_emission",
-  "date_echeance",
-  "factureId",
-]);
+const setting = useSettingsStore()
 
-// Cette fonction va générer le HTML pour ce template spécifique
+defineProps([
+  'societer',
+  'client',
+  'produits',
+  'totalHT',
+  'totalTTC',
+  'montantReduction',
+  'suplement',
+  'date_emission',
+  'date_echeance',
+  'factureId'
+])
 </script>
+
 <style scoped>
 @page {
   margin: 15mm;
