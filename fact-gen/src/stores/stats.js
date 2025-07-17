@@ -67,6 +67,24 @@ export const useStatsStore = defineStore("stats", {
         direction: pourcent >= 0 ? "up" : "down"
       };
     },
+    totalRevenuConverti: (state) => {
+      const currencyStore = useCurrencyStore();
+      return currencyStore.convert(state.totalRevenu).toFixed(2);
+    },
+
+    revenusParMoisConvertis: (state) => {
+      const currencyStore = useCurrencyStore();
+      return state.revenusParMois.map((revenu) =>
+        currencyStore.convert(revenu)
+      );
+    },
+
+    revenusParJoursConvertis: (state) => {
+      const currencyStore = useCurrencyStore();
+      return state.revenusParJours.map((revenu) =>
+        currencyStore.convert(revenu)
+      );
+    },
 
     // ✅ Taux de conversion
     tauxConversion: (state) => {

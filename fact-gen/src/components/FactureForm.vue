@@ -65,7 +65,12 @@
               </div>
               Informations de facturation
             </h2>
-
+            <div
+              class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
+            >
+              <h2 class="text-xl font-semibold text-slate-800 mb-6">Devise</h2>
+              <SelectedDevise v-model="devise" />
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
                 <label
@@ -448,7 +453,9 @@
                     class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="pourcentage">Pourcentage (%)</option>
-                    <option value="montant">Montant fixe {{ setting.currency }}</option>
+                    <option value="montant">
+                      Montant fixe {{ setting.currency }}
+                    </option>
                   </select>
                 </div>
 
@@ -647,6 +654,7 @@ import FactureClassique from "./templates/FactureClassique.vue";
 import { useRoute } from "vue-router";
 import { useSettingsStore } from "../stores/setting";
 import { formatCurrency } from "../utils/format";
+import SelectedDevise from "./SelectedDevise.vue";
 const setting = useSettingsStore();
 const route = useRoute();
 import { showToastMessage } from "../composables/useToast";
@@ -654,7 +662,7 @@ const selectedTemplate = ref(route.query.template);
 defineProps({
   templateId: String,
 });
-
+const devise = ref()
 const factureStore = useFacturesStore();
 const templateStore = useTemplateStore();
 
@@ -780,6 +788,7 @@ const sauvegarderFacture = async () => {
       date_echeance: date_echeance.value,
       template: selectedTemplate.value,
       statut: statut.value,
+      devise: devise.value,
     });
 
     showToastMessage("Facture créée avec succès !", "success");

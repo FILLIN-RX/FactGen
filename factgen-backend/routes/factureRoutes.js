@@ -70,7 +70,47 @@ router.post(
   factureValidationRules,
   validateRequest,
   async (req, res) => {
-    const {
+   const {
+  client_id,
+  client_data,
+  produits,
+  reduction,
+  suplement,
+  montant_total,
+  numero,
+  date_emission,
+  date_echeance,
+  template,
+  statut,
+  devise // <--- AJOUT ICI
+} = req.body;
+let taux_change = 1; // Par défaut pour XAF
+let montant_xaf = 0;
+
+if (devise && devise !== "XAF") {
+  try {
+    const response = await fetch(
+      `https://api.exchangerate.host/latest?base=${devise}&symbols=XAF`
+    );
+    const data = await response.json();
+    taux_change = data.rates.XAF;
+    
+    montant_xaf = montant_total * taux_change;
+
+  } catch (err) {
+    console.error("Erreur lors de la récupération du taux de change:", err);
+    return res.status(500).json({ error: "Taux de change indisponible" });
+  }
+}
+
+    console.log("donnee reçu:", req.body);
+    console.log("✅ REQUÊTE POST /factures autorisée");
+
+    try {
+      const { data, error } = await req.supabase
+        .from("facture")
+          .insert([
+    {
       client_id,
       client_data,
       produits,
@@ -81,32 +121,15 @@ router.post(
       date_emission,
       date_echeance,
       template,
-      statut
-    } = req.body;
-    console.log("donnee reçu:", req.body);
-    console.log("✅ REQUÊTE POST /factures autorisée");
-
-    try {
-      const { data, error } = await req.supabase
-        .from("facture")
-        .insert([
-          {
-            client_id,
-            client_data,
-            produits,
-            reduction,
-            suplement,
-            montant_total,
-            numero,
-            date_emission,
-            date_echeance,
-            template,
-            statut,
-            user_id: req.user.id,
-            created_at: new Date().toISOString(),
-          },
-        ])
-        .select();
+      statut,
+      user_id: req.user.id,
+      created_at: new Date().toISOString(),
+      devise,           // <--- ici
+      taux_change  ,
+      montant_xaf     // <--- ici
+    },
+  ])
+  .select();
 
       if (error) {
         console.error("Erreur création facture:", error);

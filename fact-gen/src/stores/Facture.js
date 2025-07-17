@@ -1,9 +1,14 @@
 import { defineStore } from "pinia";
-import  API  from "../api/axios";
+import API from "../api/axios";
 import Facture from "../models/facture";
 import { useAuthStore } from "./auth";
-import { creerFacture, deleteFactures,getFacturesParClient ,upsertClient} from "../services/api";
-
+import {
+  creerFacture,
+  deleteFactures,
+  getFacturesParClient,
+  upsertClient,
+} from "../services/api";
+import { useCurrencyStore } from "./Currency";
 export const useFacturesStore = defineStore("factures", {
   state: () => ({
     factures: [],
@@ -15,16 +20,18 @@ export const useFacturesStore = defineStore("factures", {
 
   getters: {
     hasFactures: (state) => state.factures.length > 0,
-    
+
     facturesParClient: (state) => (clientId) =>
       state.factures.filter((f) => f.client_id === clientId),
 
-    factureParId: (state) => (id) => 
-      state.factures.find((f) => f.id === id),
-    
-    totalRevenu: (state) => 
-      state.factures.reduce((total, facture) => total + (facture.montant || 0), 0),
-    
+    factureParId: (state) => (id) => state.factures.find((f) => f.id === id),
+
+    totalRevenu: (state) =>
+      state.factures.reduce(
+        (total, facture) => total + (facture.montant || 0),
+        0
+      ),
+
     revenusParMois: (state) => {
       const revenus = Array(12).fill(0);
       state.factures.forEach((facture) => {
@@ -35,21 +42,23 @@ export const useFacturesStore = defineStore("factures", {
       });
       return revenus;
     },
+    
 
     facturesParStatut: (state) => (statut) =>
       state.factures.filter((f) => f.statut === statut),
-facturesParStatutCount: (state) => {
-  return state.factures.reduce((acc, f) => {
-    acc[f.statut] = (acc[f.statut] || 0) + 1;
-    return acc;
-  }, {});
-}
-,
+    facturesParStatutCount: (state) => {
+      return state.factures.reduce((acc, f) => {
+        acc[f.statut] = (acc[f.statut] || 0) + 1;
+        return acc;
+      }, {});
+    },
     // ✅ CORRECTION : Déplacer statistiquesParClient dans les getters
     statistiquesParClient: (state) => (clientId) => {
       const factures = state.factures.filter((f) => f.client_id === clientId);
       const total = factures.length;
-      const payees = factures.filter(f => f.statut === 'payée' || f.statut === 'payé').length;
+      const payees = factures.filter(
+        (f) => f.statut === "payée" || f.statut === "payé"
+      ).length;
       const en_attente = total - payees;
 
       return {
@@ -61,21 +70,21 @@ facturesParStatutCount: (state) => {
 
     hasInvoices: (state) => {
       return state.factures && state.factures.length > 0;
-    }
+    },
   },
 
   actions: {
     async chargerFactures() {
       this.loading = true;
       this.error = null;
-      
+
       try {
         const authStore = useAuthStore();
         if (!authStore.isAuthenticated) {
           throw new Error("Utilisateur non authentifié");
         }
 
-        const factures = await getFacturesParClient() 
+        const factures = await getFacturesParClient();
         this.factures = factures || [];
       } catch (error) {
         this.error = error.message;
@@ -94,9 +103,9 @@ facturesParStatutCount: (state) => {
       date_emission,
       date_echeance,
       template,
-      statut
+      statut,
+      devise,
     }) {
-
       this.loading = true;
       this.error = null;
 
@@ -117,7 +126,8 @@ facturesParStatutCount: (state) => {
           date_emission,
           date_echeance,
           template,
-          statut
+          statut,
+          devise
         );
 
         facture.validate();
@@ -130,7 +140,9 @@ facturesParStatutCount: (state) => {
         };
 
         if (!clientData.nom || !clientData.email || !clientData.address) {
-          throw new Error("Le client doit avoir un nom, un email et une adresse valide.");
+          throw new Error(
+            "Le client doit avoir un nom, un email et une adresse valide."
+          );
         }
 
         const clientUpserted = await upsertClient(clientData);
@@ -150,6 +162,7 @@ facturesParStatutCount: (state) => {
           user_id: authStore.userId,
           template: template,
           statut: statut || "en_attente", // "en_attente", "paye", "annule"
+          devise: devise || "XOF", // Devise utilisée
         };
         console.log("🧾 Données envoyées :", factureData);
 
@@ -175,7 +188,7 @@ facturesParStatutCount: (state) => {
 
       this.loading = true;
       this.error = null;
-      
+
       try {
         await deleteFactures(facture.id);
         this.factures.splice(idx, 1);
@@ -191,15 +204,15 @@ facturesParStatutCount: (state) => {
     async mettreAJourFacture(id, donnees) {
       this.loading = true;
       this.error = null;
-      
+
       try {
         const factureModifiee = await API.mettreAJour(id, donnees);
         const index = this.factures.findIndex((f) => f.id === id);
-        
+
         if (index !== -1) {
           this.factures[index] = factureModifiee;
         }
-        
+
         return factureModifiee;
       } catch (error) {
         this.error = error.message;
@@ -219,5 +232,5 @@ facturesParStatutCount: (state) => {
       this.selectedFacture = null;
       this.selectedIndex = null;
     },
-  }
+  },
 });
