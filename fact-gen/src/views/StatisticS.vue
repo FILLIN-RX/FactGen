@@ -225,11 +225,11 @@ const tabs = [
             <div v-if="activeTab === 'overview'" class="space-y-6">
                 <DashboardKpiCards
                     :stats="stats"
-                    :formatCurrency="formatCurrency"
+                    :formatCurrency="formatWithCurrency"
                 />
                 <DashboardQuickAnalyses
                     :advancedAnalytics="advancedAnalytics"
-                    :formatCurrency="formatCurrency"
+                    :formatCurrency="formatWithCurrency"
                     :getStatusColor="getStatusColor"
                 />
             </div>

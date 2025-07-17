@@ -11,7 +11,7 @@
                 </div>
             </div>
             <p class="text-lg font-semibold text-gray-900">{{ stats.moisLePlusRentable.mois }}</p>
-            <p class="text-sm text-gray-500">{{ formatCurrency(stats.moisLePlusRentable.montant) }}</p>
+            <p class="text-sm text-gray-500">{{ formatCurrency(stats.moisLePlusRentable.revenu) }}</p>
         </div>
 
         <div class="bg-white p-6 rounded-lg border border-gray-200">
