@@ -122,28 +122,28 @@ const StatusBadge = {
   props: { status: String },
   setup(props) {
     const getStatusConfig = (status) => {
-      const configs = {
-        'payee': {
-          label: 'Payée',
-          classes: 'bg-green-100 text-green-800 border-green-200',
-          icon: 'M5 13l4 4L19 7'
-        },
-        'en_attente': {
-          label: 'En attente',
-          classes: 'bg-amber-100 text-amber-800 border-amber-200',
-          icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-        },
-        'en_retard': {
-          label: 'En retard',
-          classes: 'bg-red-100 text-red-800 border-red-200',
-          icon: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-        },
-        'brouillon': {
-          label: 'Brouillon',
-          classes: 'bg-gray-100 text-gray-800 border-gray-200',
-          icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
-        }
-      };
+     const configs = {
+  'paye': { // ou 'payee' selon ce que vous standardisez
+    label: 'Payée',
+    classes: 'bg-green-100 text-green-800 border-green-200',
+    icon: 'M5 13l4 4L19 7'
+  },
+  'en_attente': {
+    label: 'En attente',
+    classes: 'bg-amber-100 text-amber-800 border-amber-200',
+    icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+  },
+  'annule': {
+    label: 'Annulée',
+    classes: 'bg-red-100 text-red-800 border-red-200',
+    icon: 'M6 18L18 6M6 6l12 12'
+  },
+  'brouillon': {
+    label: 'Brouillon',
+    classes: 'bg-gray-100 text-gray-800 border-gray-200',
+    icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
+  }
+};
       return configs[status] || {
         label: status || 'Non défini',
         classes: 'bg-gray-100 text-gray-800 border-gray-200',

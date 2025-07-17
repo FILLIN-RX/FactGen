@@ -9,7 +9,7 @@ export default class Facture {
     date_emission,
     date_echeance,
     template,
-     statut = "en_attente"
+     statut 
   ) {
     this.numero = this.genererNumero();
     this.client = client;
