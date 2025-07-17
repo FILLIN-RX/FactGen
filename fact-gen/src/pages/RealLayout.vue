@@ -1,23 +1,22 @@
 <template>
-   
   <section class="min-h-screen bg-gray-50">
     <!-- Augmentation du padding vertical sur mobile -->
     <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
-      
       <!-- Header réorganisé pour mobile -->
       <header class="mb-6 sm:mb-8">
         <div class="flex flex-col">
           <div class="mb-4">
-            <h1 class="text-xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
+            <h1
+              class="text-xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2"
+            >
               Dashboard Analytics
             </h1>
             <p class="text-xs sm:text-base text-gray-600">
               Vue d'ensemble de vos performances
             </p>
           </div>
-          
+
           <!-- Boutons en colonne sur mobile -->
-          
         </div>
       </header>
 
@@ -25,6 +24,9 @@
       <div class="mb-6 sm:mb-8">
         <div class="glass-card p-3 sm:p-6">
           <StatisTics />
+        </div>
+        <div class="glass-card p-3 sm:p-6">
+          <StatStatus />
         </div>
       </div>
 
@@ -58,7 +60,9 @@
           <h2 class="text-base sm:text-xl font-semibold text-gray-900">
             Activité récente
           </h2>
-          <button class="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium">
+          <button
+            class="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium"
+          >
             Voir tout
           </button>
         </div>
@@ -67,18 +71,19 @@
     </div>
   </section>
 
-    <ClientFormModal
-      :open="operationsStore.showNewClientModal"
-      @close="operationsStore.closeNewClientModal"
-      :form="{}"
-    />
+  <ClientFormModal
+    :open="operationsStore.showNewClientModal"
+    @close="operationsStore.closeNewClientModal"
+    :form="{}"
+  />
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import {supabase} from "../lib/supabase";
+import { supabase } from "../lib/supabase";
+import StatStatus from "../components/StatStatus.vue";
 import FactureTemp from "../components/FactureTemp.vue";
 import ClientFormModal from "../components/client/ClientFormModal .vue";
 import { useOperationsStore } from "../stores/ui";
@@ -99,28 +104,30 @@ const showRecentActivity = ref(false);
 
 // Fonctions
 function formatCurrency(amount) {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   }).format(amount);
 }
 
 function handleExport() {
-  toast.success('Export en cours...');
+  toast.success("Export en cours...");
 }
 
 function handleNewReport() {
-  toast.info('Nouveau rapport créé');
+  toast.info("Nouveau rapport créé");
 }
 
 // Vérification de session
 onMounted(async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
-    router.push('/');
+    router.push("/");
   } else {
     utilisateur.value = session.user;
     console.log("Utilisateur connecté :", session.user);
@@ -128,21 +135,22 @@ onMounted(async () => {
 });
 </script>
 
-
 <style scoped>
 /* Glass Morphism Cards */
 .glass-card {
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(229, 231, 235, 0.8);
   border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .glass-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
 
@@ -151,7 +159,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   padding: 0.625rem 1rem;
-  background-color: #3B82F6;
+  background-color: #3b82f6;
   color: white;
   font-size: 0.875rem;
   font-weight: 500;
@@ -163,7 +171,7 @@ onMounted(async () => {
 }
 
 .btn-primary:hover {
-  background-color: #2563EB;
+  background-color: #2563eb;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
@@ -180,14 +188,14 @@ onMounted(async () => {
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 0.75rem;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
-  background-color: #F9FAFB;
+  background-color: #f9fafb;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -199,7 +207,7 @@ onMounted(async () => {
 .select-custom {
   appearance: none;
   background-color: white;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   font-size: 0.875rem;
   border-radius: 0.5rem;
   padding: 0.5rem 2rem 0.5rem 0.75rem;
@@ -214,7 +222,7 @@ onMounted(async () => {
 
 .select-custom:focus {
   outline: none;
-  border-color: #3B82F6;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -222,7 +230,7 @@ onMounted(async () => {
 .account-card {
   padding: 1rem;
   background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
-  border: 1px solid #F3F4F6;
+  border: 1px solid #f3f4f6;
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -230,7 +238,7 @@ onMounted(async () => {
 
 .account-card:hover {
   transform: translateY(-2px);
-  border-color: #E5E7EB;
+  border-color: #e5e7eb;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -251,7 +259,7 @@ onMounted(async () => {
   .glass-card {
     border-radius: 0.75rem;
   }
-  
+
   .account-card {
     padding: 0.75rem;
   }
@@ -298,7 +306,7 @@ select:focus {
 @media print {
   .glass-card {
     background: white;
-    border: 1px solid #E5E7EB;
+    border: 1px solid #e5e7eb;
     box-shadow: none;
   }
 }

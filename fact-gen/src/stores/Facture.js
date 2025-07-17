@@ -38,7 +38,13 @@ export const useFacturesStore = defineStore("factures", {
 
     facturesParStatut: (state) => (statut) =>
       state.factures.filter((f) => f.statut === statut),
-
+facturesParStatutCount: (state) => {
+  return state.factures.reduce((acc, f) => {
+    acc[f.statut] = (acc[f.statut] || 0) + 1;
+    return acc;
+  }, {});
+}
+,
     // ✅ CORRECTION : Déplacer statistiquesParClient dans les getters
     statistiquesParClient: (state) => (clientId) => {
       const factures = state.factures.filter((f) => f.client_id === clientId);
