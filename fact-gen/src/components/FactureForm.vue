@@ -766,6 +766,13 @@ const resetForm = () => {
 };
 
 const sauvegarderFacture = async () => {
+    if ( !isValidCurrency(devise.value?.code)) {
+    showToastMessage(
+      "Veuillez remplir tous les champs obligatoires et sélectionner une devise valide",
+      "warning"
+    );
+    return;
+  }
   if (!isFormValid.value) {
     showToastMessage(
       "Veuillez remplir tous les champs obligatoires",

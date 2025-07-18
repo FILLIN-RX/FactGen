@@ -22,22 +22,19 @@ import { ref, watch } from 'vue';
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => ({ code: 'EUR', symbole: '€', nom: 'Euro' })
+    default: () => ({ code: 'XOF', symbole: 'FCFA', nom: 'Franc CFA' })
   }
 });
 
 const emit = defineEmits(['update:modelValue']);
 
+// Liste cohérente avec le backend
 const devises = ref([
+  { code: 'XOF', symbole: 'FCFA', nom: 'Franc CFA' },
   { code: 'EUR', symbole: '€', nom: 'Euro' },
   { code: 'USD', symbole: '$', nom: 'Dollar américain' },
   { code: 'GBP', symbole: '£', nom: 'Livre sterling' },
-  { code: 'JPY', symbole: '¥', nom: 'Yen japonais' },
-  { code: 'CAD', symbole: '$', nom: 'Dollar canadien' },
-  { code: 'CHF', symbole: 'CHF', nom: 'Franc suisse' },
-  { code: 'AUD', symbole: '$', nom: 'Dollar australien' },
-  { code: 'CNY', symbole: '¥', nom: 'Yuan chinois' },
-  // Ajoutez d'autres devises au besoin
+  { code: 'CAD', symbole: 'C$', nom: 'Dollar canadien' }
 ]);
 
 const selectedDevise = ref(

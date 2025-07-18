@@ -1,5 +1,4 @@
-
-// ===== 2. routes/factureRoutes.js (CORRIGÉ) =====
+// ===== routes/factureRoutes.js (CORRIGÉ) =====
 import supabase from "../config/supabaseClient.js";
 import express from "express";
 import { authenticateUser } from "../middleware/auth.js";
@@ -13,6 +12,27 @@ function validateRequest(req, res, next) {
     return res.status(400).json({ errors: errors.array() });
   }
   next();
+}
+
+// ✅ AMÉLIORATION : Fonction pour obtenir le taux de change
+async function getExchangeRate(fromCurrency, toCurrency) {
+  if (fromCurrency === toCurrency) return 1;
+  
+  try {
+    const response = await fetch(
+      `https://api.exchangerate.host/latest?base=${fromCurrency}&symbols=${toCurrency}`
+    );
+    const data = await response.json();
+    
+    if (data.success && data.rates && data.rates[toCurrency]) {
+      return data.rates[toCurrency];
+    }
+    
+    throw new Error(`Taux de change non disponible pour ${fromCurrency} → ${toCurrency}`);
+  } catch (error) {
+    console.error("Erreur récupération taux:", error);
+    throw error;
+  }
 }
 
 // Validation pour POST (création)
@@ -33,13 +53,16 @@ const factureValidationRules = [
   body("montant_total")
     .isFloat({ min: 0 })
     .withMessage("Montant total invalide"),
+  // ✅ NOUVEAU : Validation de la devise
+  body("devise")
+    .optional()
+    .isIn(['XOF', 'EUR', 'USD', 'GBP', 'CAD'])
+    .withMessage("Devise non supportée")
 ];
 
 // Récupère toutes les factures de l'utilisateur connecté
 router.get("/", authenticateUser, async (req, res) => {
-  // 🔧 CORRECTION: Décommentation de la variable user_id
   const user_id = req.user.id;
-
   console.log("✅ REQUÊTE /factures autorisée");
 
   try {
@@ -70,47 +93,7 @@ router.post(
   factureValidationRules,
   validateRequest,
   async (req, res) => {
-   const {
-  client_id,
-  client_data,
-  produits,
-  reduction,
-  suplement,
-  montant_total,
-  numero,
-  date_emission,
-  date_echeance,
-  template,
-  statut,
-  devise // <--- AJOUT ICI
-} = req.body;
-let taux_change = 1; // Par défaut pour XAF
-let montant_xaf = 0;
-
-if (devise && devise !== "XAF") {
-  try {
-    const response = await fetch(
-      `https://api.exchangerate.host/latest?base=${devise}&symbols=XAF`
-    );
-    const data = await response.json();
-    taux_change = data.rates.XAF;
-    
-    montant_xaf = montant_total * taux_change;
-
-  } catch (err) {
-    console.error("Erreur lors de la récupération du taux de change:", err);
-    return res.status(500).json({ error: "Taux de change indisponible" });
-  }
-}
-
-    console.log("donnee reçu:", req.body);
-    console.log("✅ REQUÊTE POST /factures autorisée");
-
-    try {
-      const { data, error } = await req.supabase
-        .from("facture")
-          .insert([
-    {
+    const {
       client_id,
       client_data,
       produits,
@@ -122,14 +105,65 @@ if (devise && devise !== "XAF") {
       date_echeance,
       template,
       statut,
-      user_id: req.user.id,
-      created_at: new Date().toISOString(),
-      devise,           // <--- ici
-      taux_change  ,
-      montant_xaf     // <--- ici
-    },
-  ])
-  .select();
+      devise = 'XOF'  // ✅ CORRECTION : XOF par défaut
+    } = req.body;
+
+    console.log("Données reçues:", req.body);
+    console.log("✅ REQUÊTE POST /factures autorisée");
+
+    try {
+      // ✅ AMÉLIORATION : Calcul du montant en XOF et taux de change
+      let taux_change = 1;
+      let montant_xof = montant_total;
+
+      if (devise !== "XOF") {
+        try {
+          taux_change = await getExchangeRate(devise, "XOF");
+          montant_xof = montant_total * taux_change;
+          
+          console.log(`💱 Conversion ${devise} → XOF:`, {
+            montant_original: montant_total,
+            taux: taux_change,
+            montant_xof
+          });
+        } catch (exchangeError) {
+          console.error("Erreur taux de change:", exchangeError);
+          return res.status(500).json({ 
+            error: "Impossible de récupérer le taux de change" 
+          });
+        }
+      }
+
+      // ✅ AMÉLIORATION : Validation des données converties
+      if (!montant_xof || isNaN(montant_xof) || montant_xof <= 0) {
+        return res.status(400).json({ 
+          error: "Montant converti invalide" 
+        });
+      }
+
+      const { data, error } = await req.supabase
+        .from("facture")
+        .insert([
+          {
+            client_id,
+            client_data,
+            produits,
+            reduction,
+            suplement,
+            montant_total,
+            numero,
+            date_emission,
+            date_echeance,
+            template,
+            statut: statut || 'en_attente',
+            user_id: req.user.id,
+            created_at: new Date().toISOString(),
+            devise,              // ✅ Devise originale
+            taux_change,         // ✅ Taux de change appliqué
+            montant_xof: Math.round(montant_xof)  // ✅ Montant converti en XOF
+          },
+        ])
+        .select();
 
       if (error) {
         console.error("Erreur création facture:", error);
@@ -142,6 +176,7 @@ if (devise && devise !== "XAF") {
         });
       }
 
+      console.log("✅ Facture créée avec succès:", data[0]);
       res.status(201).json(data[0]);
     } catch (err) {
       console.error("Erreur dans POST /factures:", err);
@@ -156,7 +191,6 @@ router.put(
   authenticateUser,
   factureValidationRules,
   validateRequest,
-  // 🔧 CORRECTION: Suppression du tableau vide inutile
   async (req, res) => {
     const { id } = req.params;
     const {
@@ -170,7 +204,8 @@ router.put(
       date_emission,
       date_echeance,
       template,
-      statut
+      statut,
+      devise = 'XOF'  // ✅ CORRECTION
     } = req.body;
 
     const user_id = req.user.id;
@@ -180,6 +215,21 @@ router.put(
     }
 
     try {
+      // ✅ AMÉLIORATION : Recalcul du montant en XOF si nécessaire
+      let taux_change = 1;
+      let montant_xof = montant_total;
+
+      if (devise !== "XOF") {
+        try {
+          taux_change = await getExchangeRate(devise, "XOF");
+          montant_xof = montant_total * taux_change;
+        } catch (exchangeError) {
+          return res.status(500).json({ 
+            error: "Impossible de récupérer le taux de change" 
+          });
+        }
+      }
+
       const { data, error } = await req.supabase
         .from("facture")
         .update({
@@ -194,6 +244,9 @@ router.put(
           date_echeance,
           template,
           statut,
+          devise,              // ✅ Mise à jour de la devise
+          taux_change,         // ✅ Mise à jour du taux
+          montant_xof: Math.round(montant_xof)  // ✅ Mise à jour du montant XOF
         })
         .eq("id", id)
         .eq("user_id", user_id)
@@ -222,14 +275,14 @@ router.put(
 // DELETE /api/factures/:id
 router.delete("/:id", authenticateUser, async (req, res) => {
   const id = req.params.id;
-  const user_id = req.user.id; // 🔧 AMÉLIORATION: Sécurité renforcée
+  const user_id = req.user.id;
 
   try {
     const { data, error } = await req.supabase
       .from("facture")
       .delete()
       .eq("id", id)
-      .eq("user_id", user_id) // 🔧 AMÉLIORATION: Vérification utilisateur
+      .eq("user_id", user_id)
       .select();
 
     if (error) {

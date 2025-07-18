@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useSettingsStore = defineStore('settings', {
   state: () => ({
-    currency: 'EUR'  // Utiliser directement les codes ISO
+    currency: 'XOF'  // Synchronisé avec le reste du système
   }),
   actions: {
     setCurrency(newCurrency) {
