@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white min-h-screen mt-10">
+  <div class=" min-h-screen mt-10">
     <!-- Hero Section -->
-    <section class="bg-blue-50 py-12 md:py-20">
+    <section class=" py-12 md:py-20">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <!-- Left Content -->
