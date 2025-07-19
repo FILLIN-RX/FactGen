@@ -128,7 +128,7 @@ const getIcon = (iconName) => {
 </script>
 
 <template>
-  <div class="w-full  bg-gray-50">
+  <div class=" sm:px-4 flex flex-col">
     <!-- Header Section -->
     <div class="bg-white border-b border-gray-100 px-3 py-4 sm:px-6 sm:py-6">
       <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
@@ -152,7 +152,7 @@ const getIcon = (iconName) => {
     </div>
 
     <!-- Stats Grid -->
-    <div class="p-3 sm:p-6">
+    <div class="p-3 flex sm:p-6">
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 lg:gap-6">
         <div 
           v-for="(card, index) in statsCards" 

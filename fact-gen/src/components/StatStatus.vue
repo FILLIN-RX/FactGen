@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-gradient-to-br from-white to-gray-50 min-h-screen lg:min-h-0 lg:max-w-4xl lg:mx-auto lg:my-4 lg:rounded-3xl lg:shadow-xl lg:p-8 p-6">
+  <div class="w-full bg-gradient-to-br from-white to-gray-50 min-h-screen lg:min-h-0 lg:max-w-8xl lg:mx-auto lg:my-4 lg:rounded-3xl lg:shadow-xl lg:p p-6">
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4">
       <div class="flex-1">
         <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 tracking-tight">

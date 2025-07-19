@@ -1,7 +1,7 @@
 <template>
-  <section class="min-h-screen bg-gray-50">
+  <section class="min-h-screen">
     <!-- Augmentation du padding vertical sur mobile -->
-    <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
+    <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-8xl">
       <!-- Header réorganisé pour mobile -->
       <header class="mb-6 sm:mb-8">
         <div class="flex flex-col">
@@ -22,10 +22,10 @@
 
       <!-- Statistiques avec moins d'espacement sur mobile -->
       <div class="mb-6 sm:mb-8">
-        <div class="glass-card p-3 sm:p-6">
+        <div class="p-3 sm:p-6">
           <StatisTics />
         </div>
-        <div class="glass-card p-3 sm:p-6">
+        <div class=" p-3 sm:p-6">
           <StatStatus />
         </div>
       </div>

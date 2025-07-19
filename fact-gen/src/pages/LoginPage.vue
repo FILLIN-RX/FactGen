@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-blue-50 flex flex-col">
+  <div class="min-h-screen bg-green-50 flex flex-col">
     <!-- Header avec logo/bouton retour -->
     <header class="relative z-10 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <router-link 
           to="/" 
-          class="flex items-center space-x-3 group transition-all duration-300 hover:scale-105"
+          class="flex   items-center space-x-3 group transition-all duration-300 hover:scale-105"
         >
           <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
             <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +16,7 @@
             <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               FactGen
             </span>
-            <div class="text-xs text-gray-500 -mt-1">Gestion de factures</div>
+            <div class="text-xs ext-gray-500 -mt-1">Gestion de factures</div>
           </div>
         </router-link>
         
@@ -35,16 +35,15 @@
 
     <!-- Background Pattern -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full opacity-10 blur-3xl animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400 rounded-full opacity-10 blur-3xl animate-pulse"></div>
+      <div class="absolute -top-40 -right-40 w-80 h-80  rounded-full opacity-10 blur-3xl animate-pulse"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 rounded-full opacity-10 blur-3xl animate-pulse"></div>
     </div>
 
     <!-- Main Content -->
     <main class="flex-1 flex items-center justify-center p-4 pb-8">
       <div class="relative w-full max-w-6xl mx-auto">
         <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
-          <!-- Left Side - Branding (Desktop) -->
-          
+         
 
           <!-- Right Side - Login Form -->
           <div class="w-full">
@@ -68,7 +67,7 @@
               </div>
 
               <!-- Form Header -->
-              <div class="text-center mb-8 relative">
+              <div class="text-center lg:mb-8 relative">
                 <h2 class="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900 mb-3">
                   Connectez-vous
                 </h2>
@@ -80,7 +79,7 @@
               <!-- Login Form -->
               <form @submit.prevent="onSubmit" class="space-y-6">
                 <!-- Email Input -->
-                <div class="space-y-2">
+                <div class="space-y-1 lg:space-y-2">
                   <label for="email" class="text-sm font-semibold text-gray-700">
                     Adresse email
                   </label>
@@ -102,7 +101,7 @@
                 </div>
 
                 <!-- Password Input -->
-                <div class="space-y-2">
+                <div class="space-y-2 lg:space-y-2">
                   <label for="password" class="text-sm font-semibold text-gray-700">
                     Mot de passe
                   </label>
@@ -170,7 +169,7 @@
               </form>
 
               <!-- Divider -->
-              <div class="my-8">
+              <div class="lg:my-8 my-3">
                 <div class="relative">
                   <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-200"></div>
@@ -224,7 +223,12 @@
               </div>
             </div>
           </div>
+           <!-- Left Side - Branding (Desktop) -->
+          <div class="p-4 hidden lg:block">
+              <img src="/public/assets/undraw_personal-information_h7kf.svg" alt="">
+          </div>
         </div>
+        
       </div>
     </main>
   </div>
