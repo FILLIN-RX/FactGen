@@ -25,15 +25,21 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed,onMounted } from "vue";
 import { useRoute } from "vue-router";
 import NavBar from "./components/NavBar.vue";
 import FooTer from "./components/FooTer.vue";
 import Toast from "./components/ToasT.vue";
 import { useToastState } from "@/composables/useToast";
+import { useThemeStore } from "./stores/Theme";
 
 const route = useRoute();
 
+const themeStore = useThemeStore()
+
+onMounted(() => {
+  themeStore.initTheme()
+})
 const isLayoutProtege = computed(() => {
   return route.matched.some((r) => r.components?.default?.name === "AppLayout");
 });
