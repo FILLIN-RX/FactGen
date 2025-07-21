@@ -137,7 +137,7 @@
         <button
           @click="themeStore.toggleTheme()"
           class="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-600 transition-all duration-300 dark:bg-neutral-800 dark:text-white"
-          :title="themeStore.darkMode ? 'Mode clair' : 'Mode sombre'"
+          :title="themeStore.darkMode ? '' : ''"
         >
           <span class="flex items-center gap-2 text-sm">
             <svg
@@ -157,7 +157,7 @@
                 d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
               />
             </svg>
-            {{ themeStore.darkMode ? "Mode clair" : "Mode sombre" }}
+            {{ themeStore.darkMode ? "" : "" }}
           </span>
         </button>
 

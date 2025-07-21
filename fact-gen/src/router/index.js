@@ -16,6 +16,7 @@ import StatisTics from '../components/StatisTics.vue';
 import StatisticS from '../views/StatisticS.vue';
 import SupPort from '../pages/SupPort.vue';
 import FonctionaLiter from '../pages/FonctionaLiter.vue';
+import FactureForm from '../components/FactureForm.vue';
 const session = supabase.auth.getSession();
 console.log(session);
 
@@ -74,6 +75,12 @@ const routes = [
         path: '/templates',
         name: 'Templates',
         component: TemplatesSection,
+        meta: { requiresAuth: true, showNavbarAndFooter: false }
+      },
+      {
+        path: '/NewInvoice',
+        name: 'FactureForm',
+        component: FactureForm,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
       }
       

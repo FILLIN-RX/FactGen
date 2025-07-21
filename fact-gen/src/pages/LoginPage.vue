@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen bg- flex flex-col">
+  <div class="min-h-screen bg-gradient-to-r from-green-100 to-green-200
+   flex flex-col">
     <!-- Header avec logo/bouton retour -->
     <header class="relative z-10 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto flex items-center justify-between">

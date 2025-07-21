@@ -128,26 +128,30 @@ export default class Facture {
   }
 
   sauvegarder() {
-    this.validate();
-    const factureData = {
-      societer: this.societer,
-      client: this.client,
-      produits: this.produits,
-      reduction: this.getReductionFinale(),
-      suplement: this.suplement,
-      totalHT: this.totalHT,
-      montantReduction: this.montantReduction,
-      totalTTC: this.totalTTC,
-      date: new Date().toISOString(),
-      template: this.template,
-      statut: this.statut, // "en_attente", "paye", "annule"
-      devise: this.devise, // Devise utilisée
-    };
+  this.validate();
+  const factureData = {
+    numero: this.numero,
+    societer: this.societer,
+    client: this.client,
+    produits: this.produits,
+    reduction: this.getReductionFinale(),
+    suplement: this.suplement,
+    totalHT: this.totalHT,
+    montantReduction: this.montantReduction,
+    totalTTC: this.totalTTC,
+    date_emission: this.date_emission,
+    date_echeance: this.date_echeance,
+    created_at: new Date().toISOString(),
+    template: this.template,
+    statut: this.statut,
+    devise: this.devise,
+  };
 
-    let factures = JSON.parse(localStorage.getItem("factures")) || [];
-    factures.push(factureData);
-    localStorage.setItem("factures", JSON.stringify(factures));
+  let factures = JSON.parse(localStorage.getItem("factures")) || [];
+  factures.push(factureData);
+  localStorage.setItem("factures", JSON.stringify(factures));
 
-    alert("✅ Facture sauvegardée avec succès !");
-  }
+  alert("✅ Facture sauvegardée avec succès !");
+}
+
 }

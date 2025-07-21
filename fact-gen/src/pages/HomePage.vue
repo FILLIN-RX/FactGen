@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-white dark:bg-black">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-emerald-50 via-white to-blue-50 py-16 md:py-24 dark:bg-black">
+    <section class=" hero bg-gradient-to-br from-emerald-50 via-white to-blue-50 py-16 md:py-24 dark:bg-black">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div class="text-center space-y-8">
           <!-- Titre principal -->
@@ -341,17 +341,25 @@
       </div>
     </section>
   </div>
+  <TesTe />
 </template>
 
 <script>
 import { ref, reactive } from 'vue'
+import TesTe from '../components/factures/FactureForm/TesTe.vue'
+
 
 export default {
+  components: {
+    TesTe,
+  },
   name: 'FactgenLanding',
   setup() {
     // État réactif pour la FAQ
     const isOpen = reactive({})
-    
+    component:{
+
+    }
     // Données de la FAQ
     const sections = ref([
       {
@@ -578,7 +586,9 @@ export default {
     gap: 1.5rem;
   }
 }
-
+.dark .hero{
+  background-color: black;
+}
 /* Animation de gradient pour les backgrounds */
 @keyframes gradientShift {
   0% {

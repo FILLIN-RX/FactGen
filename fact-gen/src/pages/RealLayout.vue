@@ -25,7 +25,7 @@
         <div class="p-3 sm:p-6">
           <StatisTics />
         </div>
-        <div class=" p-3 sm:p-6">
+        <div class="p-3 sm:p-6">
           <StatStatus />
         </div>
       </div>
@@ -69,13 +69,15 @@
         <RecentActivity />
       </div>
     </div>
+     <div>
+    <ClientFormModal
+      :open="operationsStore.showNewClientModal"
+      @close="operationsStore.closeNewClientModal"
+      :form="{}"
+    />
+  </div>
   </section>
-
-  <ClientFormModal
-    :open="operationsStore.showNewClientModal"
-    @close="operationsStore.closeNewClientModal"
-    :form="{}"
-  />
+ 
 </template>
 
 <script setup>

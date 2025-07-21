@@ -289,6 +289,7 @@
 
 <script setup>
 import { ref, onMounted, computed,watch } from "vue";
+import router from "../router";
 import { useFacturesStore } from "../stores/Facture";
 import InvoiceListItem from "../components/factures/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/factures/InvoiceDetailModal.vue";
@@ -374,6 +375,7 @@ function formatPrice(val) {
 
 function creer() {
   open.value = !open.value;
+  router.push('/NewInvoice')
 }
 
 function clearFilters() {
