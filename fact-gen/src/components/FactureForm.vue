@@ -1,605 +1,310 @@
 <template>
-  <div class="flex flex-col lg:flex-row h-full">
-    <!-- Formulaire -->
-    <div
-      class="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto"
-      :class="{ 'hidden lg:block': showPreview }"
-    >
-      <div class="max-w-2xl mx-auto">
-        <!-- Header Desktop -->
-        <div class="hidden md:block mb-8">
-          <h1 class="text-3xl font-bold text-slate-800 mb-2">
-            Créer une facture
-          </h1>
-          <p class="text-slate-600">
-            Remplissez les informations pour générer votre facture
-            professionnelle
-          </p>
-        </div>
+  <div class="invoice-editor">
+    <!-- En-tête -->
+    <div class="header">
+      <button @click="$router?.go(-1)" class="back-btn">
+        ← Retour
+      </button>
+      <h1>{{ isEditing ? 'Modifier' : 'Nouvelle' }} facture</h1>
+      <div class="actions">
+        <button @click="togglePreview" class="btn-secondary">
+          {{ showPreview ? "Masquer l'aperçu" : "Afficher l'aperçu" }}
+        </button>
+        <button 
+          @click="sauvegarderFacture" 
+          class="btn-primary" 
+          :disabled="!isFormValid || isSaving"
+        >
+          <span v-if="isSaving">Enregistrement...</span>
+          <span v-else>{{ isEditing ? 'Mettre à jour' : 'Créer' }}</span>
+        </button>
+      </div>
+    </div>
 
-        <!-- Progress Bar -->
-        <div class="mb-8">
-          <div
-            class="flex items-center justify-between text-xs text-slate-500 mb-2"
-          >
-            <span>Progression</span>
-            <span>{{ progressPercentage }}%</span>
-          </div>
-          <div class="w-full bg-slate-200 rounded-full h-2">
-            <div
-              class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
-              :style="{ width: progressPercentage + '%' }"
-            ></div>
-          </div>
-        </div>
+    <!-- Progress Bar -->
+    <div class="section">
+      <div class="flex items-center justify-between text-sm text-slate-700 mb-2">
+        <span>Progression</span>
+        <span>{{ progressPercentage }}%</span>
+      </div>
+      <div class="w-full bg-slate-200 rounded-full h-2">
+        <div
+          class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
+          :style="{ width: progressPercentage + '%' }"
+        ></div>
+      </div>
+    </div>
 
-        <form @submit.prevent="sauvegarderFacture" class="space-y-8">
-          <h2 class="text-xl font-bold mb-4">
-            Choisissez un modèle de facture
-          </h2>
+    <!-- Informations générales -->
+    <div class="section">
+      <h2>Informations générales</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Modèle de facture</label>
           <TemplateSelector v-model="selectedTemplate" />
-          <!-- Toutes vos sections existantes restent identiques -->
-          <!-- Section Dates -->
-          <div
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-          >
-            <h2
-              class="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-3"
-            >
-              <div
-                class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </div>
-              Informations de facturation
-            </h2>
-            <div
-              class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-            >
-              <h2 class="text-xl font-semibold text-slate-800 mb-6">Devise</h2>
-              <SelectedDevise v-model="devise" />
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label
-                  for="date_emission"
-                  class="block text-sm font-medium text-slate-700"
-                >
-                  Date d'émission *
-                </label>
-                <input
-                  type="date"
-                  id="date_emission"
-                  v-model="date_emission"
-                  required
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <label
-                  for="date_echeance"
-                  class="block text-sm font-medium text-slate-700"
-                >
-                  Date d'échéance
-                </label>
-                <input
-                  type="date"
-                  id="date_echeance"
-                  v-model="date_echeance"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-          </div>
-          <label for="statut">Statut</label>
-          <select id="statut" v-model="statut" required>
+        </div>
+        <div class="form-group">
+          <label>Date d'émission *</label>
+          <input 
+            v-model="date_emission" 
+            type="date" 
+            required
+            class="w-full"
+          />
+        </div>
+        <div class="form-group">
+          <label>Date d'échéance</label>
+          <input 
+            v-model="date_echeance" 
+            type="date" 
+            class="w-full"
+          />
+        </div>
+        <div class="form-group">
+          <label>Devise</label>
+          <SelectedDevise v-model="devise" />
+        </div>
+        <div class="form-group">
+          <label>Statut *</label>
+          <select v-model="statut" required class="w-full">
             <option value="en_attente">En attente</option>
             <option value="paye">Payé</option>
             <option value="annule">Annulé</option>
           </select>
+        </div>
+      </div>
+    </div>
 
-          <!-- Section Entreprise -->
-          <div
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-          >
-            <h2
-              class="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-3"
-            >
-              <div
-                class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-emerald-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  ></path>
-                </svg>
-              </div>
-              Votre entreprise
-            </h2>
+    <!-- Informations société -->
+    <div class="section">
+      <h2>Informations société</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nom de la société *</label>
+          <input 
+            v-model="societer.nom" 
+            type="text" 
+            required
+            placeholder="Nom de votre société"
+            class="w-full"
+          />
+        </div>
+        <div class="form-group">
+          <label>Adresse *</label>
+          <textarea 
+            v-model="societer.adresse" 
+            required
+            placeholder="Adresse complète"
+            rows="3"
+            class="w-full"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input 
+            v-model="societer.email" 
+            type="email"
+            required
+            placeholder="contact@societe.com"
+            class="w-full"
+          />
+        </div>
+        <div class="form-group">
+          <label>Téléphone</label>
+          <input 
+            v-model="societer.telephone" 
+            type="tel"
+            placeholder="+225 XX XX XX XX"
+            class="w-full"
+          />
+        </div>
+      </div>
+    </div>
 
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2"
-                  >Nom de l'entreprise *</label
-                >
-                <input
-                  v-model="societer.nom"
-                  type="text"
-                  required
-                  placeholder="Nom de votre entreprise"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
+    <!-- Informations client -->
+    <div class="section">
+      <h2>Informations client</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nom du client *</label>
+          <input 
+            v-model="client.nom" 
+            type="text" 
+            required
+            placeholder="Nom du client"
+            class="w-full"
+          />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input 
+            v-model="client.email" 
+            type="email"
+            placeholder="client@example.com"
+            class="w-full"
+          />
+        </div>
+        <div class="form-group">
+          <label>Adresse</label>
+          <textarea 
+            v-model="client.address" 
+            placeholder="Adresse du client"
+            rows="3"
+            class="w-full"
+          ></textarea>
+        </div>
+      </div>
+    </div>
 
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2"
-                  >Email *</label
-                >
-                <input
-                  v-model="societer.email"
-                  type="email"
-                  required
-                  placeholder="contact@entreprise.com"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
+    <!-- Produits/Services -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Produits / Services</h2>
+        <button @click="ajouterProduit" class="btn-secondary">
+          + Ajouter un produit
+        </button>
+      </div>
 
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2"
-                  >Adresse *</label
-                >
-                <textarea
-                  v-model="societer.adresse"
-                  required
-                  placeholder="123 Rue de l'Exemple, 75000 Paris"
-                  rows="2"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                ></textarea>
-              </div>
-            </div>
+      <div v-if="produits.length === 0" class="empty-state">
+        <p>Aucun produit ajouté. Cliquez sur "Ajouter un produit" pour commencer.</p>
+      </div>
+
+      <div v-else class="products-table">
+        <div class="table-header">
+          <div class="col-name">Produit/Service</div>
+          <div class="col-qty">Qté</div>
+          <div class="col-price">Prix unitaire</div>
+          <div class="col-total">Total</div>
+          <div class="col-actions">Actions</div>
+        </div>
+        
+        <div 
+          v-for="(produit, index) in produits" 
+          :key="index" 
+          class="product-row"
+        >
+          <div class="col-name">
+            <input 
+              v-model="produit.nom" 
+              type="text" 
+              placeholder="Nom du produit/service"
+              class="input-inline"
+              required
+            />
           </div>
-
-          <!-- Section Client -->
-          <div
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-          >
-            <h2
-              class="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-3"
-            >
-              <div
-                class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  ></path>
-                </svg>
-              </div>
-              Informations client
-            </h2>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2"
-                  >Nom du client *</label
-                >
-                <input
-                  v-model="client.nom"
-                  type="text"
-                  required
-                  placeholder="Nom du client"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2"
-                  >Email</label
-                >
-                <input
-                  v-model="client.email"
-                  type="email"
-                  placeholder="client@example.com"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2"
-                  >Adresse</label
-                >
-                <textarea
-                  v-model="client.address"
-                  placeholder="Adresse du client"
-                  rows="2"
-                  class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                ></textarea>
-              </div>
-            </div>
+          <div class="col-qty">
+            <input 
+              v-model.number="produit.quantite" 
+              type="number" 
+              min="1"
+              required
+              class="input-inline input-number"
+            />
           </div>
-
-          <!-- Section Produits -->
-          <div
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-          >
-            <h2
-              class="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-3"
-            >
-              <div
-                class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-orange-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  ></path>
-                </svg>
-              </div>
-              Produits et services
-            </h2>
-
-            <div class="space-y-4">
-              <div
-                v-for="(produit, index) in produits"
-                :key="index"
-                class="relative bg-slate-50 rounded-xl p-4 border border-slate-200"
-              >
-                <!-- Delete button -->
-                <button
-                  v-if="produits.length > 1"
-                  @click="supprimerLigne(index)"
-                  type="button"
-                  class="absolute top-3 right-3 w-8 h-8 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors flex items-center justify-center z-10"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </button>
-
-                <div
-                  class="grid grid-cols-1 md:grid-cols-12 gap-4 pr-12 md:pr-4"
-                >
-                  <div class="md:col-span-5">
-                    <label class="block text-sm font-medium text-slate-700 mb-2"
-                      >Description *</label
-                    >
-                    <input
-                      v-model="produit.nom"
-                      type="text"
-                      required
-                      placeholder="Description du produit/service"
-                      class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                    />
-                  </div>
-
-                  <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-slate-700 mb-2"
-                      >Quantité *</label
-                    >
-                    <input
-                      v-model.number="produit.quantite"
-                      type="number"
-                      min="1"
-                      required
-                      placeholder="1"
-                      class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                    />
-                  </div>
-
-                  <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-slate-700 mb-2"
-                      >Prix unitaire *</label
-                    >
-                    <input
-                      v-model.number="produit.prix"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      required
-                      placeholder="0.00"
-                      class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                    />
-                  </div>
-
-                  <div class="md:col-span-3 flex items-end">
-                    <div class="w-full">
-                      <label
-                        class="block text-sm font-medium text-slate-700 mb-2"
-                        >Total</label
-                      >
-                      <div
-                        class="bg-slate-100 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800"
-                      >
-                        {{
-                          (
-                            Number(produit.prix) * Number(produit.quantite)
-                          ).toFixed(2)
-                        }}
-                        {{ setting.currency }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                @click="ajouterProduit"
-                type="button"
-                class="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  ></path>
-                </svg>
-                Ajouter un produit
-              </button>
-            </div>
+          <div class="col-price">
+            <input 
+              v-model.number="produit.prix" 
+              type="number" 
+              min="0"
+              step="0.01"
+              required
+              class="input-inline input-number"
+            />
           </div>
-
-          <!-- Section Réduction -->
-          <div
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-          >
-            <h2
-              class="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-3"
-            >
-              <div
-                class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                  ></path>
-                </svg>
-              </div>
-              Réduction
-            </h2>
-
-            <div class="space-y-4">
-              <div class="flex gap-6">
-                <label class="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="non"
-                    v-model="utiliseReduction"
-                    class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                  />
-                  <span class="text-slate-700">Aucune réduction</span>
-                </label>
-                <label class="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="oui"
-                    v-model="utiliseReduction"
-                    class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                  />
-                  <span class="text-slate-700">Appliquer une réduction</span>
-                </label>
-              </div>
-
-              <div
-                v-if="utiliseReduction === 'oui'"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-red-50 rounded-xl border border-red-200"
-              >
-                <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2"
-                    >Type de réduction</label
-                  >
-                  <select
-                    v-model="reduction.type"
-                    class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  >
-                    <option value="pourcentage">Pourcentage (%)</option>
-                    <option value="montant">
-                      Montant fixe {{ setting.currency }}
-                    </option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2">
-                    Valeur
-                    {{ reduction.type === "pourcentage" ? "(%)" : "(€)" }}
-                  </label>
-                  <input
-                    v-model.number="reduction.valeur"
-                    type="number"
-                    :step="reduction.type === 'pourcentage' ? '1' : '0.01'"
-                    :min="0"
-                    :max="reduction.type === 'pourcentage' ? 100 : undefined"
-                    placeholder="0"
-                    class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-            </div>
+          <div class="col-total">
+            {{ formatPrix(produit.prix * produit.quantite) }}
           </div>
-
-          <!-- Section Informations supplémentaires -->
-          <div
-            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-          >
-            <h2
-              class="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-3"
+          <div class="col-actions">
+            <button 
+              v-if="produits.length > 1"
+              @click="supprimerLigne(index)" 
+              class="btn-danger-small"
             >
-              <div
-                class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-slate-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  ></path>
-                </svg>
-              </div>
-              Informations supplémentaires
-            </h2>
-
-            <textarea
-              v-model="suplement"
-              placeholder="Conditions de paiement, notes, informations complémentaires..."
-              rows="4"
-              class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-            ></textarea>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex flex-col md:flex-row gap-4">
-            <button
-              type="submit"
-              :disabled="isSaving || !isFormValid"
-              class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-lg"
-            >
-              <svg
-                v-if="isSaving"
-                class="animate-spin h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
-              </svg>
-              <svg
-                v-else
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-              {{ isSaving ? "Enregistrement..." : "Créer la facture" }}
-            </button>
-
-            <button
-              type="button"
-              @click="togglePreview"
-              class="bg-slate-100 text-slate-700 font-medium py-4 px-6 rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-3"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                ></path>
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                ></path>
-              </svg>
-              {{ showPreview ? "Masquer l'aperçu" : "Afficher l'aperçu" }}
+              🗑️
             </button>
           </div>
-        </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Réductions -->
+    <div class="section">
+      <h2>Réductions</h2>
+      
+      <div class="form-group">
+        <label>
+          <input 
+            v-model="utiliseReduction" 
+            type="checkbox"
+            true-value="oui"
+            false-value="non"
+          /> Appliquer une réduction
+        </label>
+        
+        <div v-if="utiliseReduction === 'oui'" class="reduction-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Type de réduction</label>
+              <select v-model="reduction.type" class="w-full">
+                <option value="montant">Montant fixe</option>
+                <option value="pourcentage">Pourcentage</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Valeur</label>
+              <div class="flex items-center">
+                <input 
+                  v-model.number="reduction.valeur" 
+                  type="number" 
+                  min="0"
+                  :step="reduction.type === 'pourcentage' ? '1' : '0.01'"
+                  :max="reduction.type === 'pourcentage' ? '100' : undefined"
+                  class="w-full"
+                />
+                <span v-if="reduction.type === 'pourcentage'" class="ml-2">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations supplémentaires -->
+    <div class="section">
+      <h2>Informations supplémentaires</h2>
+      <textarea
+        v-model="suplement"
+        placeholder="Conditions de paiement, notes, informations complémentaires..."
+        rows="4"
+        class="w-full"
+      ></textarea>
+    </div>
+
+    <!-- Récapitulatif -->
+    <div class="section summary-section">
+      <h2>Récapitulatif</h2>
+      <div class="calculations">
+        <div class="calculation-row">
+          <span>Sous-total HT</span>
+          <span>{{ formatPrix(totalHT) }}</span>
+        </div>
+        <div v-if="montantReduction > 0" class="calculation-row">
+          <span>Réduction</span>
+          <span class="text-red-600">-{{ formatPrix(montantReduction) }}</span>
+        </div>
+        <div class="calculation-row total-row">
+          <span>Total TTC</span>
+          <span class="font-bold">{{ formatPrix(totalTTC) }}</span>
+        </div>
       </div>
     </div>
 
     <!-- Aperçu -->
     <div
       v-if="showPreview"
-      class="flex-1 bg-white border-l border-slate-200 overflow-y-auto"
-      :class="{
-        'fixed inset-0 z-50 lg:relative lg:inset-auto lg:z-auto': showPreview,
-      }"
+      class="fixed inset-0 z-50 bg-white overflow-y-auto"
     >
-      <div
-        class="sticky top-0 bg-white border-b border-slate-200 p-4 lg:hidden"
-      >
+      <div class="sticky top-0 bg-white border-b border-slate-200 p-4">
         <button
           @click="togglePreview"
           class="w-full bg-slate-100 text-slate-700 font-medium py-3 px-4 rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
@@ -634,156 +339,127 @@
         :suplement="suplement"
         :date_emission="date_emission"
         :date_echeance="date_echeance"
-        ,
       />
     </div>
   </div>
 </template>
+
 <script setup>
-import { ref, computed, watch, reactive } from "vue";
+import { ref, computed, watch } from "vue";
+import { useRouter } from "vue-router";
 import Facture from "@/models/facture";
 import Produit from "@/models/produit";
 import Societer from "@/models/societer";
 import { useTemplateStore } from "../stores/template";
-import { useFacturesStore } from "@/stores/Facture";
-import FacturePreview from "./FacturePreview.vue";
+import { useFacturesStore } from "../stores/Facture";
 import TemplateSelector from "./templates/TemplateSelector.vue";
-import FactureModerne from "./templates/FactureModerne.vue";
-import FactureMinimaliste from "./templates/FactureMinimaliste.vue";
-import FactureClassique from "./templates/FactureClassique.vue";
-import { useRoute } from "vue-router";
-import { useSettingsStore } from "../stores/setting";
-import { formatCurrency } from "../utils/format";
 import SelectedDevise from "./SelectedDevise.vue";
-const setting = useSettingsStore();
-const route = useRoute();
 import { showToastMessage } from "../composables/useToast";
-const selectedTemplate = ref(route.query.template);
-defineProps({
-  templateId: String,
-});
-const devise = ref()
+
+const router = useRouter();
 const factureStore = useFacturesStore();
 const templateStore = useTemplateStore();
 
-// Données réactives
+// État réactif
 const showPreview = ref(false);
+const isEditing = ref(false);
+const isSaving = ref(false);
+const selectedTemplate = ref('moderne');
+
+// Données de la facture
+const societer = ref(new Societer("", "", "", ""));
 const client = ref({ nom: "", email: "", address: "" });
 const produits = ref([new Produit("", 0, 1)]);
 const utiliseReduction = ref("non");
 const reduction = ref({ type: "pourcentage", valeur: 0 });
 const suplement = ref("");
-const societer = ref(
-  new Societer(
-    "Mon Entreprise",
-    "123 Rue Exemple, 75000 Paris",
-    "contact@entreprise.com",
-    "0123456789"
-  )
-);
-
-const date_emission = ref(new Date().toISOString().substring(0, 10));
+const devise = ref(null);
+const date_emission = ref(new Date().toISOString().split('T')[0]);
 const date_echeance = ref("");
-const isSaving = ref(false);
 const statut = ref("en_attente");
 
-// Générer numéro facture
-const generateInvoiceNumber = () => {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  const rnd = Math.floor(Math.random() * 1000)
-    .toString()
-    .padStart(3, "0");
-  return `${y}${m}${d}${rnd}`;
-};
-
-// Facture instance
+// Calculs réactifs
 const factureInstance = computed(() => {
-  const reductionData =
-    utiliseReduction.value === "oui" ? reduction.value : null;
   return new Facture(
     societer.value,
     client.value,
     produits.value,
-    reductionData
+    utiliseReduction.value === "oui" ? reduction.value : null,
+    suplement.value,
+    null,
+    date_emission.value,
+    date_echeance.value,
+    selectedTemplate.value,
+    statut.value,
+    devise.value
   );
 });
 
-// Totaux
 const totalHT = computed(() => factureInstance.value.getTotalHT());
-const montantReduction = computed(() =>
-  factureInstance.value.getMontantReduction()
-);
+const montantReduction = computed(() => factureInstance.value.getMontantReduction());
 const totalTTC = computed(() => factureInstance.value.getTotalTTC());
 
-// Validation
-const isFormValid = computed(() => {
-  const validSocieter =
-    societer.value.nom && societer.value.email && societer.value.adresse;
-  const validClient = client.value.nom;
-  const validProduits = produits.value.some(
-    (p) => p.nom && p.prix > 0 && p.quantite > 0
-  );
-  return validSocieter && validClient && validProduits && date_emission.value;
-});
-
-// Barre de progression
 const progressPercentage = computed(() => {
   let progress = 0;
   if (date_emission.value) progress += 20;
-  if (societer.value.nom && societer.value.email && societer.value.adresse)
-    progress += 20;
+  if (societer.value.nom && societer.value.email && societer.value.adresse) progress += 20;
   if (client.value.nom) progress += 20;
-  if (produits.value.some((p) => p.nom && p.prix > 0 && p.quantite > 0))
-    progress += 20;
+  if (produits.value.some(p => p.nom && p.prix > 0 && p.quantite > 0)) progress += 20;
   if (isFormValid.value) progress += 20;
   return Math.min(progress, 100);
 });
 
+const isFormValid = computed(() => {
+  return societer.value.nom && 
+         societer.value.email && 
+         societer.value.adresse &&
+         client.value.nom &&
+         date_emission.value &&
+         produits.value.length > 0 &&
+         produits.value.every(p => p.nom && p.quantite > 0 && p.prix >= 0);
+});
+
 // Méthodes
-const togglePreview = () => {
-  showPreview.value = !showPreview.value;
-};
+function formatPrix(valeur) {
+  if (valeur == null) return "-";
+  const currency = devise.value?.code || 'XOF';
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(valeur);
+}
 
-const ajouterProduit = () => {
+function ajouterProduit() {
   produits.value.push(new Produit("", 0, 1));
-};
+}
 
-const supprimerLigne = (index) => {
+function supprimerLigne(index) {
   if (produits.value.length > 1) produits.value.splice(index, 1);
-};
+}
 
-const resetForm = () => {
+function togglePreview() {
+  showPreview.value = !showPreview.value;
+}
+
+function resetForm() {
   client.value = { nom: "", email: "", address: "" };
   produits.value = [new Produit("", 0, 1)];
   utiliseReduction.value = "non";
   reduction.value = { type: "pourcentage", valeur: 0 };
   suplement.value = "";
-  date_emission.value = new Date().toISOString().substring(0, 10);
+  date_emission.value = new Date().toISOString().split('T')[0];
   date_echeance.value = "";
-};
+}
 
-const sauvegarderFacture = async () => {
-    if ( !isValidCurrency(devise.value?.code)) {
-    showToastMessage(
-      "Veuillez remplir tous les champs obligatoires et sélectionner une devise valide",
-      "warning"
-    );
-    return;
-  }
+async function sauvegarderFacture() {
   if (!isFormValid.value) {
-    showToastMessage(
-      "Veuillez remplir tous les champs obligatoires",
-      "warning"
-    );
-
+    showToastMessage("Veuillez remplir tous les champs obligatoires", "warning");
     return;
   }
 
   try {
-    console.log("Template sélectionné:", selectedTemplate.value);
     isSaving.value = true;
     await factureStore.creerFactureComplete({
       client: client.value,
@@ -799,33 +475,315 @@ const sauvegarderFacture = async () => {
     });
 
     showToastMessage("Facture créée avec succès !", "success");
-
     resetForm();
+    router.push('/factures');
   } catch (error) {
-    console.error("❌ Erreur :", error);
+    console.error("Erreur :", error);
     showToastMessage("Erreur lors de la création de la facture", "error");
   } finally {
     isSaving.value = false;
   }
-};
+}
 
-// Formatage date
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
-// Watcher pour date d’échéance
+// Watchers
 watch(date_emission, (newDate) => {
   if (newDate && !date_echeance.value) {
     const d = new Date(newDate);
     d.setDate(d.getDate() + 30);
-    date_echeance.value = d.toISOString().substring(0, 10);
+    date_echeance.value = d.toISOString().split('T')[0];
+  }
+});
+
+// Initialisation
+onMounted(() => {
+  const savedCompany = localStorage.getItem('companyInfo');
+  if (savedCompany) {
+    const company = JSON.parse(savedCompany);
+    societer.value = new Societer(
+      company.nom || "",
+      company.adresse || "",
+      company.email || "",
+      company.telephone || ""
+    );
   }
 });
 </script>
+
+<style scoped>
+.invoice-editor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.header h1 {
+  margin: 0;
+  color: #333;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.back-btn {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #f5f5f5;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.section {
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Produits */
+.products-table {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1.5fr 1.5fr 0.5fr;
+  background: #f8f9fa;
+  padding: 12px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #ddd;
+}
+
+.product-row {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1.5fr 1.5fr 0.5fr;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-row:last-child {
+  border-bottom: none;
+}
+
+.input-inline {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  width: 100%;
+}
+
+.input-number {
+  text-align: right;
+}
+
+.col-total {
+  text-align: right;
+  font-weight: 600;
+  color: #333;
+}
+
+.col-actions {
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+/* Réductions */
+.reduction-form {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+/* Récapitulatif */
+.summary-section {
+  background: #f8f9fa;
+}
+
+.calculations {
+  max-width: 400px;
+  margin-left: auto;
+}
+
+.calculation-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.calculation-row.total-row {
+  font-size: 1.1em;
+  border-top: 2px solid #ddd;
+  margin-top: 8px;
+  padding-top: 16px;
+}
+
+/* Boutons */
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-danger-small {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #4F46E5;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #4338CA;
+}
+
+.btn-primary:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #6B7280;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #555;
+}
+
+.btn-outline {
+  background: none;
+  color: #4F46E5;
+  border: 1px solid #4F46E5;
+}
+
+.btn-outline:hover {
+  background: #4F46E5;
+  color: white;
+}
+
+.btn-danger-small {
+  padding: 6px 8px;
+  background: #EF4444;
+  color: white;
+  font-size: 12px;
+}
+
+.btn-danger-small:hover {
+  background: #DC2626;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .invoice-editor {
+    padding: 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .actions {
+    justify-content: center;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .products-table,
+  .table-header,
+  .product-row {
+    grid-template-columns: 2fr 1fr 1.5fr 1.5fr 0.5fr;
+  }
+}
+</style>

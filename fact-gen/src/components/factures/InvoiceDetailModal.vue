@@ -1,54 +1,118 @@
 <template>
   <div v-if="invoice"
-    class="fixed inset-0  px-5 flex-col bg-black/50 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+    class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex flex-col sm:items-center sm:justify-center p-0 sm:p-4"
     @click.self="$emit('close')">
-    <div ref="factureHtmlRef"
-      class="bg-white container w-full px-5 max-w-5xl max-h-[100vh] sm:max-h-[105vh] overflow-y-auto sm:rounded-2xl shadow-2xl animate-slideUp sm:animate-none">
+    
+    <!-- Header Mobile uniquement -->
+    <div class="sm:hidden bg-white/90 backdrop-blur-sm border-b border-gray-200 px-3 py-2 flex items-center justify-between">
+      <h2 class="text-sm font-semibold text-gray-800 truncate">Facture #{{ invoice.numero || invoice.id }}</h2>
       <button @click="$emit('close')"
-        class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center absolute top-5 right-5 justify-center transition-colors">
+        class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-all duration-200 flex-shrink-0 ml-2">
         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
-      <!-- Aperçu dynamique du template -->
-      <component :is="currentTemplateComponent" :invoice="invoice" :client="client" :produits="produits"
-        :totalHT="totalHT" :totalTTC="totalTTC" :montantReduction="montantReduction" :reduction="reduction"
-        :suplement="suplement" :date_emission="date_emission" :date_echeance="date_echeance" :societer="companyInfo" />
     </div>
-    <!-- Sticky Actions -->
-    <div class="sticky bottom-0 w-full   backdrop-blur-md border-t mt-5 p-4 sm:p-6">
-      <div class="flex justify-between space-y-3 sm:space-y-0 sm:space-x-3">
+
+    <!-- Contenu principal -->
+    <div ref="factureHtmlRef"
+      class="bg-white flex-1 sm:flex-none w-full sm:max-w-6xl sm:max-h-[85vh] overflow-y-auto sm:rounded-2xl shadow-2xl animate-slideUp sm:animate-scaleIn relative">
+      
+      <!-- Header Desktop -->
+      <div class="hidden sm:flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Facture #{{ invoice.numero || invoice.id }}</h2>
+          <p class="text-sm text-gray-600 mt-1">{{ formatDate(invoice.date_emission) }}</p>
+        </div>
+        <button @click="$emit('close')"
+          class="w-10 h-10 rounded-full bg-white/80 hover:bg-white hover:shadow-md flex items-center justify-center transition-all duration-200 group">
+          <svg class="w-5 h-5 text-gray-600 group-hover:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contenu de la facture -->
+      <div class="p-2 sm:p-6 pb-16 sm:pb-6 text-xs sm:text-base">
+        <component :is="currentTemplateComponent" 
+          :invoice="invoice" 
+          :client="client" 
+          :produits="produits"
+          :totalHT="totalHT" 
+          :totalTTC="totalTTC" 
+          :montantReduction="montantReduction" 
+          :reduction="reduction"
+          :suplement="suplement" 
+          :date_emission="date_emission" 
+          :date_echeance="date_echeance" 
+          :societer="companyInfo" />
+      </div>
+    </div>
+
+    <!-- Actions flottantes pour mobile / fixes pour desktop -->
+    <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 p-2 safe-area-pb">
+      <div class="grid grid-cols-3 gap-2">
         <button @click="downloadPDF()" :disabled="isDownloading"
-          class="min-w-[100px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2 shadow-lg">
-          <svg v-if="!isDownloading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-2 rounded-lg transition-all duration-200 flex flex-col items-center justify-center space-y-1 shadow-lg min-h-[45px] text-xs">
+          <svg v-if="!isDownloading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
             </path>
           </svg>
-          <div v-else class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          <span class="hidden lg:block" v-if="isDownloading">Téléchargement...</span>
-          <span class="hidden lg:block" v-else>Télécharger PDF</span>
+          <div v-else class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <span class="font-medium leading-tight">{{ isDownloading ? 'En cours' : 'PDF' }}</span>
         </button>
+
+        <button @click="shareInvoice"
+          class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-2 rounded-lg transition-all duration-200 flex flex-col items-center justify-center space-y-1 shadow-lg min-h-[45px] text-xs">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.5 3a3.5 3.5 0 0 0-3.456 4.06L8.143 9.704a3.5 3.5 0 1 0-.01 4.6l5.91 2.65a3.5 3.5 0 1 0 .863-1.805l-5.94-2.662a3.53 3.53 0 0 0 .002-.961l5.948-2.667A3.5 3.5 0 1 0 17.5 3Z" />
+          </svg>
+          <span class="font-medium leading-tight">Partager</span>
+        </button>
+
         <button @click="$emit('delete')"
-          class=" min-w-[100px] sm:flex-none bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 sm:px-6 rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2 rounded-lg transition-all duration-200 flex flex-col items-center justify-center space-y-1 shadow-lg min-h-[45px] text-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
             </path>
           </svg>
-          <span class="hidden lg:block">Supprimer</span>
-        </button>
-        <button
-          class= " min-w-[100px] bg-green-500 rounded-xl  hover:bg-green-700 font-medium py-3 px-4 sm:px-6 transition-colors duration-200 items-center justify-center flex">
-          <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <path
-              d="M17.5 3a3.5 3.5 0 0 0-3.456 4.06L8.143 9.704a3.5 3.5 0 1 0-.01 4.6l5.91 2.65a3.5 3.5 0 1 0 .863-1.805l-5.94-2.662a3.53 3.53 0 0 0 .002-.961l5.948-2.667A3.5 3.5 0 1 0 17.5 3Z" />
-          </svg>
-
-          <span class="hidden lg:block">Share</span>
+          <span class="font-medium leading-tight">Supprimer</span>
         </button>
       </div>
+    </div>
+
+    <!-- Actions Desktop -->
+    <div class="hidden sm:flex justify-center space-x-4 mt-6">
+      <button @click="downloadPDF()" :disabled="isDownloading"
+        class="min-w-[140px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+        <svg v-if="!isDownloading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+          </path>
+        </svg>
+        <div v-else class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        <span>{{ isDownloading ? 'Téléchargement...' : 'Télécharger PDF' }}</span>
+      </button>
+
+      <button @click="shareInvoice"
+        class="min-w-[120px] bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17.5 3a3.5 3.5 0 0 0-3.456 4.06L8.143 9.704a3.5 3.5 0 1 0-.01 4.6l5.91 2.65a3.5 3.5 0 1 0 .863-1.805l-5.94-2.662a3.53 3.53 0 0 0 .002-.961l5.948-2.667A3.5 3.5 0 1 0 17.5 3Z" />
+        </svg>
+        <span>Partager</span>
+      </button>
+
+      <button @click="$emit('delete')"
+        class="min-w-[120px] bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+          </path>
+        </svg>
+        <span>Supprimer</span>
+      </button>
     </div>
   </div>
 </template>
@@ -62,6 +126,7 @@ import { templateComponents } from "../../components/templates";
 import { useFacturesStore } from "../../stores/Facture";
 import Client from "../../models/client";
 import { genererPDFs } from "../templates/utils/generateTemplates";
+
 const factureStore = useFacturesStore();
 const invoice = computed(() => factureStore.selectedFacture);
 const client = computed(() => props.invoice?.client_data || {});
@@ -80,18 +145,18 @@ const factureHtmlRef = ref(null);
 const currentTemplateComponent = computed(() => {
   return templateComponents[props.invoice.template || "moderne"];
 });
+
 const props = defineProps({
   invoice: Object,
   societer: Object,
 });
-// Props
 
 // Events
 const emit = defineEmits(["close", "download", "delete"]);
 
-const infoEntreprise = ref(null); // <- renommé pour stocker les données récupérées
+const infoEntreprise = ref(null);
 
-// Si l'info n’est pas passée en props, on la récupère
+// Si l'info n'est pas passée en props, on la récupère
 onMounted(async () => {
   try {
     const data = await getInfoEntreprise();
@@ -102,6 +167,7 @@ onMounted(async () => {
     console.error("Erreur lors de la récupération de l'entreprise :", err);
   }
 });
+
 // Computed pour les informations de l'entreprise
 const companyInfo = computed(() => {
   return (
@@ -115,343 +181,32 @@ const companyInfo = computed(() => {
   );
 });
 
-// Génération du template PDF (version améliorée)
-// const generatePDFTemplate = () => {
-//   const company = companyInfo.value;
-
-//   return `
-//     <!DOCTYPE html>
-//     <html lang="fr">
-//     <head>
-//       <meta charset="UTF-8">
-//       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//       <title>Facture ${props.invoice.id}</title>
-//       <style>
-//         @page {
-//           margin: 1.5cm;
-//           size: A4;
-//         }
-
-//         * {
-//           margin: 0;
-//           padding: 0;
-//           box-sizing: border-box;
-//         }
-
-//         body {
-//           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-//           line-height: 1.6;
-//           color: #1f2937;
-//           font-size: 14px;
-//         }
-
-//         .invoice-container {
-//           max-width: 100%;
-//           margin: 0 auto;
-//           background: white;
-//         }
-
-//         .header {
-//           display: flex;
-//           justify-content: space-between;
-//           align-items: flex-start;
-//           margin-bottom: 40px;
-//           padding-bottom: 20px;
-//           border-bottom: 3px solid #3b82f6;
-//         }
-
-//         .invoice-title {
-//           font-size: 28px;
-//           font-weight: 800;
-//           color: #1f2937;
-//           margin-bottom: 10px;
-//         }
-
-//         .dates {
-//           text-align: right;
-//           font-size: 13px;
-//         }
-
-//         .emission-date {
-//           color: #6b7280;
-//           margin-bottom: 8px;
-//           font-weight: 500;
-//         }
-
-//         .due-date {
-//           color: #dc2626;
-//           font-weight: 700;
-//           background: #fef2f2;
-//           padding: 4px 8px;
-//           border-radius: 4px;
-//           border: 1px solid #fecaca;
-//         }
-
-//         .company-info {
-//           display: flex;
-//           align-items: center;
-//           margin-bottom: 40px;
-//           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-//           padding: 20px;
-//           border-radius: 12px;
-//           border: 1px solid #e2e8f0;
-//         }
-
-//         .logo {
-//           width: 80px;
-//           height: 80px;
-//           border-radius: 12px;
-//           background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-//           margin-right: 20px;
-//           overflow: hidden;
-//           display: flex;
-//           align-items: center;
-//           justify-content: center;
-//           box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
-//         }
-
-//         .logo img {
-//           width: 100%;
-//           height: 100%;
-//           object-fit: cover;
-//         }
-
-//         .company-details h3 {
-//           font-size: 20px;
-//           font-weight: 700;
-//           margin-bottom: 8px;
-//           color: #1f2937;
-//         }
-
-//         .company-details p {
-//           font-size: 13px;
-//           color: #6b7280;
-//           margin-bottom: 4px;
-//           font-weight: 500;
-//         }
-
-//         .client-info {
-//           background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-//           padding: 24px;
-//           border-radius: 12px;
-//           border: 1px solid #bbf7d0;
-//           margin-bottom: 40px;
-//         }
-
-//         .client-info h4 {
-//           font-weight: 700;
-//           margin-bottom: 16px;
-//           color: #166534;
-//           font-size: 16px;
-//           display: flex;
-//           align-items: center;
-//         }
-
-//         .client-info p {
-//           margin-bottom: 8px;
-//           font-size: 13px;
-//           color: #166534;
-//         }
-
-//         .products-table {
-//           width: 100%;
-//           border-collapse: collapse;
-//           margin-bottom: 40px;
-//           background: white;
-//           border-radius: 12px;
-//           overflow: hidden;
-//           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-//         }
-
-//         .products-table th {
-//           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-//           padding: 16px 12px;
-//           font-weight: 700;
-//           color: #374151;
-//           font-size: 13px;
-//           text-transform: uppercase;
-//           letter-spacing: 0.5px;
-//         }
-
-//         .products-table td {
-//           padding: 16px 12px;
-//           border-bottom: 1px solid #f1f5f9;
-//           font-size: 13px;
-//         }
-
-//         .products-table tr:last-child td {
-//           border-bottom: none;
-//         }
-
-//         .products-table tr:hover {
-//           background: #f8fafc;
-//         }
-
-//         .text-center {
-//           text-align: center;
-//         }
-
-//         .text-right {
-//           text-align: right;
-//         }
-
-//         .totals {
-//           background: linear-gradient(135deg, #f8fafc 0%, #e7f3ff 100%);
-//           padding: 24px;
-//           border-radius: 12px;
-//           border: 1px solid #bfdbfe;
-//           margin-bottom: 30px;
-//         }
-
-//         .total-line {
-//           display: flex;
-//           justify-content: space-between;
-//           margin-bottom: 12px;
-//           font-size: 14px;
-//           font-weight: 500;
-//         }
-
-//         .total-line.reduction {
-//           color: #dc2626;
-//           background: #fef2f2;
-//           padding: 8px 12px;
-//           border-radius: 6px;
-//           margin: 8px 0;
-//         }
-
-//         .total-line.final {
-//           font-weight: 800;
-//           font-size: 18px;
-//           background: #3b82f6;
-//           color: white;
-//           padding: 16px 20px;
-//           border-radius: 8px;
-//           margin-top: 16px;
-//         }
-
-//         .additional-info {
-//           background: #fffbeb;
-//           border: 1px solid #fde68a;
-//           padding: 16px;
-//           border-radius: 8px;
-//           font-size: 12px;
-//           color: #92400e;
-//           font-style: italic;
-//         }
-//       </style>
-//     </head>
-//     <body>
-//       <div class="invoice-container">
-//         <div class="header">
-//           <div>
-//             <h1 class="invoice-title">Facture #${props.invoice.id}</h1>
-//           </div>
-//           <div class="dates">
-//             <p class="emission-date">Émise le ${formatDate(
-//               props.invoice.date_emission
-//             )}</p>
-//             <p class="due-date">Échéance: ${formatDate(
-//               props.invoice.date_echeance
-//             )}</p>
-//           </div>
-//         </div>
-
-//         <div class="company-info">
-//           ${
-//             company.logo
-//               ? `<div class="logo"><img src="${company.logo}" alt="Logo" /></div>`
-//               : `<div class="logo"></div>`
-//           }
-//           <div class="company-details">
-//             <h3>${company.nom}</h3>
-//             <p>${company.email}</p>
-//             <p>${company.adresse}</p>
-//           </div>
-//         </div>
-
-//         <div class="client-info">
-//           <h4>Informations client</h4>
-//           <p><strong>Nom:</strong> ${props.invoice.client_data.nom}</p>
-//           <p><strong>Email:</strong> ${props.invoice.client_data.email}</p>
-//           <p><strong>Adresse:</strong> ${props.invoice.client_data.address}</p>
-//         </div>
-
-//         <table class="products-table">
-//           <thead>
-//             <tr>
-//               <th>Description</th>
-//               <th class="text-center">Quantité</th>
-//               <th class="text-center">Prix unitaire</th>
-//               <th class="text-right">Total</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             ${(props.invoice.produits || [])
-//               .map(
-//                 (product) => `
-//               <tr>
-//                 <td><strong>${product.nom}</strong></td>
-//                 <td class="text-center">${product.quantite}</td>
-//                 <td class="text-center">${formatPrice(product.prix)} €</td>
-//                 <td class="text-right"><strong>${formatPrice(
-//                   calculateProductTotal(product)
-//                 )} €</strong></td>
-//               </tr>
-//             `
-//               )
-//               .join("")}
-//           </tbody>
-//         </table>
-
-//         <div class="totals">
-//           <div class="total-line">
-//             <span>Sous-total HT:</span>
-//             <span>${formatPrice(sousTotal.value)} €</span>
-//           </div>
-
-//           ${
-//             props.invoice.reduction
-//               ? `
-//             <div class="total-line reduction">
-//               <span>Réduction:</span>
-//               <span>-${formatReduction()}</span>
-//             </div>
-//           `
-//               : ""
-//           }
-
-//           <div class="total-line">
-//             <span>Total HT:</span>
-//             <span>${formatPrice(totalHt.value)} €</span>
-//           </div>
-
-//           <div class="total-line final">
-//             <span>Total TTC:</span>
-//             <span>${formatPrice(props.invoice.montant_total)} €</span>
-//           </div>
-//         </div>
-
-//         ${
-//           props.invoice.suplement
-//             ? `
-//           <div class="additional-info">
-//             <strong>Informations supplémentaires:</strong><br>
-//             ${props.invoice.suplement}
-//           </div>
-//         `
-//             : ""
-//         }
-//       </div>
-//     </body>
-//     </html>
-//   `;
-// };
+// Fonction de partage
+const shareInvoice = async () => {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: `Facture #${invoice.value.numero || invoice.value.id}`,
+        text: `Facture de ${companyInfo.value.nom} pour ${client.value.nom || 'Client'}`,
+        url: window.location.href,
+      });
+    } else {
+      // Fallback: copier dans le presse-papier
+      await navigator.clipboard.writeText(window.location.href);
+      showToastMessage("Lien copié dans le presse-papier !", "success");
+    }
+  } catch (error) {
+    console.error('Erreur lors du partage:', error);
+    showToastMessage("Erreur lors du partage", "error");
+  }
+};
 
 // Fonction de téléchargement PDF
 const downloadPDF = async () => {
   try {
     isDownloading.value = true;
     console.log("template utilisé pour PDF :", props.invoice?.template);
+    
     // Génération du HTML
     const htmlContent = genererPDFs(props.invoice.template, {
       ...props.invoice,
@@ -536,9 +291,19 @@ function formatReduction() {
   from {
     transform: translateY(100%);
   }
-
   to {
     transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
@@ -546,9 +311,113 @@ function formatReduction() {
   animation: slideUp 0.3s ease-out;
 }
 
-@media (max-width: 640px) {
-  .animate-slideUp {
-    animation: slideUp 0.3s ease-out;
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Support pour les zones de sécurité sur mobile */
+.safe-area-pb {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+/* Amélioration des performances d'animation */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slideUp,
+  .animate-scaleIn {
+    animation: none;
   }
+  
+  button {
+    transform: none !important;
+  }
+}
+
+/* Scrollbar personnalisée pour webkit */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Styles pour les écrans très petits */
+@media (max-width: 375px) {
+  .grid-cols-3 > button {
+    padding: 0.4rem 0.3rem;
+    min-height: 40px;
+    font-size: 0.65rem;
+  }
+  
+  .grid-cols-3 > button svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .sm\:hidden .px-3 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .text-xs {
+    font-size: 0.7rem;
+  }
+}
+
+/* Styles pour petits écrans (iPhone SE, etc.) */
+@media (max-width: 320px) {
+  .grid-cols-3 > button {
+    padding: 0.3rem 0.2rem;
+    min-height: 35px;
+    font-size: 0.6rem;
+    gap: 0.125rem;
+  }
+  
+  .grid-cols-3 > button svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+}
+
+/* Optimisation de la taille du contenu sur mobile */
+@media (max-width: 640px) {
+  /* Le contenu de la facture aura une taille de police plus petite */
+  .text-xs {
+    line-height: 1.3;
+  }
+  
+  /* Réduction des marges internes */
+  .p-2 {
+    padding: 0.4rem;
+  }
+  
+  /* Espacement réduit pour les boutons */
+  .pb-16 {
+    padding-bottom: 3.5rem;
+  }
+}
+
+/* Styles pour les grands écrans */
+@media (min-width: 1024px) {
+  .sm\:max-w-6xl {
+    max-width: 80rem;
+  }
+}
+
+/* Style pour le titre tronqué sur mobile */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -340,6 +340,7 @@
         </div>
       </div>
     </section>
+    <FactureForm />
   </div>
   <TesTe />
 </template>
@@ -347,6 +348,7 @@
 <script>
 import { ref, reactive } from 'vue'
 import TesTe from '../components/factures/FactureForm/TesTe.vue'
+import FactureForm from '../components/FactureForm.vue'
 
 
 export default {
