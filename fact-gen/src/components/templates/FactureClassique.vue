@@ -177,95 +177,97 @@ const formatPrice = (price) => {
   max-width: 100%;
   margin: 0 auto;
   background: #f8f9fa;
-  padding: 40px;
+  padding: 20px;
   min-height: 100vh;
   font-family: "Arial", sans-serif;
 }
 
+/* Styles de base (mobile-first) */
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 50px;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
 }
 
 .company-info {
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .company-logo {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .company-name {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #1f2937;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .company-address {
-  font-size: 13px;
+  font-size: 12px;
   color: #6b7280;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .invoice-info {
-  text-align: right;
+  text-align: left;
 }
 
 .invoice-title {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: bold;
   color: #6b46c1;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .invoice-date {
-  font-size: 14px;
+  font-size: 13px;
   color: #1f2937;
   font-weight: 500;
 }
 
 .client-section {
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .client-label {
-  font-size: 14px;
+  font-size: 13px;
   color: #1f2937;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .client-name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   color: #1f2937;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .client-address,
 .client-details {
-  font-size: 13px;
+  font-size: 12px;
   color: #6b7280;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .products-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   background: white;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
 }
 
 .products-table thead {
@@ -274,31 +276,15 @@ const formatPrice = (price) => {
 }
 
 .products-table th {
-  padding: 15px;
+  padding: 10px 8px;
   text-align: left;
   font-weight: 600;
-  font-size: 14px;
-}
-
-.description-col {
-  width: 50%;
-}
-
-.price-col,
-.qty-col,
-.total-col {
-  width: 16.66%;
-  text-align: center;
-}
-
-.total-col {
-  text-align: right;
 }
 
 .products-table td {
-  padding: 20px 15px;
+  padding: 12px 8px;
   border-bottom: 1px solid #e5e7eb;
-  font-size: 13px;
+  word-break: break-word;
 }
 
 .products-table tbody tr:last-child td {
@@ -308,40 +294,36 @@ const formatPrice = (price) => {
 .item-name {
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .item-description {
   color: #6b7280;
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 11px;
+  line-height: 1.3;
 }
 
 .price-cell,
 .qty-cell {
   text-align: center;
-  font-weight: 500;
-  color: #1f2937;
 }
 
 .total-cell {
   text-align: right;
-  font-weight: 600;
-  color: #1f2937;
 }
 
 .totals-section {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .totals-container {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  min-width: 300px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border-radius: 6px;
+  width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .subtotal-line,
@@ -349,58 +331,58 @@ const formatPrice = (price) => {
 .discount-line {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  font-size: 14px;
+  padding: 6px 0;
+  font-size: 13px;
   color: #6b7280;
 }
 
 .total-due {
   display: flex;
   justify-content: space-between;
-  padding: 15px 0;
-  margin-top: 10px;
+  padding: 12px 0;
+  margin-top: 8px;
   border-top: 2px solid #6b46c1;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
   color: white;
   background: #6b46c1;
-  margin: 10px -20px -20px -20px;
-  padding: 15px 20px;
-  border-radius: 0 0 8px 8px;
+  margin: 8px -15px -15px -15px;
+  padding: 12px 15px;
+  border-radius: 0 0 6px 6px;
 }
 
 .note-section {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .note-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .note-content {
-  font-size: 13px;
+  font-size: 12px;
   color: #6b7280;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .thank-you {
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #6b46c1;
-  margin: 40px 0;
-  padding: 20px 0;
-  border-top: 2px solid #e5e7eb;
+  margin: 25px 0;
+  padding: 15px 0;
+  border-top: 1px solid #e5e7eb;
 }
 
 .footer-info {
   display: flex;
-  justify-content: space-between;
-  gap: 30px;
-  margin-top: 30px;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .footer-section {
@@ -408,26 +390,94 @@ const formatPrice = (price) => {
 }
 
 .footer-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .footer-content {
   font-size: 12px;
   color: #6b7280;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .footer-content div {
-  margin-bottom: 3px;
+  margin-bottom: 2px;
+}
+
+/* Styles pour tablettes */
+@media (min-width: 600px) {
+  .invoice-container {
+    padding: 30px;
+  }
+  
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .company-info {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .invoice-info {
+    text-align: right;
+  }
+  
+  .products-table {
+    font-size: 13px;
+  }
+  
+  .totals-container {
+    width: auto;
+    min-width: 300px;
+  }
+  
+  .footer-info {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .footer-section {
+    min-width: calc(50% - 15px);
+  }
+}
+
+/* Styles pour desktop */
+@media (min-width: 900px) {
+  .invoice-container {
+    padding: 40px;
+    max-width: 800px;
+  }
+  
+  .company-name {
+    font-size: 24px;
+  }
+  
+  .invoice-title {
+    font-size: 32px;
+  }
+  
+  .products-table th,
+  .products-table td {
+    padding: 15px;
+  }
+  
+  .footer-section {
+    min-width: auto;
+    flex: 1;
+  }
 }
 
 @media print {
   .invoice-container {
     padding: 20px;
     background: white;
+    max-width: 100%;
   }
 
   body {

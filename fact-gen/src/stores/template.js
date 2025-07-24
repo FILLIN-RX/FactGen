@@ -1,5 +1,5 @@
-// /src/stores/template.js
 import { defineStore } from "pinia";
+import { markRaw } from "vue"; // 👈 à ajouter
 
 // Importation des composants Vue des templates
 import FactureClassique from "../components/templates/FactureClassique.vue";
@@ -15,7 +15,7 @@ export const useTemplateStore = defineStore("template", {
         description: "Un modèle simple, clair et professionnel.",
         previewUrl: "../assets/template2.jpeg",
 
-        component: FactureClassique,
+        component: markRaw(FactureClassique), // ✅
       },
       {
         id: "moderne",
@@ -23,7 +23,7 @@ export const useTemplateStore = defineStore("template", {
         description: "Design épuré, parfait pour les startups.",
         previewUrl: "../assets/proTemplate.png",
 
-        component: FactureModerne,
+        component: markRaw(FactureModerne), // ✅
       },
       {
         id: "minimaliste",
@@ -31,7 +31,7 @@ export const useTemplateStore = defineStore("template", {
         description: "Style compact, parfait pour mobile et impression rapide.",
         previewUrl: "../assets/FactureTemplate.jpeg",
 
-        component: FactureMinimaliste,
+        component: markRaw(FactureMinimaliste), // ✅
       },
     ],
   }),

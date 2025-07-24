@@ -303,7 +303,6 @@ import { showToastMessage } from '../composables/useToast';
 import LoadinApp from "../components/LoadinApp.vue";
 const toast = useToast();
 
-// Variables réactives
 const searchTerm = ref("");
 const selectedClient = ref("");
 const selectedStatus = ref("");
@@ -339,8 +338,7 @@ async function fetchEntreprise() {
     return null;
   }
 }
-const selectedTemplateId = ref(null); // à placer en haut
-
+const selectedTemplateId = ref(route.query.template || 'moderne');// 
 // Montage du composant
 onMounted(async () => {
   appStore.setLoading(true);
@@ -374,8 +372,7 @@ function formatPrice(val) {
 }
 
 function creer() {
-  open.value = !open.value;
-  router.push('/NewInvoice')
+  router.push('/NewInvoice');
 }
 
 function clearFilters() {

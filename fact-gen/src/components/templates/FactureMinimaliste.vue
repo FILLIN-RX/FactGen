@@ -411,4 +411,89 @@ body {
     display: none;
   }
 }
+@media (max-width: 768px) {
+  .invoice-container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .company-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .invoice-info {
+    text-align: left;
+    width: 100%;
+  }
+
+  .products-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .products-table th,
+  .products-table td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .description-col {
+    width: 40%;
+  }
+
+  .totals-container {
+    min-width: 100%;
+  }
+
+  .footer-info {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .client-section {
+    margin-bottom: 20px;
+  }
+
+  .thank-you {
+    margin: 20px 0;
+    padding: 15px 0;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoice-container {
+    padding: 15px;
+  }
+
+  .company-name {
+    font-size: 20px;
+  }
+
+  .invoice-title {
+    font-size: 24px;
+  }
+
+  .products-table {
+    font-size: 11px;
+  }
+
+  .totals-container {
+    padding: 15px;
+  }
+
+  .subtotal-line,
+  .tax-line,
+  .discount-line,
+  .total-due {
+    font-size: 13px;
+  }
+}
 </style>
