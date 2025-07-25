@@ -89,7 +89,7 @@
                   class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                   <option value="">Tous</option>
                   <option value="en_attente">🟡 En attente</option>
-                  <option value="paye">🟢 Payé</option>
+                  <option value="payée">🟢 Payé</option>
                   <option value="annule">🔴 Annulé</option>
                 </select>
               </div>

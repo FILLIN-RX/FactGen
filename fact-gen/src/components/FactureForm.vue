@@ -274,7 +274,7 @@ const templateStore = useTemplateStore();
 const showPreview = ref(false);
 const isEditing = ref(false);
 const isSaving = ref(false);
-const selectedTemplate = ref('moderne');
+const selectedTemplate = ref('');
 
 // Données de la facture
 const societer = ref({
@@ -356,7 +356,7 @@ function getTemplateName(templateId) {
   const templates = {
     'moderne': 'Modèle Moderne',
     'classique': 'Modèle Classique',
-    'minimal': 'Modèle Minimal'
+    'minimaliste': 'Modèle Minimal'
   };
   return templates[templateId] || 'Modèle Moderne';
 }

@@ -21,7 +21,7 @@ const props = defineProps({
 const router = useRouter()
 
 const essayerModele = () => {
-  router.push({ name: 'Facture', query: { template: props.template.id } })
+  router.push({ name: 'FactureForm', query: { template: props.template.id } })
 }
 
 

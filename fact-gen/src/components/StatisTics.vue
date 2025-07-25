@@ -96,20 +96,7 @@ const statsCards = computed(() => [
     trendDirection: statsStore.revenuTrend.direction,
     format: 'currency'
   },
-  {
-    id: 'taux',
-    title: 'Taux de conversion',
-    value: statsStore.tauxConversion,
-    icon: 'chart',
-    color: 'orange',
-    bgGradient: 'from-orange-500 to-orange-600',
-    lightBg: 'bg-orange-50',
-    iconColor: 'text-orange-600',
-    description: 'Conversion clients',
-    trend: '', // facultatif ici (à définir si tu veux comparer au taux précédent)
-    trendDirection: 'up', // ou calculer la variation plus tard
-    format: 'percentage'
-  }
+
 ]);
 
 // Format value based on type
@@ -268,7 +255,7 @@ const getIcon = (iconName) => {
     </div>
 
     <!-- Quick Actions Section -->
-    <div class="px-3 pb-6 sm:px-6">
+    <div class="px-3 flex w-4/5 pb-6 sm:px-6">
       <div class="bg-white rounded-xl p-4 border border-gray-200 sm:p-6">
         <h2 class="text-base font-semibold text-gray-900 mb-4 sm:text-lg">Actions rapides</h2>
         
@@ -370,15 +357,58 @@ const getIcon = (iconName) => {
   animation: slideInUp 0.4s ease-out both;
 }
 
-/* Responsive grid improvements */
+/* Responsive grid - 4 columns on all screens */
+.grid-cols-2 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Adjust font sizes for mobile */
 @media (max-width: 640px) {
   .stats-card {
-    min-height: 120px;
+    min-height: 100px;
+  }
+  
+  h1 {
+    font-size: 1.1rem;
+  }
+  
+  h2 {
+    font-size: 0.95rem;
+  }
+  
+  h3 {
+    font-size: 0.7rem;
+  }
+  
+  p, span {
+    font-size: 0.65rem;
+  }
+  
+  .stats-card p.text-lg {
+    font-size: 0.8rem;
+  }
+  
+  .quick-actions button {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+  }
+  
+  .stats-card .value {
+    font-size: 0.9rem;
+  }
+  
+  .stats-card .description {
+    display: none;
   }
 }
 
 /* Custom breakpoint for very small screens */
 @media (max-width: 375px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  
   .xs\:hidden {
     display: none !important;
   }
@@ -388,7 +418,12 @@ const getIcon = (iconName) => {
   }
 }
 
-@media (min-width: 375px) {
+@media (min-width: 375px) and (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  
   .xs\:hidden {
     display: block !important;
   }
@@ -410,7 +445,7 @@ const getIcon = (iconName) => {
 /* Touch-friendly buttons */
 @media (max-width: 640px) {
   button {
-    min-height: 44px;
+    min-height: 40px;
   }
 }
 
