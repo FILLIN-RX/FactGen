@@ -258,7 +258,7 @@
         <main class="flex-1 overflow-hidden">
           <div class="h-full">
             <div class="p-3 sm:p-4 lg:p-6 xl:p-8 h-full">
-              <div class="max-w-7xl mx-auto h-full">
+              <div class=" mx-auto h-full">
                <router-view v-slot="{ Component }">
   <transition
     name="page"

@@ -1,13 +1,13 @@
 <template>
   <section class="min-h-screen">
     <!-- Augmentation du padding vertical sur mobile -->
-    <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-8xl">
+    <div class="container mx-auto px-3 xs:px-4 sm:px-6 py-3 xs:py-4 sm:py-6">
       <!-- Header réorganisé pour mobile -->
       <header class="mb-6 sm:mb-8">
         <div class="flex flex-col">
           <div class="mb-4">
             <h1
-              class="text-xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2"
+              class="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2"
             >
               Dashboard Analytics
             </h1>
@@ -19,7 +19,7 @@
           <!-- Boutons en colonne sur mobile -->
         </div>
       </header>
-
+<div class="space-y-4 xs:space-y-6">
       <!-- Statistiques avec moins d'espacement sur mobile -->
       <div class="mb-6 sm:mb-8">
         <div class="p-3 sm:p-6">
@@ -45,7 +45,7 @@
                 <option>3 derniers mois</option>
               </select>
             </div>
-            <div class="chart-container" style="min-height: 250px">
+            <div class="chart-container">
               <BarChart />
             </div>
           </div>
@@ -69,15 +69,15 @@
         <RecentActivity />
       </div>
     </div>
-     <div>
-    <ClientFormModal
-      :open="operationsStore.showNewClientModal"
-      @close="operationsStore.closeNewClientModal"
-      :form="{}"
-    />
-  </div>
+    <div>
+      <ClientFormModal
+        :open="operationsStore.showNewClientModal"
+        @close="operationsStore.closeNewClientModal"
+        :form="{}"
+      />
+    </div>
+    </div>
   </section>
- 
 </template>
 
 <script setup>
@@ -247,7 +247,7 @@ onMounted(async () => {
 /* Container pour graphiques */
 .chart-container {
   position: relative;
-  min-height: 300px;
+  
 }
 
 @media (min-width: 640px) {

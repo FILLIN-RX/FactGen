@@ -34,3 +34,12 @@ body {
 .fade-leave-to {
   opacity: 0;
 }
+/* Extra small devices (phones, 400px and down) */
+@media (max-width: 400px) {
+  .text-xs {
+    font-size: 0.75rem;
+  }
+  .p-2 {
+    padding: 0.5rem;
+  }
+}
