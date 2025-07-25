@@ -24,11 +24,15 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  :d="isMobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'"
+                  :d="
+                    isMobileMenuOpen
+                      ? 'M6 18L18 6M6 6l12 12'
+                      : 'M4 6h16M4 12h16M4 18h16'
+                  "
                 />
               </svg>
             </button>
-            
+
             <h1
               class="ml-2 lg:ml-0 text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
             >
@@ -37,8 +41,9 @@
           </div>
 
           <!-- Desktop Header Content -->
-          <div class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end">
-          </div>
+          <div
+            class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end"
+          ></div>
 
           <!-- Mobile Header Actions -->
           <div class="flex items-center lg:hidden">
@@ -46,7 +51,12 @@
               @click="logout"
               class="p-2 rounded-lg text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -90,13 +100,20 @@
         >
           <div class="flex flex-col h-full">
             <!-- Mobile Menu Header -->
-            <div class="flex items-center justify-between p-4 border-b border-slate-200">
+            <div
+              class="flex items-center justify-between p-4 border-b border-slate-200"
+            >
               <h2 class="text-lg font-semibold text-slate-900">Navigation</h2>
               <button
                 @click="toggleMobileMenu"
                 class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -120,7 +137,12 @@
                       : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600'
                   "
                 >
-                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -141,7 +163,12 @@
                       : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600'
                   "
                 >
-                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -162,7 +189,12 @@
                       : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600'
                   "
                 >
-                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -183,7 +215,12 @@
                       : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600'
                   "
                 >
-                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -205,17 +242,19 @@
             <!-- Mobile Menu Footer -->
             <div class="p-4 border-t border-slate-200">
               <div class="flex items-center space-x-3 mb-4">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                <div
+                  class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center"
+                >
                   <span class="text-white font-semibold text-sm">
-                    {{ utilisateur?.nom?.charAt(0) || 'U' }}
+                    {{ utilisateur?.nom?.charAt(0) || "U" }}
                   </span>
                 </div>
                 <div>
                   <p class="text-sm font-medium text-slate-900">
-                    {{ utilisateur?.nom || 'Utilisateur' }}
+                    {{ utilisateur?.nom || "Utilisateur" }}
                   </p>
                   <p class="text-xs text-slate-500">
-                    {{  auth.user.email || 'email@example.com' }}
+                    {{ auth.user.email || "email@example.com" }}
                   </p>
                 </div>
               </div>
@@ -223,7 +262,12 @@
                 @click="logout"
                 class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
               >
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -241,7 +285,7 @@
       <!-- Desktop Sidebar -->
       <div class="hidden lg:flex lg:w-72 xl:w-80">
         <div class="w-full bg-white border-r border-slate-200 shadow-sm">
-         <LoginNav />
+          <LoginNav />
         </div>
       </div>
 
@@ -258,34 +302,32 @@
         <main class="flex-1 overflow-hidden">
           <div class="h-full">
             <div class="p-3 sm:p-4 lg:p-6 xl:p-8 h-full">
-              <div class=" mx-auto h-full">
-               <router-view v-slot="{ Component }">
-  <transition
-    name="page"
-    mode="out-in"
-    enter-active-class="transition-all duration-300 ease-out"
-    enter-from-class="opacity-0 transform translate-y-4"
-    enter-to-class="opacity-100 transform translate-y-0"
-    leave-active-class="transition-all duration-200 ease-in"
-    leave-from-class="opacity-100 transform translate-y-0"
-    leave-to-class="opacity-0 transform -translate-y-4"
-  >
-    <component :is="Component" />
-  </transition>
-</router-view>
+              <div class="mx-auto h-full">
+                <router-view v-slot="{ Component }">
+                  <transition
+                    name="page"
+                    mode="out-in"
+                    enter-active-class="transition-all duration-300 ease-out"
+                    enter-from-class="opacity-0 transform translate-y-4"
+                    enter-to-class="opacity-100 transform translate-y-0"
+                    leave-active-class="transition-all duration-200 ease-in"
+                    leave-from-class="opacity-100 transform translate-y-0"
+                    leave-to-class="opacity-0 transform -translate-y-4"
+                  >
+                    <component :is="Component" />
+                  </transition>
+                </router-view>
               </div>
             </div>
           </div>
         </main>
       </div>
     </div>
-   
   </div>
- 
 </template>
 
 <script setup>
-import { ref, onMounted,onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import LoginNav from "../components/LoginNav.vue";
 import HaeDer from "../components/HaeDer.vue";
@@ -300,18 +342,18 @@ const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
-import Toast from '../components/ToasT.vue';
+import Toast from "../components/ToasT.vue";
 // Get user on creation
 utilisateur.value = JSON.parse(localStorage.getItem("utilisateurConnecte"));
-const showToast = ref(false)
-const toastMessage = ref('')
-const toastType = ref('success') // success | error | warning | info
+const showToast = ref(false);
+const toastMessage = ref("");
+const toastType = ref("success"); // success | error | warning | info
 
-const showToastMessage = (message, type = 'success') => {
-  toastMessage.value = message
-  toastType.value = type
-  showToast.value = true
-}
+const showToastMessage = (message, type = "success") => {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
+};
 // Initialize auth on mount
 onMounted(() => {
   auth.initialize();
@@ -320,7 +362,7 @@ onMounted(() => {
 // Toggle mobile menu
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
-  document.body.style.overflow = isMobileMenuOpen.value ? 'hidden' : '';
+  document.body.style.overflow = isMobileMenuOpen.value ? "hidden" : "";
 }
 
 // Logout
@@ -328,26 +370,28 @@ function logout() {
   try {
     localStorage.removeItem("utilisateurConnecte");
     isMobileMenuOpen.value = false;
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
     router.push("/login");
-    showToastMessage("Déconnexion réussie. À bientôt !", 'success');
+    showToastMessage("Déconnexion réussie. À bientôt !", "success");
   } catch (error) {
-    showToastMessage("Erreur lors de la déconnexion. Réessayez.", 'error');
+    showToastMessage("Erreur lors de la déconnexion. Réessayez.", "error");
   }
 }
 
 // Watch route changes to close menu
-watch(() => route.fullPath, () => {
-  isMobileMenuOpen.value = false;
-  document.body.style.overflow = '';
-});
+watch(
+  () => route.fullPath,
+  () => {
+    isMobileMenuOpen.value = false;
+    document.body.style.overflow = "";
+  }
+);
 
 // Clean up on unmount
 onUnmounted(() => {
-  document.body.style.overflow = '';
+  document.body.style.overflow = "";
 });
 </script>
-
 
 <style scoped>
 /* Page transition styles */
@@ -416,7 +460,7 @@ onUnmounted(() => {
   .transition-all {
     transition-duration: 0.15s;
   }
-  
+
   button,
   .router-link-active {
     -webkit-tap-highlight-color: transparent;
