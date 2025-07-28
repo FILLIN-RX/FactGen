@@ -16,16 +16,7 @@ app.use(i18n);
 app.use(pinia);
 app.use(router);
 app.component("Icon", Icon);
-app.use(Toast, {
-  position: POSITION.TOP_RIGHT,
-  timeout: 3000,
-  icon: false,  // Désactive les icônes SVG
-  // Utilisez des emojis à la place
-  success: "✅",
-  error: "❌",
-  warning: "⚠️",
-  info: "ℹ️"
-});
+
 // 💡 Initialisation du store AVANT le mount
 const authStore = useAuthStore();
 

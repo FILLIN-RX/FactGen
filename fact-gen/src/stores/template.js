@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { markRaw } from "vue"; // 👈 à ajouter
+import { markRaw } from "vue";
 
 // Importation des composants Vue des templates
 import FactureClassique from "../components/templates/FactureClassique.vue";
@@ -12,27 +12,25 @@ export const useTemplateStore = defineStore("template", {
       {
         id: "classique",
         nom: "Classique",
-        description: "Un modèle simple, clair et professionnel.",
-        previewUrl: "../assets/template2.jpeg",
-
-        component: markRaw(FactureClassique), // ✅
+        description: "Un modèle simple, clair et professionnel avec une structure traditionnelle bien organisée.",
+        previewUrl: "/images/template-classique.jpg", // Assurez-vous que le chemin est correct
+        component: markRaw(FactureClassique),
       },
       {
         id: "moderne",
         nom: "Moderne",
-        description: "Design épuré, parfait pour les startups.",
-        previewUrl: "../assets/proTemplate.png",
-
-        component: markRaw(FactureModerne), // ✅
+        description: "Design épuré avec des éléments graphiques contemporains, parfait pour les startups innovantes.",
+        previewUrl: "/images/template-moderne.jpg",
+        component: markRaw(FactureModerne),
       },
       {
         id: "minimaliste",
         nom: "Minimaliste",
-        description: "Style compact, parfait pour mobile et impression rapide.",
-        previewUrl: "../assets/FactureTemplate.jpeg",
-
-        component: markRaw(FactureMinimaliste), // ✅
+        description: "Style compact et ultra-lisible, optimisé pour l'affichage mobile et l'impression rapide.",
+        previewUrl: "/images/template-minimaliste.jpg",
+        component: markRaw(FactureMinimaliste),
       },
+      // Vous pouvez ajouter plus de templates ici
     ],
   }),
 
@@ -40,7 +38,6 @@ export const useTemplateStore = defineStore("template", {
     getTemplateById: (state) => (id) => {
       return state.templates.find((tpl) => tpl.id === id) || state.templates[0];
     },
-
     getComponentById: (state) => (id) => {
       const found = state.templates.find((tpl) => tpl.id === id);
       return found ? found.component : state.templates[0].component;
