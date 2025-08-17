@@ -13,7 +13,7 @@ export const useTemplateStore = defineStore("template", {
         id: "classique",
         nom: "Classique",
         description: "Un modèle simple, clair et professionnel avec une structure traditionnelle bien organisée.",
-        previewUrl: "/images/template-classique.jpg", // Assurez-vous que le chemin est correct
+        previewUrl: "/images/template-classique.jpeg",
         component: markRaw(FactureClassique),
       },
       {
@@ -30,17 +30,44 @@ export const useTemplateStore = defineStore("template", {
         previewUrl: "/images/template-minimaliste.jpg",
         component: markRaw(FactureMinimaliste),
       },
-      // Vous pouvez ajouter plus de templates ici
+      // Ajoute d'autres modèles ici si nécessaire
     ],
+    currentTemplate: "moderne", // valeur par défaut
   }),
 
   getters: {
+    /**
+     * Retourne l'objet template à partir de son ID
+     * @param {string} id - ID du template
+     * @returns {object|null}
+     */
     getTemplateById: (state) => (id) => {
-      return state.templates.find((tpl) => tpl.id === id) || state.templates[0];
+      return state.templates.find((tpl) => tpl.id === id) || null;
     },
+
+    /**
+     * Retourne directement le composant Vue du template
+     * @param {string} id - ID du template
+     * @returns {object|null}
+     */
     getComponentById: (state) => (id) => {
-      const found = state.templates.find((tpl) => tpl.id === id);
-      return found ? found.component : state.templates[0].component;
+      const tpl = state.templates.find((tpl) => tpl.id === id);
+      return tpl ? tpl.component : null;
+    },
+  },
+
+  actions: {
+    /**
+     * Définit le template courant (si valide)
+     * @param {string} id - ID du template
+     */
+    setCurrentTemplate(id) {
+      const exists = this.templates.find((tpl) => tpl.id === id);
+      if (exists) {
+        this.currentTemplate = id;
+      } else {
+        console.warn(`Template "${id}" introuvable, aucun changement appliqué.`);
+      }
     },
   },
 });
