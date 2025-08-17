@@ -127,12 +127,12 @@
               Enregistrer le brouillon
             </button>
             <button @click="creerFacture"
-              class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-              Voir l'aperçu et envoyer →
+              class="px-6 py-2 bg-blue-600  text-white rounded hover:bg-blue-700 transition-colors">
+               envoyer →
             </button>
             <button
   @click="showPreviewMobile = true"
-  class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+  class="px-6 py-2 bg-blue-600 lg:hidden text-white rounded hover:bg-blue-700 transition-colors"
 >
   Voir l'aperçu
 </button>
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Prévisualisation à droite -->
-        <div class="bg-white rounded-lg hidden shadow-sm p-6">
+        <div class="bg-white rounded-lg hidden lg:block shadow-sm p-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">Prévisualisation</h3>
             <div class="flex space-x-2">
