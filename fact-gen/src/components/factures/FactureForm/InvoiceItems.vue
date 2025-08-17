@@ -36,11 +36,18 @@
             </select>
           </td>
           <td class="text-right pr-2">
-            {{ (item.qty * item.price * (1 + item.vat/100)).toFixed(2) }} €
+            {{ (item.qty * item.price * (1 + item.vat / 100)).toFixed(2) }} €
           </td>
           <td><button @click="removeItem(i)" class="text-red-600">✕</button></td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr class="bg-gray-100 font-semibold">
+          <td colspan="7" class="text-right p-2">Total :</td>
+          <td class="text-right pr-2">{{ total.toFixed(2) }} €</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
 
     <button @click="addItem" class="mt-3 px-3 py-1 bg-green-600 text-white rounded">
@@ -50,20 +57,40 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, computed } from "vue";
 
 const props = defineProps({ modelValue: Array });
 const emit = defineEmits(["update:modelValue"]);
 
-const items = props.modelValue;
+const items = computed({
+  get: () => props.modelValue,
+  set: (val) => emit("update:modelValue", val),
+});
 
 function addItem() {
-  items.push({ description: "", type: "Biens", date: new Date().toISOString().substr(0, 10), qty: 1, unit: "h", price: 0, vat: 0 });
-  emit("update:modelValue", items);
+  items.value = [
+    ...items.value,
+    {
+      description: "",
+      type: "Biens",
+      date: new Date().toISOString().substr(0, 10),
+      qty: 1,
+      unit: "h",
+      price: 0,
+      vat: 0,
+    },
+  ];
 }
 
 function removeItem(index) {
-  items.splice(index, 1);
-  emit("update:modelValue", items);
+  items.value = items.value.filter((_, i) => i !== index);
 }
+
+// ✅ Total TTC
+const total = computed(() =>
+  items.value.reduce(
+    (sum, item) => sum + item.qty * item.price * (1 + item.vat / 100),
+    0
+  )
+);
 </script>
