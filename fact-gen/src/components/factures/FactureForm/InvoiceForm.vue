@@ -9,22 +9,12 @@
             <!-- Sélecteur de template -->
             <div class="flex items-center space-x-2">
               <span class="text-sm text-gray-600">Modèle:</span>
-              <button
-                @click="openTemplateDialog"
-                class="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors border"
-              >
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
-                  ></path>
+              <button @click="openTemplateDialog"
+                class="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors border">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z">
+                  </path>
                 </svg>
                 <span>{{ selectedTemplate.nom }}</span>
               </button>
@@ -44,30 +34,17 @@
           <!-- Info facture -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div>
-              <label class="block text-sm font-medium mb-1"
-                >Date de facturation</label
-              >
-              <input
-                type="date"
-                v-model="dateEmission"
-                class="w-full border rounded px-3 py-2"
-              />
+              <label class="block text-sm font-medium mb-1">Date de facturation</label>
+              <input type="date" v-model="dateEmission" class="w-full border rounded px-3 py-2" />
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">Échéance</label>
-              <input
-                type="date"
-                v-model="dateEcheance"
-                class="w-full border rounded px-3 py-2"
-              />
+              <input type="date" v-model="dateEcheance" class="w-full border rounded px-3 py-2" />
             </div>
             <div class="md:col-span-2">
               <label class="block text-sm font-medium mb-1">Client</label>
-              <input
-                v-model="client.nom"
-                placeholder="Sélectionner ou créer un client"
-                class="w-full border rounded px-3 py-2"
-              />
+              <input v-model="client.nom" placeholder="Sélectionner ou créer un client"
+                class="w-full border rounded px-3 py-2" />
             </div>
           </div>
 
@@ -96,10 +73,7 @@
                       {{ (produit.quantite * produit.prix).toFixed(2) }} €
                     </td>
                     <td class="border p-2 text-center">
-                      <button
-                        @click="supprimerProduit(index)"
-                        class="text-red-500 hover:text-red-700"
-                      >
+                      <button @click="supprimerProduit(index)" class="text-red-500 hover:text-red-700">
                         ×
                       </button>
                     </td>
@@ -107,27 +81,16 @@
                   <!-- Ligne d'ajout -->
                   <tr class="bg-blue-50">
                     <td class="border p-2">
-                      <input
-                        v-model="newProduit.nom"
-                        placeholder="Description du produit/service"
-                        class="w-full border-0 bg-transparent text-sm"
-                      />
+                      <input v-model="newProduit.nom" placeholder="Description du produit/service"
+                        class="w-full border-0 bg-transparent text-sm" />
                     </td>
                     <td class="border p-2">
-                      <input
-                        v-model.number="newProduit.quantite"
-                        type="number"
-                        class="w-full text-center border-0 bg-transparent text-sm"
-                      />
+                      <input v-model.number="newProduit.quantite" type="number"
+                        class="w-full text-center border-0 bg-transparent text-sm" />
                     </td>
                     <td class="border p-2">
-                      <input
-                        v-model.number="newProduit.prix"
-                        type="number"
-                        step="0.01"
-                        placeholder="0,00"
-                        class="w-full text-right border-0 bg-transparent text-sm"
-                      />
+                      <input v-model.number="newProduit.prix" type="number" step="0.01" placeholder="0,00"
+                        class="w-full text-right border-0 bg-transparent text-sm" />
                     </td>
                     <td class="border p-2 text-right text-sm">
                       {{ calculerMontantLigne() }} €
@@ -138,10 +101,8 @@
               </table>
             </div>
 
-            <button
-              @click="ajouterProduit"
-              class="mt-3 px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
-            >
+            <button @click="ajouterProduit"
+              class="mt-3 px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors">
               + Ajouter une ligne
             </button>
           </div>
@@ -151,9 +112,7 @@
             <div class="w-64 space-y-2 bg-gray-50 p-4 rounded-lg">
               <div class="flex justify-between">
                 <span>Total HT</span>
-                <span class="font-medium"
-                  >{{ calculerTotal().toFixed(2) }} €</span
-                >
+                <span class="font-medium">{{ calculerTotal().toFixed(2) }} €</span>
               </div>
               <div class="flex justify-between text-lg font-bold border-t pt-2">
                 <span>Total dû</span>
@@ -164,35 +123,34 @@
 
           <!-- Actions -->
           <div class="flex justify-end space-x-3">
-            <button
-              class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50 transition-colors"
-            >
+            <button class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50 transition-colors">
               Enregistrer le brouillon
             </button>
-            <button
-              @click="creerFacture"
-              class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
+            <button @click="creerFacture"
+              class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
               Voir l'aperçu et envoyer →
             </button>
+            <button
+  @click="showPreviewMobile = true"
+  class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+>
+  Voir l'aperçu
+</button>
+
           </div>
         </div>
 
         <!-- Prévisualisation à droite -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="bg-white rounded-lg hidden shadow-sm p-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">Prévisualisation</h3>
             <div class="flex space-x-2">
-              <button
-                @click="openTemplateDialog"
-                class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-              >
+              <button @click="openTemplateDialog"
+                class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
                 Changer de modèle
               </button>
-              <button
-                @click="genererPDF"
-                class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
-              >
+              <button @click="genererPDF"
+                class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors">
                 PDF
               </button>
             </div>
@@ -201,6 +159,31 @@
           <!-- Rendu du template sélectionné -->
           <div class="border rounded-lg overflow-hidden bg-white">
             <!-- Modifier la partie prévisualisation dans InvoiceForm.vue -->
+
+            <component v-if="selectedTemplateComponent" :is="selectedTemplateComponent"
+              :societer="factureDataForPreview.entreprise" :client="factureDataForPreview.client"
+              :produits="factureDataForPreview.produits" :totalHT="factureDataForPreview.total"
+              :totalTTC="factureDataForPreview.total" :date_emission="factureDataForPreview.dateEmission"
+              :date_echeance="factureDataForPreview.dateEcheance" :factureId="factureDataForPreview.numero" />
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Prévisualisation mobile -->
+<div
+  v-if="showPreviewMobile"
+  class="mobile-preview fixed inset-0 bg-white z-50 overflow-auto p-4"
+>
+  <div class="flex justify-between mb-4">
+    <h3 class="text-lg font-semibold">Prévisualisation</h3>
+    <button
+      @click="showPreviewMobile = false"
+      class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+    >
+      Fermer
+    </button>
+  </div>
 
   <component
     v-if="selectedTemplateComponent"
@@ -214,11 +197,8 @@
     :date_echeance="factureDataForPreview.dateEcheance"
     :factureId="factureDataForPreview.numero"
   />
+</div>
 
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Dialog de sélection de template -->
     <TemplateSelectorDialog />
@@ -235,6 +215,7 @@ import Facture from "@/models/facture.js";
 // Router
 const router = useRouter();
 const route = useRoute();
+const showPreviewMobile = ref(false);
 
 // Template selection
 const {
