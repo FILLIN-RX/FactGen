@@ -136,7 +136,7 @@ defineProps([
 }
 
 body {
-  font-family: "Arial", sans-serif;
+  font-family: 'Roboto', 'Inter', system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
   line-height: 1.4;
   color: #333;
   font-size: 12px;
