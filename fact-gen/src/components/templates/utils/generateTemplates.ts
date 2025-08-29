@@ -1,6 +1,7 @@
 import { genererPDF as genererPDFMinimaliste } from "./pdf/minimaliste";
 import { genererPDF as genererPDFClassique } from "./pdf/classique";
 import { genererPDF as genererPDFModerne } from "./pdf/moderne";
+import { genererPDF as genererPDFMinimaliste } from "./pdf/minimaliste";
 function normaliserDonneesFacture(data) {
   return {
     id: data.id || data.factureId || '',
