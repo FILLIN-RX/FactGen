@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen bg-white dark:bg-black">
     <!-- Hero Section -->
-    <section class=" hero bg-gradient-to-br from-emerald-50 via-white to-blue-50 py-16 md:py-24 dark:bg-black">
+    <section class="hero bg-white dark:bg-neutral-950 py-20 md:py-28">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div class="text-center space-y-8">
           <!-- Titre principal -->
           <div class="space-y-6">
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
               Générateur de 
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">
+              <span class="text-blue-600">
                 facture
               </span>
               professionnelle
@@ -22,7 +22,7 @@
           <!-- CTA Button -->
           <div class="flex justify-center pt-4">
             <router-link to="/facture">
-              <button class="bg-gradient-to-r from-emerald-600 to-blue-600 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 flex items-center gap-3">
+              <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base sm:text-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-3">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -83,7 +83,7 @@
     </section>
 
     <!-- Fonctionnalités principales -->
-    <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section class="py-20 bg-white dark:bg-neutral-950">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         <div class="text-center mb-16">
           <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
@@ -97,7 +97,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Fonctionnalité 1 -->
           <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
-            <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6">
+            <div class="w-14 h-14 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
                 <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
@@ -111,7 +111,7 @@
 
           <!-- Fonctionnalité 2 -->
           <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
-            <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center mb-6">
+            <div class="w-14 h-14 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
               </svg>
@@ -124,7 +124,7 @@
 
           <!-- Fonctionnalité 3 -->
           <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
-            <div class="w-14 h-14 bg-gradient-to-br from-teal-100 to-teal-200 rounded-xl flex items-center justify-center mb-6">
+            <div class="w-14 h-14 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
               </svg>
@@ -137,7 +137,7 @@
 
           <!-- Fonctionnalité 4 -->
           <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
-            <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-blue-200 rounded-xl flex items-center justify-center mb-6">
+            <div class="w-14 h-14 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
               </svg>
@@ -193,7 +193,7 @@
           <!-- Avantage 1 -->
           <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="md:w-1/2">
-              <div class="w-16 h-16 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center mb-6">
+              <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center mb-6">
                 <svg class="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
                 </svg>
@@ -205,7 +205,7 @@
               </p>
             </div>
             <div class="md:w-1/2">
-              <div class="bg-gradient-to-br from-emerald-50 to-blue-50 p-8 rounded-2xl">
+              <div class="bg-neutral-50 dark:bg-neutral-900 p-8 rounded-2xl border border-gray-100 dark:border-neutral-800">
                 <div class="text-center">
                   <div class="text-4xl font-bold text-emerald-600 mb-2">2 min</div>
                   <div class="text-gray-600">pour créer une facture</div>
@@ -217,7 +217,7 @@
           <!-- Avantage 2 -->
           <div class="flex flex-col md:flex-row-reverse items-center gap-8">
             <div class="md:w-1/2">
-              <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-6">
+              <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center mb-6">
                 <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                 </svg>
@@ -229,7 +229,7 @@
               </p>
             </div>
             <div class="md:w-1/2">
-              <div class="bg-gradient-to-br from-blue-50 to-teal-50 p-8 rounded-2xl">
+              <div class="bg-neutral-50 dark:bg-neutral-900 p-8 rounded-2xl border border-gray-100 dark:border-neutral-800">
                 <div class="text-center">
                   <div class="text-4xl font-bold text-blue-600 mb-2">100%</div>
                   <div class="text-gray-600">conforme légalement</div>
@@ -241,7 +241,7 @@
           <!-- Avantage 3 -->
           <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="md:w-1/2">
-              <div class="w-16 h-16 bg-gradient-to-br from-teal-100 to-teal-200 rounded-2xl flex items-center justify-center mb-6">
+              <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center mb-6">
                 <svg class="w-8 h-8 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                 </svg>
@@ -253,7 +253,7 @@
               </p>
             </div>
             <div class="md:w-1/2">
-              <div class="bg-gradient-to-br from-teal-50 to-emerald-50 p-8 rounded-2xl">
+              <div class="bg-neutral-50 dark:bg-neutral-900 p-8 rounded-2xl border border-gray-100 dark:border-neutral-800">
                 <div class="text-center">
                   <div class="text-4xl font-bold text-teal-600 mb-2">+25%</div>
                   <div class="text-gray-600">de chiffre d'affaires en moyenne</div>
@@ -303,8 +303,8 @@
     </section>
 
     <!-- CTA Final -->
-    <section class="py-20 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center text-white">
+    <section class="py-20 bg-white dark:bg-neutral-950">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center text-neutral-900 dark:text-neutral-100">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
           Prêt à transformer votre facturation ?
         </h2>
@@ -313,7 +313,7 @@
           Gratuit, sans engagement.
         </p>
         <router-link to="/facture">
-          <button class="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200">
             Commencer maintenant
           </button>
         </router-link>
@@ -340,15 +340,13 @@
         </div>
       </div>
     </section>
-    <FactureForm />
-  </div>
+      </div>
 
 </template>
 
 <script>
 import { ref, reactive } from 'vue'
 
-import FactureForm from '../components/FactureForm.vue'
 
 
 export default {
