@@ -53,11 +53,29 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import TemplatePreview from '@/components/templates/TemplatePreview.vue'
+
 const props = defineProps({
   template: Object
 })
 const router = useRouter()
+const showPreview = ref(false)
+
+const sampleInvoice = {
+  id: 'INV-2025-001',
+  societer: { nom: 'Votre Société', email: 'contact@exemple.com', adresse: '12 Rue Exemple, Paris', logo: '' },
+  client: { nom: 'Client Démo', email: 'client@demo.com', address: '5 Avenue Demo, Lyon' },
+  produits: [
+    { nom: 'Service A', quantite: 2, prix: 50 },
+    { nom: 'Produit B', quantite: 1, prix: 99.9 }
+  ],
+  reduction: { type: 'montant', valeur: 10 },
+  suplement: 'Merci pour votre confiance.',
+  date_emission: new Date().toLocaleDateString('fr-FR'),
+  date_echeance: new Date(Date.now() + 7*24*3600*1000).toLocaleDateString('fr-FR')
+}
 
 const essayerModele = () => {
   router.push({ name: 'FactureForm', query: { template: props.template.id } })
