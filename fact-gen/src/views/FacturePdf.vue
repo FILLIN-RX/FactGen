@@ -217,6 +217,7 @@ if (process.env.NODE_ENV === 'development') {
 </script>
 
 <style>
+@page { size: A4; margin: 10mm; }
 .facture-container {
   width: 794px;      /* largeur A4 */
   min-height: 1123px; /* hauteur A4 */
@@ -262,7 +263,7 @@ if (process.env.NODE_ENV === 'development') {
 
 body {
   background: white;
-  font-family: sans-serif;
+  font-family: 'Roboto', 'Inter', system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
 }
 
 /* ✅ S'assurer que les images sont bien redimensionnées */
