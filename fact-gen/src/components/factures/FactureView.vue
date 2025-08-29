@@ -1,95 +1,10 @@
 <template>
-  <div
-    v-if="facture"
-    class="bg-white p-6 mt-6 facture-container rounded-xl shadow-lg mx-auto font-sans"
-  >
-    <div class="bg-white p-6 mt-6 rounded-xl shadow-lg mx-auto font-sans">
-      <h2 class="font-bold text-2xl mb-6 text-center text-gray-700">
-        Aperçu de la facture
-      </h2>
-      <h2 class="text-underline">
-        Date: {{ facture?.date_emission ? formatDate(facture.date_emission) : "" }}
-      </h2>
-
-      <!-- En-tête -->
-      <div class="flex justify-between items-center mb-8">
-        <div class="flex items-center space-x-4">
-          <div
-            class="bg-white border rounded-full h-20 w-20 flex items-center justify-center overflow-hidden shadow"
-          >
-            <img
-              v-if="logoDataUrl"
-              :src="logoDataUrl"
-              alt="Logo"
-              class="h-full w-full object-cover"
-            />
-          </div>
-          <div v-if="facture.societer">
-            <h3 class="text-xl font-semibold">{{ facture.societer.nom }}</h3>
-            <p class="text-sm text-gray-600">{{ facture.societer.email }}</p>
-            <p class="text-sm text-gray-600">{{ facture.societer.adresse }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Informations client -->
-      <div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <h4 class="font-semibold mb-2 text-gray-800">Client :</h4>
-        <div v-if="facture.client_data">
-          <p><strong>Nom :</strong> {{ facture.client_data.nom }}</p>
-          <p><strong>Email :</strong> {{ facture.client_data.email }}</p>
-          <p><strong>Adresse :</strong> {{ facture.client_data.adresse }}</p>
-        </div>
-      </div>
-
-      <!-- Produits -->
-      <div class="mb-8" v-if="facture.produits && facture.produits.length > 0">
-        <div
-          class="grid grid-cols-4 gap-2 bg-gray-100 font-semibold text-gray-700 p-3 text-sm border-b border-gray-300"
-        >
-          <div class="truncate">Description</div>
-          <div class="text-center">Quantité</div>
-          <div class="text-center">Prix unitaire</div>
-          <div class="text-right">Prix total</div>
-        </div>
-        <div
-          v-for="(p, i) in facture.produits"
-          :key="i"
-          class="grid grid-cols-4 p-3 border-b text-sm text-gray-800"
-        >
-          <div
-            class="whitespace-normal sm:whitespace-nowrap sm:truncate sm:overflow-hidden"
-          >
-            {{ p.nom }}
-          </div>
-          <div class="text-center">{{ p.quantite }}</div>
-          <div class="text-center">{{ formatPrice(p.prix) }} €</div>
-          <div class="text-right">{{ formatPrice(p.prix * p.quantite) }} €</div>
-        </div>
-      </div>
-
-      <!-- Totaux -->
-      <div class="grid grid-cols-2 gap-2 text-right text-gray-800 mb-4">
-        <p><strong>Total HT :</strong></p>
-        <p>{{ formatPrice(totalHT) }} €</p>
-
-        <template v-if="montantReduction > 0">
-          <p class="text-red-500"><strong>Réduction :</strong></p>
-          <p class="text-red-500">-{{ formatPrice(montantReduction) }} €</p>
-        </template>
-
-        <p class="text-lg font-bold">Total TTC :</p>
-        <p class="text-lg font-bold">{{ formatPrice(totalTTC) }} €</p>
-      </div>
-
-      <!-- Supplément -->
-      <div class="text-sm text-gray-600 italic" v-if="facture.suplement">
-        {{ facture.suplement }}
-      </div>
-    </div>
+  <div v-if="facture" class="p-4 sm:p-6">
+    <h2 id="invoice-title" class="sr-only">Aperçu de la facture</h2>
+    <TemplatePreview :invoice="facture" />
   </div>
-  <div v-else class="text-center p-8">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+  <div v-else class="text-center p-8" role="status" aria-live="polite">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto" aria-hidden="true"></div>
     <p class="mt-4 text-gray-600">Chargement de la facture...</p>
   </div>
 </template>
@@ -98,6 +13,7 @@
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import TemplatePreview from "@/components/templates/TemplatePreview.vue";
 
 const route = useRoute();
 const facture = ref(null);
