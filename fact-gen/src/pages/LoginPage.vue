@@ -1,6 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-r from-green-100 to-green-200
-   flex flex-col">
+  <div class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col">
     <!-- Header avec logo/bouton retour -->
     <header class="relative z-10 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -48,7 +47,7 @@
 
           <!-- Right Side - Login Form -->
           <div class="w-full">
-            <div class="bg-white border border-gray-100 rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10 relative overflow-hidden">
+            <div class="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10 relative overflow-hidden">
               <!-- Decorative elements -->
               <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
               
@@ -96,7 +95,7 @@
                       type="email"
                       placeholder="votre@email.com"
                       required
-                      class="block w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
+                      class="block w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-neutral-700 rounded-2xl bg-white dark:bg-neutral-900 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
                     />
                   </div>
                 </div>
@@ -119,7 +118,7 @@
                       placeholder="••••••••"
                       required
                       minlength="6"
-                      class="block w-full pl-12 pr-14 py-4 border border-gray-200 rounded-2xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
+                      class="block w-full pl-12 pr-14 py-4 border border-gray-200 dark:border-neutral-700 rounded-2xl bg-white dark:bg-neutral-900 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm focus:shadow-md"
                     />
                     <button
                       type="button"
@@ -176,7 +175,7 @@
                     <div class="w-full border-t border-gray-200"></div>
                   </div>
                   <div class="relative flex justify-center text-sm">
-                    <span class="px-6 bg-white text-gray-500 font-medium">ou continuer avec</span>
+                    <span class="px-6 bg-white dark:bg-neutral-900 text-gray-500 dark:text-neutral-400 font-medium">ou continuer avec</span>
                   </div>
                 </div>
               </div>
@@ -184,7 +183,7 @@
               <!-- Google Login -->
               <button
                 @click="signInWithGoogle"
-                class="w-full flex justify-center items-center py-4 px-6 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md"
+                class="w-full flex justify-center items-center py-4 px-6 border border-gray-200 dark:border-neutral-700 rounded-2xl text-sm font-semibold text-gray-700 dark:text-neutral-200 bg-white dark:bg-neutral-900 hover:bg-gray-50 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md"
                 :disabled="loading"
               >
                 <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">

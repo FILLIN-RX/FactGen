@@ -63,7 +63,7 @@
     </section>
 
     <!-- Statistiques -->
-    <section class="py-16 bg-white border-t border-gray-100">
+    <section class="py-16 bg-white dark:bg-neutral-950 border-t border-gray-100 dark:border-neutral-800 text-neutral-900 dark:text-neutral-100">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div class="space-y-2">
@@ -96,7 +96,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Fonctionnalité 1 -->
-          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+          <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
             <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
@@ -110,7 +110,7 @@
           </div>
 
           <!-- Fonctionnalité 2 -->
-          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+          <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
             <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
@@ -123,7 +123,7 @@
           </div>
 
           <!-- Fonctionnalité 3 -->
-          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+          <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
             <div class="w-14 h-14 bg-gradient-to-br from-teal-100 to-teal-200 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
@@ -136,7 +136,7 @@
           </div>
 
           <!-- Fonctionnalité 4 -->
-          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+          <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
             <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-blue-200 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -149,7 +149,7 @@
           </div>
 
           <!-- Fonctionnalité 5 -->
-          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+          <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
             <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-teal-200 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
@@ -162,7 +162,7 @@
           </div>
 
           <!-- Fonctionnalité 6 -->
-          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+          <div class="bg-white dark:bg-neutral-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-800 hover:shadow-md transition-shadow duration-300 text-neutral-900 dark:text-neutral-100">
             <div class="w-14 h-14 bg-gradient-to-br from-teal-100 to-emerald-200 rounded-xl flex items-center justify-center mb-6">
               <svg class="w-7 h-7 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
@@ -178,7 +178,7 @@
     </section>
 
     <!-- Avantages -->
-    <section class="py-20 bg-white">
+    <section class="py-20 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         <div class="text-center mb-16">
           <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
@@ -278,7 +278,7 @@
         </div>
 
         <div class="space-y-4">
-          <div v-for="(item, index) in sections" :key="index" class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+          <div v-for="(item, index) in sections" :key="index" class="bg-white dark:bg-neutral-900 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-neutral-800">
             <button
               @click="toggle(index)"
               :aria-expanded="isOpen[index]"
@@ -313,7 +313,7 @@
           Gratuit, sans engagement.
         </p>
         <router-link to="/facture">
-          <button class="bg-white text-gray-900 px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300">
+          <button class="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300">
             Commencer maintenant
           </button>
         </router-link>
