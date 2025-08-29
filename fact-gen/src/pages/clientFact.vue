@@ -373,7 +373,7 @@
 import { onMounted, computed ,ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useClientsStore } from '../stores/client';
-import ClientFormModal from '../components/client/ClientFormModal .vue';
+import ClientFormModal from '../components/client/ClientFormModal.vue';
 import ClientDetailsPopup from '../components/client/ClientDetailsPopup.vue';
 import { showToastMessage } from '../composables/useToast';
 import { useFacturesStore } from '../stores/Facture';
