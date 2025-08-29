@@ -3,7 +3,7 @@ import { onMounted, ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 import FactureTemp from "./FactureTemp.vue";
-import ClientFormModal from "./client/ClientFormModal .vue";
+import ClientFormModal from "./client/ClientFormModal.vue";
 const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
