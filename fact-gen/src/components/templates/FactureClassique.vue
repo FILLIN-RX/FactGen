@@ -179,7 +179,7 @@ const formatPrice = (price) => {
   background: #f8f9fa;
   padding: 20px;
   min-height: 100vh;
-  font-family: "Arial", sans-serif;
+  font-family: 'Roboto', 'Inter', system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
 }
 
 /* Styles de base (mobile-first) */
