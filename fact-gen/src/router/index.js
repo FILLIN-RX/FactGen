@@ -42,44 +42,42 @@ const routes = [
     meta: { requiresAuth: true , showNavbarAndFooter: false },
     children: [
       {
-        path: '/real',
+        path: 'real',
         name: 'Real',
         component: RealLayout,
         meta: { requiresAuth: true , showNavbarAndFooter: false },
     },
       {
-        path: '/facture',
+        path: 'facture',
         name: 'Facture',
         component: FacTure,
         meta: { requiresAuth: true ,showNavbarAndFooter:false},
-        
       },
       {
-        path: '/clientFact',
+        path: 'clientFact',
         name: 'Client',
         component: clientFact,
         meta: { requiresAuth: true , showNavbarAndFooter : false},
-      
       },
       {
-        path: '/setting',
+        path: 'setting',
         name:'setting',
         component:SettingPage,
         meta:{requiresAuth:true}
       },
       {
-        path: '/statistics',
+        path: 'statistics',
         name: 'statistics',
         component: StatisticS,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
       },{
-        path: '/templates',
+        path: 'templates',
         name: 'Templates',
         component: TemplatesSection,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
       },
       {
-        path: '/NewInvoice',
+        path: 'NewInvoice',
         name: 'FactureForm',
         component: InvoiceForm,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
@@ -108,7 +106,15 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: { requiresAuth: false, showNavbarAndFooter: false }
-  }
+  },
+  // Redirects for old absolute child paths
+  { path: '/real', redirect: '/accueil/real' },
+  { path: '/facture', redirect: '/accueil/facture' },
+  { path: '/clientFact', redirect: '/accueil/clientFact' },
+  { path: '/setting', redirect: '/accueil/setting' },
+  { path: '/statistics', redirect: '/accueil/statistics' },
+  { path: '/templates', redirect: '/accueil/templates' },
+  { path: '/NewInvoice', redirect: '/accueil/NewInvoice' }
 ];
 
 const router = createRouter({
