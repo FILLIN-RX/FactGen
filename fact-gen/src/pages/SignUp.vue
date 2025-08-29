@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex  flex-col justify-center p-4">
+  <div class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col justify-center p-4">
     <!-- Background Elements -->
     <header class="relative z-10 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -131,7 +131,7 @@
             </div>
 
             <!-- Form Card -->
-            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-gray-100 dark:border-neutral-800 overflow-hidden">
               <div class="p-6">
                 <form @submit.prevent="handleSubmit" class="space-y-5">
                   <!-- Email Field -->
@@ -141,7 +141,7 @@
                     </label>
                     <div class="relative">
                       <input id="email" v-model="form.email" type="email" required placeholder="votre@email.com"
-                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                        class="block w-full px-4 py-3 border border-gray-300 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 dark:bg-neutral-900"
                         :class="{
                           'border-red-300 focus:border-red-500 focus:ring-red-500':
                             errors.email,
@@ -169,7 +169,7 @@
                     <div class="relative">
                       <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'" required
                         minlength="8" placeholder="Minimum 8 caractères"
-                        class="block w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                        class="block w-full px-4 py-3 pr-12 border border-gray-300 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 dark:bg-neutral-900"
                         :class="{
                           'border-red-300 focus:border-red-500 focus:ring-red-500':
                             errors.password,
@@ -224,7 +224,7 @@
                       <input id="confirmPassword" v-model="form.confirmPassword"
                         :type="showConfirmPassword ? 'text' : 'password'" required
                         placeholder="Confirmer votre mot de passe"
-                        class="block w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                        class="block w-full px-4 py-3 pr-12 border border-gray-300 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 dark:bg-neutral-900"
                         :class="{
                           'border-red-300 focus:border-red-500 focus:ring-red-500':
                             errors.confirmPassword,
@@ -334,7 +334,7 @@
               </div>
 
               <!-- Footer -->
-              <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+              <div class="px-6 py-4 bg-gray-50 dark:bg-neutral-900 border-t border-gray-100 dark:border-neutral-800">
                 <p class="text-center text-sm text-gray-600">
                   Déjà un compte ?
                   <router-link to="/login" class="font-medium text-blue-600 hover:text-blue-700 transition-colors">
@@ -351,13 +351,13 @@
                   <div class="w-full border-t border-gray-300"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                  <span class="px-4 bg-slate-50 text-gray-500">Ou continuer avec</span>
+                  <span class="px-4 bg-transparent text-gray-500 dark:text-neutral-400">Ou continuer avec</span>
                 </div>
               </div>
 
               <div class="mt-4 grid grid-cols-2 gap-3">
                 <button
-                  class="w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 transition-colors duration-200">
+                  class="w-full flex justify-center items-center py-3 px-4 border border-gray-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors duration-200">
                   <svg class="w-5 h-5 text-gray-700" viewBox="0 0 24 24">
                     <path fill="currentColor"
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -371,7 +371,7 @@
                 </button>
 
                 <button
-                  class="w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 transition-colors duration-200">
+                  class="w-full flex justify-center items-center py-3 px-4 border border-gray-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors duration-200">
                   <svg class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
                     <path
                       d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
