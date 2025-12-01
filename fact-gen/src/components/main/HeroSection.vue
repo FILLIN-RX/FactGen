@@ -11,7 +11,7 @@
           <span class="block text-pink-200 mt-2">professionnel</span>
         </h1>
 
-        <p class="text-sm sm:text-xl text-blue-100 leading-relaxed">
+        <p class="text-sm sm:text-xl text-white leading-relaxed">
           Créez des factures et devis professionnels en toute simplicité. 
           Solution complète avec CRM intégré pour une gestion optimale de votre activité.
         </p>
