@@ -13,7 +13,7 @@
           class="flex items-center space-x-2 sm:space-x-3 text-gray-900 hover:text-emerald-600 transition-colors duration-300"
         >
           <div
-            class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
+            class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
           >
             <svg
               class="w-4 h-4 sm:w-6 sm:h-6 text-white"
@@ -30,7 +30,7 @@
             </svg>
           </div>
           <span
-            class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent"
+            class="text-xl sm:text-2xl font-bold bg-blue-600 bg-clip-text text-transparent"
             >FactGen</span
           >
         </router-link>
