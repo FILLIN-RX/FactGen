@@ -19,6 +19,7 @@
             <!-- Export/Import buttons -->
             <div class="flex items-center space-x-2">
               <button
+              
                 @click="exportClients"
                 class="inline-flex items-center px-3 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors duration-200"
               >

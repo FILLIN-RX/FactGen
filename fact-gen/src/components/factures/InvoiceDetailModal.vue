@@ -124,7 +124,6 @@ import { useToast } from "vue-toastification";
 import { showToastMessage } from "../../composables/useToast";
 import { templateComponents } from "../../components/templates";
 import { useFacturesStore } from "../../stores/Facture";
-import Client from "../../models/client";
 import { genererPDFs } from "../templates/utils/generateTemplates";
 
 const factureStore = useFacturesStore();
