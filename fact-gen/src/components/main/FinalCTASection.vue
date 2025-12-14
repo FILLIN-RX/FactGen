@@ -44,6 +44,10 @@
   </section>
 </template>
 
+<script setup>
+import TrustIndicator from './TrustIndicator.vue';
+</script>
+
 <style scoped>
 .bg-primary { background-color: #1E40AF; }
 

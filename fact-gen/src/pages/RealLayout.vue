@@ -89,7 +89,6 @@ import StatStatus from "../components/StatStatus.vue";
 import FactureTemp from "../components/FactureTemp.vue";
 import ClientFormModal from "../components/client/ClientFormModal .vue";
 import { useOperationsStore } from "../stores/ui";
-import LoginNav from "../components/LoginNav.vue";
 import BarChart from "../components/BarChart.vue";
 import RecentActivity from "../components/RecentActivity.vue";
 import StatisTics from "../components/StatisTics.vue";

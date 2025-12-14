@@ -78,6 +78,29 @@
     </Transition>
   </nav>
 </template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const scrollNav = ref(false);
+const mobileNav = ref(false);
+
+const handleScroll = () => {
+  scrollNav.value = window.scrollY > 50;
+};
+
+const toggleMobileNav = () => {
+  mobileNav.value = !mobileNav.value;
+};
+
+const closeMobileNav = () => {
+  mobileNav.value = false;
+};
+
+onMounted(() => window.addEventListener('scroll', handleScroll));
+onUnmounted(() => window.removeEventListener('scroll', handleScroll));
+</script>
+
 <style scoped>
 .md-nav-link {
   color: #374151;

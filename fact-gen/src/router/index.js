@@ -91,7 +91,7 @@ const routes = [
       path: '/signUp',
       name: 'register',
       component: SignUp,
-      meta:{showNavbarAndFooter:false}
+    meta: { requiresAuth: false, showNavbarAndFooter: false }
     },
     {
       path: '/features',
