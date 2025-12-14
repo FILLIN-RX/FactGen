@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-shadow duration-300">
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100  transition-shadow duration-300">
     <button
       @click="$emit('toggle')"
       :aria-expanded="isOpen"
-      class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+      class="w-full px-6 py-3 flex justify-between items-center text-left hover:bg-gray-50  transition-colors duration-200"
     >
-      <span class="font-semibold text-lg text-gray-900 dark:text-white">{{ item.title }}</span>
+      <span class="font-semibold text-md text-gray-900 ">{{ item.title }}</span>
       <div :class="{ 'rotate-180': isOpen }" class="transition-transform duration-300 ml-4">
         <span class="material-symbols-outlined text-gray-500 dark:text-gray-300">
           expand_more
@@ -14,7 +14,7 @@
     </button>
 
     <Transition name="collapse">
-      <div v-if="isOpen" class="px-6 pb-6 text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+      <div v-if="isOpen" class="px-6 pb-6 text-gray-600  text-sm leading-relaxed">
         {{ item.content }}
       </div>
     </Transition>

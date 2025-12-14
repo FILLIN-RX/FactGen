@@ -1,18 +1,19 @@
 <template>
-  <section class="py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
+  <section class="py-20 bg-white transition-colors duration-300">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+      <!-- Header -->
       <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-          Pourquoi choisir Factgen ?
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+          Pourquoi choisir Factgen ?
         </h2>
-        <p class="text-xl text-gray-600 dark:text-gray-400">
+        <p class="text-xl text-gray-600">
           La solution de facturation qui s'adapte à vos besoins
         </p>
       </div>
 
+      <!-- Avantages -->
       <div class="space-y-12">
-        
-        <AdvantageItem 
+        <AdvantageItem
           title="Gain de temps considérable"
           description="Créez vos factures en 2 minutes au lieu de 30. Notre interface intuitive et nos modèles pré-configurés vous font gagner un temps précieux à consacrer à votre activité principale."
           icon="schedule"
@@ -21,7 +22,7 @@
           is-reversed="false"
         />
 
-        <AdvantageItem 
+        <AdvantageItem
           title="Conformité garantie"
           description="Toutes vos factures respectent automatiquement la réglementation en vigueur. Mentions obligatoires, numérotation, TVA... Tout est géré pour vous."
           icon="verified_user"
@@ -30,7 +31,7 @@
           is-reversed="true"
         />
 
-        <AdvantageItem 
+        <AdvantageItem
           title="Augmentez votre CA"
           description="Un suivi client efficace et des factures professionnelles augmentent votre crédibilité et facilitent les paiements. Moins d'impayés, plus de recommandations."
           icon="trending_up"
@@ -38,7 +39,6 @@
           stat-label="de chiffre d'affaires en moyenne"
           is-reversed="false"
         />
-        
       </div>
     </div>
   </section>

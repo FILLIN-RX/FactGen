@@ -1,19 +1,33 @@
 <template>
-  <div class="flex flex-col md:gap-12 items-center" :class="{ 'md:flex-row-reverse': isReversed === 'true', 'md:flex-row': isReversed === 'false' }">
-    <div class="md:w-1/2">
-      <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-2xl flex items-center justify-center mb-6 dark:from-blue-700 dark:to-indigo-800">
-        <span class="material-symbols-outlined text-4xl text-blue-600 dark:text-blue-300">
-          {{ icon }}
-        </span>
+  <div
+    class="flex flex-col md:gap-12 items-center"
+    :class="isReversed === 'true' ? 'md:flex-row-reverse' : 'md:flex-row'"
+  >
+    <!-- Icon + Text -->
+    <div class="md:w-1/2 flex flex-col justify-center space-y-4">
+      <div class="flex items-center gap-4">
+        <div
+          class="w-16 h-16 flex items-center justify-center rounded-full bg-[#1E40AF] shadow-md"
+        >
+          <span class="material-symbols-outlined text-white text-3xl">
+            {{ icon }}
+          </span>
+        </div>
+        <h3 class="text-2xl font-semibold text-gray-900">{{ title }}</h3>
       </div>
-      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ title }}</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{{ description }}</p>
+      <p class="text-gray-600 text-base leading-relaxed">{{ description }}</p>
     </div>
+
+    <!-- Stat Card -->
     <div class="md:w-1/2 w-full mt-6 md:mt-0">
-      <div class="bg-gradient-to-br from-gray-100 to-blue-50 p-8 rounded-2xl dark:from-gray-700 dark:to-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg">
-        <div class="text-center">
-          <div class="text-5xl font-extrabold text-blue-600 dark:text-blue-400 mb-2">{{ statValue }}</div>
-          <div class="text-gray-600 dark:text-gray-300">{{ statLabel }}</div>
+      <div
+        class="relative p-8 rounded-2xl bg-white shadow hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col items-center justify-center"
+      >
+        <!-- Accent Circle derrière la statistique -->
+        <div class="absolute -top-6 w-20 h-20 bg-blue-100 rounded-full opacity-50"></div>
+        <div class="text-center relative z-10">
+          <div class="text-4xl sm:text-5xl font-extrabold text-blue-600 mb-1">{{ statValue }}</div>
+          <div class="text-gray-500 text-sm sm:text-base">{{ statLabel }}</div>
         </div>
       </div>
     </div>
@@ -27,6 +41,9 @@ defineProps({
   icon: String,
   statValue: String,
   statLabel: String,
-  isReversed: String, // Utiliser String car Vue HTML attribs sont des strings
+  isReversed: String,
 });
 </script>
+
+<style scoped>
+</style>
