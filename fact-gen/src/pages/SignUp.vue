@@ -121,7 +121,7 @@ const authStore = useAuthStore();
 
 // Redirection si déjà connecté
 onMounted(() => {
-  if(authStore.user) router.push({name:'accueil'});
+  if(authStore.user) router.push({name:'Real'});
 });
 
 // Form state
