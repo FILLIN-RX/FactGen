@@ -1,119 +1,116 @@
 <template>
     <!-- HERO -->
-    <section class="relative bg-[#1E40AF] text-white overflow-hidden">
-
-        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12
-             pt-28 pb-36 min-h-[70vh]
-             grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section class="relative bg-white text-[#1A1C1E] overflow-hidden">
+        <!-- Background Decoration -->
+        <div
+            class="absolute inset-0 opacity-40 bg-[radial-gradient(#005AC1_0.5px,transparent_0.5px)] [background-size:40px_40px]">
+        </div>
+        <div
+            class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-28 pb-32 min-h-[75vh] grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <!-- TEXT -->
-            <div class="space-y-6 text-center lg:text-left max-w-xl mx-auto lg:mx-0">
-                <h1 class="text-3xl sm:text-5xl font-bold tracking-tight">
-                    Générateur de factures
-                    <span class="block text-blue-200 mt-2">
-                        professionnel et gratuit
-                    </span>
+            <div class="space-y-8 text-center lg:text-left animate-in fade-in slide-in-from-left-10 duration-700">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D3E4FF] text-[#005AC1] text-[10px] font-black uppercase tracking-widest border border-[#005AC1]/10">
+                    <SparklesIcon class="w-3.5 h-3.5" />
+                    Solution 100% Gratuite
+                </div>
+                <h1 class="text-4xl sm:text-6xl font-black tracking-tighter leading-[1.1]">
+                    Gérez votre <br>
+                    <span class="text-[#005AC1]">Facturation</span> <br>
+                    avec intelligence.
                 </h1>
-
-                <p class="text-lg text-blue-100 leading-relaxed">
-                    Créez, gérez et exportez vos factures en toute simplicité.
-                    Une solution moderne avec CRM intégré.
+                <p class="text-lg text-surface-on-variant leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium">
+                    Une plateforme moderne, sécurisée et intuitive pour automatiser vos documents financiers et piloter
+                    votre CRM en temps réel.
                 </p>
-
-                <router-link to="/facture">
-                    <button class="mt-4 inline-flex items-center justify-center
-                   rounded-full bg-white text-blue-700
-                   px-10 py-4 text-base font-semibold
-                   shadow-md hover:shadow-lg
-                   transition-transform hover:scale-[1.03]">
-                        Créer ma facture
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                    <router-link to="/facture">
+                        <button
+                            class="w-full sm:w-auto px-10 py-4 bg-[#005AC1] text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg hover:bg-[#004494] transition-all active:scale-95 flex items-center justify-center gap-3">
+                            Démarrer maintenant
+                            <ArrowRightIcon class="w-4 h-4" />
+                        </button>
+                    </router-link>
+                    <button
+                        class="w-full sm:w-auto px-10 py-4 bg-white text-[#1A1C1E] border border-outline-variant rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#F8F9FA] transition-all">
+                        Voir la démo
                     </button>
-                </router-link>
+                </div>
             </div>
-
-            <!-- IMAGE -->
-            <div class="flex justify-center lg:justify-end">
-                <img :src="heroIllustration" alt="Génération de facture Factgen" class="w-full max-w-md lg:max-w-xl"
+            <!-- IMAGE / ILLUSTRATION -->
+            <div class="relative flex justify-center lg:justify-end animate-in fade-in zoom-in duration-1000">
+                <div class="absolute -inset-4 bg-[#D3E4FF]/30 blur-3xl rounded-full"></div>
+                <img :src="heroIllustration" alt="Interface FactGen"
+                    class="relative w-full max-w-md lg:max-w-xl drop-shadow-2xl hover:translate-y-[-10px] transition-transform duration-500"
                     loading="eager" />
             </div>
         </div>
-
-        <!-- WAVE -->
-        <svg class="absolute bottom-0 left-0 w-full h-28" viewBox="0 0 1440 320" preserveAspectRatio="none"
-            aria-hidden="true">
-            <path fill="#ffffff"
-                d="M0,160L80,170C160,181,320,203,480,202.7C640,203,800,181,960,170.7C1120,160,1280,160,1360,160L1440,160V320H0Z" />
-        </svg>
     </section>
-
-    <!-- COUNTERS (SURFACE BLANCHE) -->
-    <section class="bg-white py-24">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
-
-                <!-- FACTURES -->
-                <div class="space-y-3">
-                    <div class="text-5xl font-bold text-blue-600">
+    <!-- COUNTERS -->
+    <section class="bg-[#F8F9FA] border-y border-outline-variant py-20 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+                <!-- KPI 1 -->
+                <div class="space-y-2 text-center md:text-left border-l-2 border-[#005AC1]/20 pl-6">
+                    <div class="text-4xl font-black text-[#1A1C1E] tracking-tighter">
                         {{ formattedInvoices }}
                     </div>
-                    <p class="text-gray-600 text-lg">
-                        Factures générées
+                    <p class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                        Factures Émises
                     </p>
                 </div>
-
-                <!-- SATISFACTION -->
-                <div class="space-y-3">
-                    <div class="text-5xl font-bold text-indigo-600">
+                <!-- KPI 2 -->
+                <div class="space-y-2 text-center md:text-left border-l-2 border-[#005AC1]/20 pl-6">
+                    <div class="text-4xl font-black text-[#005AC1] tracking-tighter">
                         {{ satisfaction }}%
                     </div>
-                    <p class="text-gray-600 text-lg">
-                        Satisfaction utilisateurs
+                    <p class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                        Satisfaction Client
                     </p>
                 </div>
-
-                <!-- COÛT -->
-                <div class="space-y-3">
-                    <div class="text-5xl font-bold text-gray-800">
+                <!-- KPI 3 -->
+                <div class="space-y-2 text-center md:text-left border-l-2 border-[#005AC1]/20 pl-6">
+                    <div class="text-4xl font-black text-[#1A1C1E] tracking-tighter">
                         {{ cost }}€
                     </div>
-                    <p class="text-gray-600 text-lg">
-                        Coût d’utilisation
+                    <p class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                        Frais de Service
                     </p>
                 </div>
-
+                <!-- KPI 4 -->
+                <div class="space-y-2 text-center md:text-left border-l-2 border-[#005AC1]/20 pl-6">
+                    <div class="text-4xl font-black text-[#1A1C1E] tracking-tighter">
+                        24/7
+                    </div>
+                    <p class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">Disponibilité</p>
+                </div>
             </div>
         </div>
     </section>
 </template>
 <script setup>
 import heroIllustration from '@/assets/hand_drawn.png'
+import { SparklesIcon, ArrowRightIcon } from '@heroicons/vue/24/outline'
 import { ref, onMounted, computed } from 'vue'
-
 const invoices = ref(0)
 const satisfaction = ref(0)
 const cost = ref(0)
-
 const finalInvoices = 10000
 const finalSatisfaction = 99.9
 const finalCost = 0
-
 const formattedInvoices = computed(() =>
     invoices.value >= 1000 ? `+${(invoices.value / 1000).toFixed(0)}k` : invoices.value
 )
-
 function animateCounter(target, finalValue, decimals = 0, duration = 2000) {
     const start = performance.now()
-
     function update(time) {
         const progress = Math.min((time - start) / duration, 1)
         const value = finalValue * progress
         target.value = decimals ? value.toFixed(decimals) : Math.round(value)
-
         if (progress < 1) requestAnimationFrame(update)
     }
-
     requestAnimationFrame(update)
 }
-
 onMounted(() => {
     animateCounter(invoices, finalInvoices)
     animateCounter(satisfaction, finalSatisfaction, 1)

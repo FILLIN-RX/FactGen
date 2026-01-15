@@ -1,10 +1,10 @@
 /**
- * Material Design 3 - Design System
- * Global utility classes and component styles
+ * Material Design 3 - Design System (Facturation Blue & White)
+ * Couleurs clarifiées pour une interface de comptabilité/facturation
  */
 
 /* ===============================
-   State Layers
+   State Layers (Effets de survol)
 =============================== */
 .state-layer {
   position: relative;
@@ -21,20 +21,11 @@
   pointer-events: none;
 }
 
-.state-layer:hover::after {
-  opacity: 0.08;
-}
-
-.state-layer:focus-visible::after {
-  opacity: 0.12;
-}
-
-.state-layer:active::after {
-  opacity: 0.12;
-}
+.state-layer:hover::after { opacity: 0.08; }
+.state-layer:active::after { opacity: 0.12; }
 
 /* ===============================
-   Material 3 Button Styles
+   Buttons (Bleu Primaire & Blanc)
 =============================== */
 .btn-filled {
   display: inline-flex;
@@ -44,320 +35,133 @@
   border-radius: 9999px;
   font-weight: 500;
   font-size: 14px;
-  line-height: 20px;
-  background-color: #1E40AF;
+  background-color: #005AC1; /* Bleu M3 Primaire */
   color: #FFFFFF;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-  position: relative;
-  overflow: hidden;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 200ms ease;
+  cursor: pointer;
 }
 
 .btn-filled:hover {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
-}
-
-.btn-filled:active {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,90,193, 0.3);
+  background-color: #0866D3;
 }
 
 .btn-filled-tonal {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
   padding: 0.625rem 1.5rem;
   border-radius: 9999px;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  background-color: #DCE1FF;
-  color: #354479;
-  box-shadow: none;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-filled-tonal:hover {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  background-color: #D3E4FF; /* Bleu très clair */
+  color: #001C3B;
+  border: none;
+  transition: all 200ms ease;
 }
 
 .btn-outlined {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
   padding: 0.625rem 1.5rem;
   border-radius: 9999px;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  border: 1px solid #767680;
-  color: #1E40AF;
-  background-color: transparent;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.btn-outlined:hover {
-  background-color: rgba(30, 64, 175, 0.08);
-}
-
-.btn-outlined:active {
-  background-color: rgba(30, 64, 175, 0.12);
-}
-
-.btn-text {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.625rem 0.75rem;
-  border-radius: 9999px;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  color: #1E40AF;
-  background-color: transparent;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.btn-text:hover {
-  background-color: rgba(30, 64, 175, 0.08);
-}
-
-.btn-text:active {
-  background-color: rgba(30, 64, 175, 0.12);
+  border: 1px solid #74777F;
+  color: #005AC1;
+  background-color: #FFFFFF; /* Fond blanc pur */
 }
 
 /* ===============================
-   Material 3 Input Styles
+   Inputs (Indispensables pour la facturation)
 =============================== */
 .input-outlined {
   width: 100%;
   padding: 0.75rem 1rem;
-  border-radius: 12px;
-  border: 1px solid #767680;
-  background-color: transparent;
-  color: #1A1B21;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.input-outlined::placeholder {
-  color: #45464F;
+  border-radius: 8px;
+  border: 1px solid #C4C6D0; /* Gris clair */
+  background-color: #FFFFFF;
+  color: #1A1C1E;
+  transition: border 200ms ease;
 }
 
 .input-outlined:focus {
   outline: none;
-  border-width: 2px;
-  border-color: #1E40AF;
-  color: #1E40AF;
-}
-
-.input-filled {
-  width: 100%;
-  padding: 1.5rem 1rem 0.5rem 1rem;
-  border-radius: 12px 12px 0 0;
-  background-color: #F3EDF7;
-  border-bottom: 2px solid #45464F;
-  color: #1A1B21;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.input-filled::placeholder {
-  color: #45464F;
-}
-
-.input-filled:focus {
-  outline: none;
-  border-bottom-color: #1E40AF;
+  border: 2px solid #005AC1;
+  padding: calc(0.75rem - 1px) calc(1rem - 1px); /* Évite le saut de layout */
 }
 
 /* ===============================
-   Material 3 Card Styles
+   Cards (Pour les résumés de factures)
 =============================== */
-.card-filled {
-  background-color: #F3EDF7;
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.card-filled:hover {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
-}
-
-.card-elevated {
-  background-color: #F7F2FA;
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.card-elevated:hover {
-  box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
-}
-
 .card-outlined {
-  background-color: #FAF8FF;
-  border-radius: 16px;
-  border: 1px solid #C6C6D0;
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E1E2EC; /* Bordure très fine */
+  padding: 1.5rem;
+  transition: shadow 200ms ease;
 }
 
 .card-outlined:hover {
-  border-color: #767680;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card-elevated {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.05);
+  padding: 1.5rem;
 }
 
 /* ===============================
-   Material 3 FAB (Floating Action Button)
+   FAB (Bouton "Nouvelle Facture")
 =============================== */
 .fab {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  bottom: 2rem;
+  right: 2rem;
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: 20px;
-  background-color: #DCE1FF;
-  color: #344479;
-  box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  border-radius: 16px;
+  background-color: #D3E4FF;
+  color: #001C3B;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
-  z-index: 50;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   border: none;
   cursor: pointer;
 }
 
-.fab:hover {
-  box-shadow: 0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px rgba(0,0,0,0.3);
-}
-
-.fab-extended {
-  padding: 1rem 1.5rem;
-  border-radius: 20px;
-  background-color: #DCE1FF;
-  color: #344479;
-  box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
-  border: none;
-  cursor: pointer;
-}
-
-.fab-extended:hover {
-  box-shadow: 0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px rgba(0,0,0,0.3);
-}
-
 /* ===============================
-   Material 3 Surface Tints
+   Badges (Statuts : Payé, En attente)
 =============================== */
-.surface-tint-primary::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: #1E40AF;
-  opacity: 0.05;
-  border-radius: inherit;
-  pointer-events: none;
+.badge-paid {
+  background-color: #B2F0AD; /* Vert clair */
+  color: #002204;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge-pending {
+  background-color: #FFDCC3; /* Orange clair */
+  color: #2F1500;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 /* ===============================
-   Material 3 Transitions
-=============================== */
-.transition-standard {
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
-}
-
-.transition-emphasized {
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
-}
-
-.transition-decelerated {
-  transition-timing-function: cubic-bezier(0, 0, 0, 1);
-}
-
-.transition-accelerated {
-  transition-timing-function: cubic-bezier(0.3, 0, 1, 1);
-}
-
-/* ===============================
-   Material 3 Dividers
+   Dividers & Utilities
 =============================== */
 .divider {
   height: 1px;
-  background-color: #C6C6D0;
+  background-color: #E1E2EC; /* Séparateur discret */
+  margin: 1rem 0;
 }
 
-.divider-vertical {
-  width: 1px;
-  background-color: #C6C6D0;
-}
-
-/* ===============================
-   Material 3 Badge
-=============================== */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 0.375rem;
-  border-radius: 9999px;
-  font-size: 11px;
-  line-height: 16px;
-  font-weight: 500;
-  background-color: #BA1A1A;
-  color: #FFFFFF;
-}
-
-/* ===============================
-   Material 3 Chip
-=============================== */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 1rem;
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  background-color: #F7F2FA;
-  border: 1px solid #767680;
-  transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.chip:hover {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-}
-
-.chip-selected {
-  background-color: #DCE1FF;
-  color: #354479;
-  border-color: transparent;
-}
-
-/* ===============================
-   Utility Classes
-=============================== */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-track {
-  background-color: #F3EDF7;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #767680;
-  border-radius: 9999px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: #C6C6D0;
+.scrollbar-thin::-webkit-scrollbar { width: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: #F8F9FF; }
+.scrollbar-thin::-webkit-scrollbar-thumb { 
+    background: #C4C6D0; 
+    border-radius: 10px; 
 }

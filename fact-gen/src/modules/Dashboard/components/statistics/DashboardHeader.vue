@@ -1,35 +1,45 @@
 <template>
-    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div class="px-4 py-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <button @click="$emit('go-back')" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                        <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
+    <div class="bg-white border-b border-outline-variant sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <!-- Title and Back -->
+                <div class="flex items-center space-x-5">
+                    <button @click="$emit('go-back')"
+                        class="p-2.5 rounded-xl border border-outline-variant bg-white hover:bg-[#F8F9FA] transition-all text-surface-on-variant hover:text-[#005AC1] shadow-sm">
+                        <ArrowLeftIcon class="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900 sm:text-2xl">Statistiques détaillées</h1>
-                        <p class="text-sm text-gray-500">Analyse complète de votre activité</p>
+                        <h1 class="text-2xl font-bold text-[#1A1C1E] tracking-tight">Espace Analytics</h1>
+                        <p class="text-[10px] font-bold text-surface-on-variant uppercase tracking-[0.2em] mt-0.5">
+                            Performance financière et indicateurs clés</p>
                     </div>
                 </div>
 
-                <button @click="$emit('refresh')" :disabled="isLoading"
-                    class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                    <ArrowPathIcon class="w-4 h-4 mr-2" :class="{ 'animate-spin': isLoading }" />
-                    Actualiser
-                </button>
+                <!-- Global Actions -->
+                <div class="flex items-center gap-3">
+                    <button @click="$emit('refresh')" :disabled="isLoading"
+                        class="btn-outlined px-5 py-2.5 text-sm font-bold bg-white">
+                        <ArrowPathIcon class="w-4 h-4 mr-2" :class="{ 'animate-spin': isLoading }" />
+                        {{ isLoading ? 'Analyse...' : 'Actualiser' }}
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="border-t border-gray-200">
-            <nav class="flex space-x-8 px-4 sm:px-6 lg:px-8" aria-label="Tabs">
-                <button v-for="tab in tabs" :key="tab.id" @click="$emit('update:activeTab', tab.id)" :class="[
-                    activeTab === tab.id
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors'
-                ]">
-                    <component :is="tab.icon" class="w-4 h-4 mr-2" />
-                    <span class="hidden sm:inline">{{ tab.label }}</span>
+        <!-- Secondary Nav (Tabs) -->
+        <div class="max-w-7xl mx-auto px-6">
+            <nav class="flex space-x-8 -mb-px overflow-x-auto no-scrollbar" aria-label="Analyse Tabs">
+                <button v-for="tab in tabs" :key="tab.id" @click="$emit('update:activeTab', tab.id)"
+                    class="group relative whitespace-nowrap py-4 px-1 flex items-center gap-2 border-b-2 font-bold text-xs uppercase tracking-widest transition-all"
+                    :class="[
+                        activeTab === tab.id
+                            ? 'border-[#005AC1] text-[#005AC1]'
+                            : 'border-transparent text-surface-on-variant hover:text-[#1A1C1E]'
+                    ]">
+                    <component :is="tab.icon" class="w-4 h-4 transition-transform group-hover:scale-110" />
+                    <span>{{ tab.label }}</span>
+                    <!-- Active Indicator -->
+                    <div v-if="activeTab === tab.id" class="absolute inset-x-0 -bottom-px h-0.5 bg-[#005AC1]"></div>
                 </button>
             </nav>
         </div>
@@ -37,28 +47,24 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { ArrowLeftIcon, ArrowPathIcon } from '@heroicons/vue/24/outline';
 
-// Define props
 const props = defineProps({
-    isLoading: {
-        type: Boolean,
-        default: false
-    },
-    activeTab: {
-        type: String,
-        required: true
-    },
-    tabs: {
-        type: Array,
-        required: true
-    }
+    isLoading: Boolean,
+    activeTab: String,
+    tabs: Array
 });
 
-// Define emits
-const emit = defineEmits(['refresh', 'update:activeTab', 'go-back']);
-
-// This function needs to be passed down or replicated if it's not a global utility
-
+defineEmits(['refresh', 'update:activeTab', 'go-back']);
 </script>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>

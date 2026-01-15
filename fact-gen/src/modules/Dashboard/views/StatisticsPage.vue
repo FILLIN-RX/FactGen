@@ -3,11 +3,11 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/modules/Auth/stores/auth.store";
 import { useStatsStore } from "@/modules/Dashboard/stores/stats.store";
+import { useSettingsStore } from "@/shared/stores/setting.store";
 import API from "@/shared/services/axios";
 import { formatCurrency } from "@/shared/utils/format";
-import { useSettingsStore } from "@/modules/Settings/stores/setting.store";
-// Import the new components
-// Adjusted imports to point to new location in Dashboard/components/statistics
+
+// Sub-components
 import DashboardHeader from '@/modules/Dashboard/components/statistics/DashboardHeader.vue';
 import DashboardQuickAnalyses from '@/modules/Dashboard/components/statistics/DashboardQuickAnalyses.vue';
 import ClientsTable from '@/modules/Dashboard/components/statistics/ClientsTable.vue';
@@ -15,17 +15,19 @@ import FacturesTable from '@/modules/Dashboard/components/statistics/FacturesTab
 import AnalyticsChart from '@/modules/Dashboard/components/statistics/AnalyticsChart.vue';
 import AnalyticsInsights from '@/modules/Dashboard/components/statistics/AnalyticsInsights.vue';
 import DashboardKpiCards from '@/modules/Dashboard/components/statistics/DashboardKpiCards.vue';
-import { ChartBarIcon, UsersIcon, DocumentTextIcon, ArrowTrendingUpIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline';
-
-
-const settings = useSettingsStore();
-
-const formatWithCurrency = (value) => formatCurrency(value, settings.currency);
+import LoadinApp from "@/shared/components/LoadinApp.vue";
+import {
+    ChartBarIcon,
+    UsersIcon,
+    DocumentTextIcon,
+    ArrowTrendingUpIcon,
+    ExclamationCircleIcon
+} from '@heroicons/vue/24/outline';
 
 const router = useRouter();
 const auth = useAuthStore();
 const statsStore = useStatsStore();
-
+const settings = useSettingsStore();
 
 const isLoading = ref(true);
 const error = ref(null);
@@ -34,24 +36,16 @@ const selectedPeriod = ref('monthly');
 
 const clients = ref([]);
 const factures = ref([]);
-const prospects = ref([]);
 
-// Données pour les graphiques
-const chartData = ref({
-    monthly: { labels: [], datasets: [] },
-    daily: { labels: [], datasets: [] }
-});
+const formatWithCurrency = (value) => formatCurrency(value, settings.currency);
 
 onMounted(async () => {
     try {
         await auth.initialize();
-        if (!auth.isAuthenticated) {
-            return router.push("/login");
-        }
-
+        if (!auth.isAuthenticated) return router.push("/login");
         await loadAllData();
     } catch (err) {
-        error.value = "Erreur lors du chargement des données.";
+        error.value = "Impossible de charger les analyses financières.";
         console.error(err);
     } finally {
         isLoading.value = false;
@@ -59,49 +53,14 @@ onMounted(async () => {
 });
 
 const loadAllData = async () => {
-    try {
-        const [clientsRes, facturesRes, prospectsRes] = await Promise.all([
-            API.get("/clients"),
-            API.get("/factures"),
-            API.get("/prospects").catch(() => ({ data: [] }))
-        ]);
-
-        clients.value = clientsRes.data || [];
-        factures.value = facturesRes.data || [];
-        prospects.value = prospectsRes.data || [];
-
-        await statsStore.chargerStatistiques(true);
-        await statsStore.chargerRevenusJournaliers();
-
-        prepareChartData();
-    } catch (err) {
-        console.error("Erreur lors du chargement des données:", err);
-        throw err;
-    }
-};
-
-const prepareChartData = () => {
-    chartData.value.monthly = {
-        labels: statsStore.mois,
-        datasets: [{
-            label: 'Revenus (FCFA)',
-            data: statsStore.revenusParMois,
-            borderColor: 'rgb(59, 130, 246)',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            fill: true
-        }]
-    };
-
-    chartData.value.daily = {
-        labels: statsStore.jours,
-        datasets: [{
-            label: 'Revenus journaliers (FCFA)',
-            data: statsStore.revenusParJours,
-            borderColor: 'rgb(16, 185, 129)',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            fill: true
-        }]
-    };
+    const [clientsRes, facturesRes] = await Promise.all([
+        API.get("/clients"),
+        API.get("/factures")
+    ]);
+    clients.value = clientsRes.data || [];
+    factures.value = facturesRes.data || [];
+    await statsStore.chargerStatistiques(true);
+    await statsStore.chargerRevenusJournaliers();
 };
 
 const stats = computed(() => ({
@@ -118,171 +77,103 @@ const stats = computed(() => ({
 }));
 
 const advancedAnalytics = computed(() => {
-    const facturesPeriod = factures.value.filter(f => {
-        const date = new Date(f.created_at);
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        return date >= thirtyDaysAgo;
-    });
-
     const facturesParStatut = factures.value.reduce((acc, f) => {
         acc[f.statut] = (acc[f.statut] || 0) + 1;
         return acc;
     }, {});
-
-    const clientsRecents = clients.value.filter(c => {
-        const date = new Date(c.created_at);
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        return date >= thirtyDaysAgo;
-    }).length;
-
     return {
-        facturesPeriod: facturesPeriod.length,
         facturesParStatut,
-        clientsRecents,
         revenuMoyen: stats.value.totalRevenu / (stats.value.totalFactures || 1),
-        tauxCroissanceClients: ((stats.value.totalClients - statsStore.totalClientsSemaineDerniere) / (statsStore.totalClientsSemaineDerniere || 1)) * 100
     };
 });
 
-// Utility functions (keep them here or move to a separate utility file if used globally)
-
-
-const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('fr-FR', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    });
-};
+const formatDate = (date) => date ? new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : "-";
 
 const getStatusColor = (status) => {
     const colors = {
-        'payée': 'bg-green-100 text-green-800',
-        'en attente': 'bg-yellow-100 text-yellow-800',
-        'annulée': 'bg-red-100 text-red-800',
-        'brouillon': 'bg-gray-100 text-gray-800'
+        'payee': 'badge-paid',
+        'paye': 'badge-paid',
+        'en_attente': 'badge-pending',
+        'en_retard': 'bg-red-50 text-red-600 border-red-100',
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-};
-
-const refresh = async () => {
-    isLoading.value = true;
-    error.value = null;
-    try {
-        await loadAllData();
-    } catch (err) {
-        error.value = "Erreur lors de l'actualisation des données.";
-    } finally {
-        isLoading.value = false;
-    }
+    return colors[status] || 'bg-gray-50 text-gray-500 border-gray-100';
 };
 
 const tabs = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: ChartBarIcon },
-    { id: 'clients', label: 'Clients', icon: UsersIcon },
-    { id: 'factures', label: 'Factures', icon: DocumentTextIcon },
-    { id: 'analytics', label: 'Analyses', icon: ArrowTrendingUpIcon }
+    { id: 'clients', label: 'Portefeuille Clients', icon: UsersIcon },
+    { id: 'factures', label: 'Historique Factures', icon: DocumentTextIcon },
+    { id: 'analytics', label: 'Prévisions & Tendances', icon: ArrowTrendingUpIcon }
 ];
 
-// getIcon can remain here or be moved to DashboardHeader if only used there
-// const getIcon = (iconName) => { /* ... */ };
-
+const refresh = async () => {
+    isLoading.value = true;
+    error.value = null;
+    try { await loadAllData(); } catch (err) { error.value = "Erreur de mise à jour."; } finally { isLoading.value = false; }
+};
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-[#F8F9FA]">
+        <!-- Modern Header with Tabs -->
         <DashboardHeader :isLoading="isLoading" :activeTab="activeTab" :tabs="tabs" @refresh="refresh"
             @update:activeTab="activeTab = $event" @go-back="router.go(-1)" />
 
-        <div v-if="isLoading" class="flex items-center justify-center h-64">
-            <div class="text-center">
-                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <p class="mt-2 text-sm text-gray-500">Chargement des données...</p>
+        <div v-if="isLoading" class="flex flex-col items-center justify-center h-[60vh]">
+            <LoadinApp />
+            <p class="mt-4 text-[10px] font-bold text-surface-on-variant uppercase tracking-widest animate-pulse">
+                Analyses en cours de calcul...</p>
+        </div>
+
+        <div v-else-if="error" class="max-w-7xl mx-auto p-8">
+            <div class="card-outlined bg-white p-12 text-center">
+                <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <ExclamationCircleIcon class="w-8 h-8 text-red-600" />
+                </div>
+                <h3 class="text-xl font-bold text-[#1A1C1E] mb-2">Erreur de chargement</h3>
+                <p class="text-sm text-surface-on-variant mb-6">{{ error }}</p>
+                <button @click="refresh" class="btn-filled px-8 py-2">Réessayer l'analyse</button>
             </div>
         </div>
 
-        <div v-else-if="error" class="p-4 sm:p-6 lg:p-8">
-            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div class="flex">
-                    <ExclamationCircleIcon class="w-5 h-5 text-red-400" />
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-red-800">{{ error }}</p>
-                        <button @click="refresh" class="mt-2 text-sm text-red-600 hover:text-red-800 font-medium">
-                            Réessayer
-                        </button>
+        <div v-else class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 animate-in fade-in duration-500">
+            <!-- Dynamic Content based on Active Tab -->
+            <transition name="fade" mode="out-in">
+                <div :key="activeTab">
+                    <div v-if="activeTab === 'overview'" class="space-y-8">
+                        <DashboardKpiCards :stats="stats" :formatCurrency="formatWithCurrency" />
+                        <DashboardQuickAnalyses :advancedAnalytics="advancedAnalytics"
+                            :formatCurrency="formatWithCurrency" :getStatusColor="getStatusColor" />
+                    </div>
+
+                    <div v-else-if="activeTab === 'clients'">
+                        <ClientsTable :clients="clients" :formatDate="formatDate" />
+                    </div>
+
+                    <div v-else-if="activeTab === 'factures'">
+                        <FacturesTable :factures="factures" :formatCurrency="formatWithCurrency"
+                            :formatDate="formatDate" :getStatusColor="getStatusColor" />
+                    </div>
+
+                    <div v-else-if="activeTab === 'analytics'" class="space-y-8">
+                        <AnalyticsChart :selectedPeriod="selectedPeriod" :chartData="statsStore"
+                            @update:selectedPeriod="selectedPeriod = $event" />
+                        <AnalyticsInsights :stats="stats" :formatCurrency="formatWithCurrency" />
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div v-else class="p-4 sm:p-6 lg:p-8">
-            <div v-if="activeTab === 'overview'" class="space-y-6">
-                <DashboardKpiCards :stats="stats" :formatCurrency="formatWithCurrency" />
-                <DashboardQuickAnalyses :advancedAnalytics="advancedAnalytics" :formatCurrency="formatWithCurrency"
-                    :getStatusColor="getStatusColor" />
-            </div>
-
-            <div v-if="activeTab === 'clients'" class="space-y-6">
-                <ClientsTable :clients="clients" :formatDate="formatDate" />
-            </div>
-
-            <div v-if="activeTab === 'factures'" class="space-y-6">
-                <FacturesTable :factures="factures" :formatCurrency="formatWithCurrency" :formatDate="formatDate"
-                    :getStatusColor="getStatusColor" />
-            </div>
-
-            <div v-if="activeTab === 'analytics'" class="space-y-6">
-                <AnalyticsChart :selectedPeriod="selectedPeriod" :chartData="chartData"
-                    @update:selectedPeriod="selectedPeriod = $event" />
-                <AnalyticsInsights :stats="stats" :statsStoreMoisLength="statsStore.mois.length"
-                    :formatCurrency="formatWithCurrency" />
-            </div>
+            </transition>
         </div>
     </div>
 </template>
 
 <style scoped>
-/* Chart.js responsive styles */
-canvas {
-    max-width: 100%;
-    height: auto;
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
 }
 
-/* Smooth transitions */
-.transition-all {
-    transition: all 0.3s ease;
-}
-
-/* Custom scrollbar for tables */
-.overflow-x-auto::-webkit-scrollbar {
-    height: 6px;
-}
-
-.overflow-x-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-.overflow-x-auto::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
-
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Responsive table styles */
-@media (max-width: 640px) {
-    .overflow-x-auto table {
-        font-size: 14px;
-    }
-
-    .overflow-x-auto th,
-    .overflow-x-auto td {
-        padding: 8px 12px;
-    }
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

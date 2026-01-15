@@ -1,90 +1,71 @@
 <template>
     <div v-if="invoice"
-        class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex flex-col sm:items-center sm:justify-center p-0 sm:p-4"
+        class="fixed inset-0 bg-[#001C3B]/40 backdrop-blur-md z-50 flex flex-col items-center justify-center p-0 sm:p-4"
         @click.self="$emit('close')">
 
-        <!-- Header Mobile uniquement -->
+        <!-- Main Modal Container -->
         <div
-            class="sm:hidden bg-white/90 backdrop-blur-sm border-b border-gray-200 px-3 py-2 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-gray-800 truncate">Facture #{{ invoice.numero || invoice.id }}</h2>
-            <button @click="$emit('close')"
-                class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-all duration-200 flex-shrink-0 ml-2">
-                <XMarkIcon class="w-4 h-4 text-gray-600" />
-            </button>
-        </div>
+            class="bg-white flex flex-col w-full sm:max-w-6xl h-full sm:h-[90vh] sm:rounded-2xl shadow-2xl overflow-hidden border border-outline-variant animate-in fade-in zoom-in duration-300">
 
-        <!-- Contenu principal -->
-        <div ref="factureHtmlRef"
-            class="bg-white flex-1 sm:flex-none w-full sm:max-w-6xl sm:max-h-[85vh] overflow-y-auto sm:rounded-2xl shadow-2xl animate-slideUp sm:animate-scaleIn relative">
-
-            <!-- Header Desktop -->
+            <!-- Header -->
             <div
-                class="hidden sm:flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Facture #{{ invoice.numero || invoice.id }}</h2>
-                    <p class="text-sm text-gray-600 mt-1">{{ formatDate(invoice.date_emission) }}</p>
-                </div>
-                <button @click="$emit('close')"
-                    class="w-10 h-10 rounded-full bg-white/80 hover:bg-white hover:shadow-md flex items-center justify-center transition-all duration-200 group">
-                    <XMarkIcon class="w-5 h-5 text-gray-600 group-hover:text-gray-800" />
-                </button>
-            </div>
-
-            <!-- Contenu de la facture -->
-            <div class="p-2 sm:p-6 pb-16 sm:pb-6 text-xs sm:text-base">
-                <component :is="currentTemplateComponent" :invoice="invoice" :client="client" :produits="produits"
-                    :totalHT="totalHT" :totalTTC="totalTTC" :montantReduction="montantReduction" :reduction="reduction"
-                    :suplement="suplement" :date_emission="date_emission" :date_echeance="date_echeance"
-                    :societer="companyInfo" />
-            </div>
-        </div>
-
-        <!-- Actions flottantes pour mobile / fixes pour desktop -->
-        <div
-            class="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 p-2 safe-area-pb">
-            <div class="grid grid-cols-3 gap-2">
-                <button @click="downloadPDF()" :disabled="isDownloading"
-                    class="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-2 rounded-lg transition-all duration-200 flex flex-col items-center justify-center space-y-1 shadow-lg min-h-[45px] text-xs">
-                    <ArrowDownTrayIcon v-if="!isDownloading" class="w-4 h-4" />
-                    <div v-else class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin">
+                class="px-8 py-5 border-b border-outline-variant flex items-center justify-between bg-white sticky top-0 z-10">
+                <div class="flex items-center space-x-4">
+                    <div
+                        class="w-10 h-10 bg-[#D3E4FF] rounded-xl flex items-center justify-center border border-[#005AC1]/10">
+                        <DocumentTextIcon class="w-5 h-5 text-[#005AC1]" />
                     </div>
-                    <span class="font-medium leading-tight">{{ isDownloading ? 'En cours' : 'PDF' }}</span>
-                </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-[#1A1C1E]">Facture #{{ invoice.numero || invoice.id }}</h2>
+                        <p class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest mt-0.5">Émise
+                            le {{ formatDate(invoice.date_emission) }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Status Badge (Optional duplicate or just in template) -->
+                    <button @click="$emit('close')"
+                        class="p-2 rounded-full hover:bg-[#F8F9FA] text-surface-on-variant transition-colors">
+                        <XMarkIcon class="w-6 h-6" />
+                    </button>
+                </div>
+            </div>
 
-                <button @click="shareInvoice"
-                    class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-2 rounded-lg transition-all duration-200 flex flex-col items-center justify-center space-y-1 shadow-lg min-h-[45px] text-xs">
-                    <ShareIcon class="w-4 h-4" />
-                    <span class="font-medium leading-tight">Partager</span>
-                </button>
+            <!-- Scrollable Invoice Content -->
+            <div class="flex-1 overflow-y-auto bg-[#F8F9FA] p-4 sm:p-8">
+                <div class="max-w-4xl mx-auto shadow-elevation-1 rounded-sm overflow-hidden bg-white">
+                    <component :is="currentTemplateComponent" :invoice="invoice" :client="client" :produits="produits"
+                        :totalHT="totalHT" :totalTTC="totalTTC" :montantReduction="montantReduction"
+                        :reduction="reduction" :suplement="suplement" :date_emission="date_emission"
+                        :date_echeance="date_echeance" :societer="companyInfo" />
+                </div>
+            </div>
 
-                <button @click="$emit('delete')"
-                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2 rounded-lg transition-all duration-200 flex flex-col items-center justify-center space-y-1 shadow-lg min-h-[45px] text-xs">
-                    <TrashIcon class="w-4 h-4" />
-                    <span class="font-medium leading-tight">Supprimer</span>
+            <!-- Footer Actions -->
+            <div
+                class="px-8 py-5 border-t border-outline-variant bg-white flex flex-col sm:flex-row gap-3 justify-between items-center">
+                <!-- Share/Delete group -->
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button @click="shareInvoice"
+                        class="flex-1 sm:flex-none btn-text px-4 py-2.5 rounded-xl border border-outline-variant hover:bg-[#F8F9FA] transition-all font-bold text-sm">
+                        <ShareIcon class="w-4 h-4 mr-2" />
+                        Partager
+                    </button>
+                    <button @click="$emit('delete')"
+                        class="flex-1 sm:flex-none btn-text text-red-600 hover:bg-red-50 px-4 py-2.5 rounded-xl border border-red-100 transition-all font-bold text-sm">
+                        <TrashIcon class="w-4 h-4 mr-2" />
+                        Supprimer
+                    </button>
+                </div>
+
+                <!-- Primary Action (Download) -->
+                <button @click="downloadPDF()" :disabled="isDownloading"
+                    class="w-full sm:w-auto btn-filled px-10 py-3 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-3">
+                    <ArrowDownTrayIcon v-if="!isDownloading" class="w-5 h-5" />
+                    <div v-else class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin">
+                    </div>
+                    <span>{{ isDownloading ? 'Génération...' : 'Télécharger le PDF' }}</span>
                 </button>
             </div>
-        </div>
-
-        <!-- Actions Desktop -->
-        <div class="hidden sm:flex justify-center space-x-4 mt-6">
-            <button @click="downloadPDF()" :disabled="isDownloading"
-                class="min-w-[140px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <ArrowDownTrayIcon v-if="!isDownloading" class="w-5 h-5" />
-                <div v-else class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>{{ isDownloading ? 'Téléchargement...' : 'Télécharger PDF' }}</span>
-            </button>
-
-            <button @click="shareInvoice"
-                class="min-w-[120px] bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <ShareIcon class="w-5 h-5" />
-                <span>Partager</span>
-            </button>
-
-            <button @click="$emit('delete')"
-                class="min-w-[120px] bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <TrashIcon class="w-5 h-5" />
-                <span>Supprimer</span>
-            </button>
         </div>
     </div>
 </template>
@@ -97,89 +78,66 @@ import { showToastMessage } from "@/composables/useToast";
 import { templateComponents } from "@/modules/Invoice/components/templates";
 import { useFacturesStore } from "../stores/invoice.store.js";
 import { genererPDFs } from "@/modules/Invoice/components/templates/utils/generateTemplates";
-import { XMarkIcon, ArrowDownTrayIcon, ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
-
-const factureStore = useFacturesStore();
-const invoice = computed(() => factureStore.selectedFacture);
-const client = computed(() => props.invoice?.client_data || {});
-const produits = computed(() => props.invoice?.produits || []);
-const totalHT = computed(() => sousTotal.value - montantReduction.value);
-const totalTTC = computed(() => props.invoice?.montant_total || 0);
-
-const reduction = computed(() => props.invoice?.reduction || null);
-const suplement = computed(() => props.invoice?.suplement || "");
-const date_emission = computed(() => props.invoice?.date_emission || "");
-const date_echeance = computed(() => props.invoice?.date_echeance || "");
-const toast = useToast();
-const isDownloading = ref(false);
-const factureHtmlRef = ref(null);
-
-const currentTemplateComponent = computed(() => {
-    return templateComponents[props.invoice.template || "moderne"];
-});
+import { XMarkIcon, ArrowDownTrayIcon, ShareIcon, TrashIcon, DocumentTextIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     invoice: Object,
     societer: Object,
 });
 
-// Events
 const emit = defineEmits(["close", "download", "delete"]);
 
+const factureStore = useFacturesStore();
+const isDownloading = ref(false);
 const infoEntreprise = ref(null);
 
-// Si l'info n'est pas passée en props, on la récupère
+const client = computed(() => props.invoice?.client_data || {});
+const produits = computed(() => props.invoice?.produits || []);
+const totalTTC = computed(() => props.invoice?.montant_total || 0);
+const reduction = computed(() => props.invoice?.reduction || null);
+const suplement = computed(() => props.invoice?.suplement || "");
+const date_emission = computed(() => props.invoice?.date_emission || "");
+const date_echeance = computed(() => props.invoice?.date_echeance || "");
+
+const currentTemplateComponent = computed(() => {
+    return templateComponents[props.invoice.template || "moderne"];
+});
+
 onMounted(async () => {
     try {
         const data = await getInfoEntreprise();
-        if (data) {
-            infoEntreprise.value = data;
-        }
+        if (data) infoEntreprise.value = data;
     } catch (err) {
-        console.error("Erreur lors de la récupération de l'entreprise :", err);
+        console.error("Erreur societer:", err);
     }
 });
 
-// Computed pour les informations de l'entreprise
 const companyInfo = computed(() => {
-    return (
-        props.societer ||
-        infoEntreprise.value ||
-        props.invoice.societer || {
-            nom: "Nom de l'entreprise",
-            email: "email@entreprise.com",
-            adresse: "Adresse de l'entreprise",
-        }
-    );
+    return props.societer || infoEntreprise.value || props.invoice.societer || {
+        nom: "Entreprise", email: "contact@entreprise.com", adresse: "Adresse"
+    };
 });
 
-// Fonction de partage
 const shareInvoice = async () => {
     try {
         if (navigator.share) {
             await navigator.share({
-                title: `Facture #${invoice.value.numero || invoice.value.id}`,
-                text: `Facture de ${companyInfo.value.nom} pour ${client.value.nom || 'Client'}`,
+                title: `Facture #${props.invoice.numero}`,
+                text: `Document de ${companyInfo.value.nom}`,
                 url: window.location.href,
             });
         } else {
-            // Fallback: copier dans le presse-papier
             await navigator.clipboard.writeText(window.location.href);
-            showToastMessage("Lien copié dans le presse-papier !", "success");
+            showToastMessage("Lien copié !", "success");
         }
     } catch (error) {
-        console.error('Erreur lors du partage:', error);
-        showToastMessage("Erreur lors du partage", "error");
+        console.error('Share error:', error);
     }
 };
 
-// Fonction de téléchargement PDF
 const downloadPDF = async () => {
     try {
         isDownloading.value = true;
-        console.log("template utilisé pour PDF :", props.invoice?.template);
-
-        // Génération du HTML
         const htmlContent = genererPDFs(props.invoice.template, {
             ...props.invoice,
             client_data: props.invoice.client_data || {},
@@ -193,207 +151,27 @@ const downloadPDF = async () => {
             clientName: props.invoice.client_data?.nom,
         });
 
-        emit("close");
-        showToastMessage("PDF téléchargé avec succès !", "success");
+        showToastMessage("Téléchargement réussi !", "success");
     } catch (error) {
-        console.error("Erreur de téléchargement du PDF", error);
-        showToastMessage("Erreur lors du téléchargement du PDF", "error");
+        showToastMessage("Erreur PDF", "error");
     } finally {
         isDownloading.value = false;
     }
 };
 
-// Fonctions utilitaires
-function formatDate(date) {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString("fr-FR");
-}
+const formatDate = (date) => date ? new Date(date).toLocaleDateString("fr-FR", { day: 'numeric', month: 'long', year: 'numeric' }) : "";
 
-function formatPrice(val) {
-    if (typeof val !== "number" || isNaN(val)) return "0.00";
-    return val.toFixed(2);
-}
-
-function calculateProductTotal(product) {
-    const quantite = parseFloat(product.quantite) || 0;
-    const prix = parseFloat(product.prix) || 0;
-    return quantite * prix;
-}
-
-// Calculs des totaux
+// Simple calculated totals for the template container
 const sousTotal = computed(() => {
     if (!props.invoice?.produits) return 0;
-    return props.invoice.produits.reduce((total, product) => {
-        return total + calculateProductTotal(product);
-    }, 0);
+    return props.invoice.produits.reduce((total, p) => total + (parseFloat(p.quantite) || 0) * (parseFloat(p.prix) || 0), 0);
 });
 
 const montantReduction = computed(() => {
     if (!props.invoice?.reduction) return 0;
-
-    const reduction = props.invoice.reduction;
-    if (reduction.type === "montant") {
-        return parseFloat(reduction.valeur) || 0;
-    } else if (reduction.type === "pourcentage") {
-        const pourcentage = parseFloat(reduction.valeur) || 0;
-        return sousTotal.value * (pourcentage / 100);
-    }
-    return 0;
+    const r = props.invoice.reduction;
+    return r.type === "montant" ? (parseFloat(r.valeur) || 0) : (sousTotal.value * (parseFloat(r.valeur) || 0) / 100);
 });
 
-const totalHt = computed(() => {
-    return sousTotal.value - montantReduction.value;
-});
-
-function formatReduction() {
-    if (!props.invoice?.reduction) return "";
-
-    const reduction = props.invoice.reduction;
-    if (reduction.type === "montant") {
-        return `${formatPrice(reduction.valeur)} €`;
-    } else if (reduction.type === "pourcentage") {
-        return `${reduction.valeur}% (${formatPrice(montantReduction.value)} €)`;
-    }
-    return "";
-}
+const totalHT = computed(() => sousTotal.value - montantReduction.value);
 </script>
-
-<style scoped>
-@keyframes slideUp {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.animate-slideUp {
-    animation: slideUp 0.3s ease-out;
-}
-
-.animate-scaleIn {
-    animation: scaleIn 0.3s ease-out;
-}
-
-/* Support pour les zones de sécurité sur mobile */
-.safe-area-pb {
-    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-}
-
-/* Amélioration des performances d'animation */
-@media (prefers-reduced-motion: reduce) {
-
-    .animate-slideUp,
-    .animate-scaleIn {
-        animation: none;
-    }
-
-    button {
-        transform: none !important;
-    }
-}
-
-/* Scrollbar personnalisée pour webkit */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Styles pour les écrans très petits */
-@media (max-width: 375px) {
-    .grid-cols-3>button {
-        padding: 0.4rem 0.3rem;
-        min-height: 40px;
-        font-size: 0.65rem;
-    }
-
-    .grid-cols-3>button svg {
-        width: 0.9rem;
-        height: 0.9rem;
-    }
-
-    .sm\:hidden .px-3 {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    .text-xs {
-        font-size: 0.7rem;
-    }
-}
-
-/* Styles pour petits écrans (iPhone SE, etc.) */
-@media (max-width: 320px) {
-    .grid-cols-3>button {
-        padding: 0.3rem 0.2rem;
-        min-height: 35px;
-        font-size: 0.6rem;
-        gap: 0.125rem;
-    }
-
-    .grid-cols-3>button svg {
-        width: 0.8rem;
-        height: 0.8rem;
-    }
-}
-
-/* Optimisation de la taille du contenu sur mobile */
-@media (max-width: 640px) {
-
-    /* Le contenu de la facture aura une taille de police plus petite */
-    .text-xs {
-        line-height: 1.3;
-    }
-
-    /* Réduction des marges internes */
-    .p-2 {
-        padding: 0.4rem;
-    }
-
-    /* Espacement réduit pour les boutons */
-    .pb-16 {
-        padding-bottom: 3.5rem;
-    }
-}
-
-/* Styles pour les grands écrans */
-@media (min-width: 1024px) {
-    .sm\:max-w-6xl {
-        max-width: 80rem;
-    }
-}
-
-/* Style pour le titre tronqué sur mobile */
-.truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-</style>

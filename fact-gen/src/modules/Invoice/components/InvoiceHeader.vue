@@ -1,73 +1,35 @@
 <template>
-    <div class="sticky top-0 z-40">
-        <div class="px-3 py-2.5 sm:px-6 sm:py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <div
-                        class="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                        <i class="material-symbols-outlined text-white text-base sm:text-xl">
-                            receipt_long
-                        </i>
-                    </div>
-                    <div>
-                        <h1 class="text-base font-bold text-slate-900 sm:text-lg">
-                            Factures
-                        </h1>
-                        <p class="text-xs text-slate-500 leading-none">
-                            {{ resultCount }} résultat(s)
-                        </p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-1.5 sm:gap-2">
-                    <button @click="$emit('toggle-filters')"
-                        class="lg:hidden p-2 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
-                        :class="{ 'bg-blue-100 text-blue-600': showFilters }">
-                        <i class="material-symbols-outlined text-base">
-                            filter_alt
-                        </i>
-                    </button>
-
-                    <button @click="$emit('create')"
-                        class="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-1.5">
-                        <i class="material-symbols-outlined text-base">
-                            add
-                        </i>
-                        <span class="text-sm">Créer</span>
-                    </button>
-                </div>
-            </div>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-[#1A1C1E]">Factures</h1>
+            <p class="text-sm text-surface-on-variant">Suivez vos paiements et créez de nouveaux documents</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button @click="$emit('toggle-filters')" class="btn-outlined px-4 py-2 text-sm relative"
+                :class="{ 'bg-blue-50 border-[#005AC1]/30': showFilters }">
+                <FunnelIcon class="w-4 h-4 mr-2" />
+                Filtres
+                <span v-if="activeFiltersCount > 0"
+                    class="absolute -top-1 -right-1 w-4 h-4 bg-[#005AC1] text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                    {{ activeFiltersCount }}
+                </span>
+            </button>
+            <button @click="$emit('create')" class="btn-filled px-5 py-2">
+                <PlusIcon class="w-5 h-5 mr-2" />
+                Créer une facture
+            </button>
         </div>
     </div>
 </template>
 
 <script setup>
-defineProps({
-    resultCount: {
-        type: Number,
-        required: true,
-    },
-    showFilters: {
-        type: Boolean,
-        required: true,
-    }
+import { FunnelIcon, PlusIcon } from '@heroicons/vue/24/outline';
+
+const props = defineProps({
+    resultCount: Number,
+    showFilters: Boolean,
+    activeFiltersCount: { type: Number, default: 0 }
 });
 
 defineEmits(['toggle-filters', 'create']);
 </script>
-
-<style>
-/* Assurez-vous que cette importation est présente globalement dans votre projet
-  (par exemple, dans votre fichier CSS principal ou index.html) 
-*/
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
-
-.material-symbols-outlined {
-    font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24;
-    /* Utilisation du style Outline par défaut */
-}
-</style>

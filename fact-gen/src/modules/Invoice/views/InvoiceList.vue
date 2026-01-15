@@ -1,155 +1,137 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <div class="space-y-8">
+        <!-- Header Section -->
         <InvoiceHeader :resultCount="facturesFiltrees.length" :showFilters="showFilters"
-            @toggle-filters="showFilters = !showFilters" @create="creer" />
+            :activeFiltersCount="activeFiltersCount" @toggle-filters="showFilters = !showFilters" @create="creer" />
 
-        <div class="px-3 py-4 sm:px-6 sm:py-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Main Content Area -->
+        <div class="max-w-7xl mx-auto">
+            <!-- Stats Overview -->
+            <InvoiceStats :totalCount="invoiceStore.factures.length" :totalAmount="totalAmount"
+                :pendingCount="pendingCount" />
+
+            <!-- Filters Panel -->
             <InvoiceFilters v-model:search-term="searchTerm" v-model:selected-client="selectedClient"
                 v-model:selected-status="selectedStatus" :clients="clients" :showFilters="showFilters"
                 :isMobile="isMobile" @clear-filters="clearFilters" @hide-filters="showFilters = false" />
 
-            <InvoiceFormWrapper v-if="open" @close="open = false">
-                <FactureForm :template-id="selectedTemplateId" @close="open = false" @created="onFactureCreated" />
-            </InvoiceFormWrapper>
-
-            <InvoiceStats :totalCount="invoiceStore.factures.length" :totalAmount="totalAmount"
-                :pendingCount="pendingCount" />
-
-            <div v-if="invoiceStore.loading" class="text-center py-12 px-4">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                    <LoadinApp />
-                    <p class="text-center text-slate-600 mt-4">Chargement des facture...</p>
-                </div>
+            <!-- Loading State -->
+            <div v-if="invoiceStore.loading"
+                class="card-outlined p-12 bg-white flex flex-col items-center justify-center">
+                <LoadinApp />
+                <p class="text-xs text-surface-on-variant mt-4 font-medium uppercase tracking-widest">Connexion
+                    sécurisée aux données...</p>
             </div>
 
-            <div v-else-if="facturesFiltrees.length === 0" class="text-center py-12 px-4">
-                <div
-                    class="w-16 h-16 sm:w-20 sm:h-20 mx-auto bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                    <MagnifyingGlassIcon class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400" />
+            <!-- Empty State -->
+            <div v-else-if="facturesFiltrees.length === 0" class="card-outlined p-16 bg-white text-center">
+                <div class="w-20 h-20 mx-auto bg-[#F8F9FA] rounded-full flex items-center justify-center mb-6">
+                    <MagnifyingGlassIcon class="w-10 h-10 text-surface-on-variant" />
                 </div>
-                <h3 class="text-lg sm:text-xl font-semibold text-slate-900 mb-2">
-                    Aucun résultat
-                </h3>
-                <p class="text-sm sm:text-base text-slate-600 mb-6">
-                    Modifiez vos critères de recherche.
-                </p>
-                <button @click="clearFilters"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors">
-                    Effacer les filtres
-                </button>
+                <h3 class="text-xl font-bold text-[#1A1C1E] mb-2">Aucun document trouvé</h3>
+                <p class="text-sm text-surface-on-variant mb-6 max-w-sm mx-auto">Ajustez vos filtres ou créez une
+                    nouvelle facture pour commencer votre suivi financier.</p>
+                <button @click="clearFilters" class="btn-outlined px-6 py-2 text-sm">Effacer tous les filtres</button>
             </div>
 
-            <div v-else class="space-y-2 sm:space-y-3">
+            <!-- Invoices List -->
+            <div v-else class="space-y-4">
                 <InvoiceListItem v-for="(facture, index) in facturesFiltrees" :key="facture.id" :invoice="facture"
-                    @select="invoiceStore.selectionnerFacture(facture, index)"
-                    class="hover:shadow-md transition-shadow duration-200" />
+                    @select="invoiceStore.selectionnerFacture(facture, index)" />
             </div>
         </div>
 
+        <!-- Modals -->
         <InvoiceDetailModal v-if="invoiceStore.selectedFacture" :invoice="invoiceStore.selectedFacture"
             @close="invoiceStore.clearSelection()" @delete="confirmerSuppression" :societer="infoEntreprise"
             :is-downloading="isDownloading" />
 
-        <InvoiceDeleteModal v-if="showDeleteConfirm" :invoice-number="invoiceStore.selectedFacture?.numero"
-            :is-deleting="isDeleting" @cancel="showDeleteConfirm = false" @confirm="supprimerFacture" />
+        <transition name="fade">
+            <InvoiceDeleteModal v-if="showDeleteConfirm" :invoice-number="invoiceStore.selectedFacture?.numero"
+                :is-deleting="isDeleting" @cancel="showDeleteConfirm = false" @confirm="supprimerFacture" />
+        </transition>
+
+        <!-- Creation Form Wrapper (Slide-over / Modal) -->
+        <InvoiceFormWrapper v-if="open" @close="open = false">
+            <FactureForm :template-id="selectedTemplateId" @close="open = false" @created="onFactureCreated" />
+        </InvoiceFormWrapper>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useFacturesStore } from "@/modules/Invoice/stores/invoice.store";
 import { useAppStore } from "@/shared/stores/app.store";
-import { useRoute } from "vue-router";
 import { getInfoEntreprise } from "@/shared/services/api";
 import { showToastMessage } from '@/composables/useToast';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
-// --- Nouveaux Composants Importés ---
+// Components
 import InvoiceHeader from "../components/InvoiceHeader.vue";
 import InvoiceFilters from "../components/InvoiceFilters.vue";
 import InvoiceStats from "../components/InvoiceStats.vue";
 import InvoiceFormWrapper from "../components/InvoiceFormWrapper.vue";
 import InvoiceDeleteModal from "../components/InvoiceDeleteModal.vue";
-// --- Composants Existants/Shared ---
 import InvoiceListItem from "../components/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/InvoiceDetailModal.vue";
 import FactureForm from "../components/FactureForm/InvoiceForm.vue";
 import LoadinApp from "@/shared/components/LoadinApp.vue";
-// ------------------------------------
 
 const searchTerm = ref("");
 const selectedClient = ref("");
 const selectedStatus = ref("");
 const clients = ref([]);
-const open = ref(false); // État d'ouverture du formulaire de création
+const open = ref(false);
 const isDownloading = ref(false);
 const showDeleteConfirm = ref(false);
 const isDeleting = ref(false);
 const infoEntreprise = ref(null);
-const showFilters = ref(false); // État d'ouverture des filtres en mobile
+const showFilters = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-// Stores
 const invoiceStore = useFacturesStore();
 const appStore = useAppStore();
 
-// Détection mobile
-const isMobile = computed(() => {
-    if (typeof window !== "undefined") {
-        return window.innerWidth < 1024;
-    }
-    return false;
-});
-
-// Récupérer le template ID de l'URL pour le formulaire de création
+const isMobile = computed(() => typeof window !== "undefined" && window.innerWidth < 1024);
 const selectedTemplateId = ref(route.query.template || 'moderne');
 
-// --- Fonctions de Data Fetching et Logique Principale ---
+const activeFiltersCount = computed(() => {
+    let count = 0;
+    if (searchTerm.value) count++;
+    if (selectedClient.value) count++;
+    if (selectedStatus.value) count++;
+    return count;
+});
 
 async function fetchEntreprise() {
     try {
         const data = await getInfoEntreprise();
         infoEntreprise.value = data;
-        return data;
     } catch (error) {
-        console.error("Erreur récupération infos entreprise", error);
-        return null;
+        console.error("Erreur entreprise", error);
     }
 }
 
 onMounted(async () => {
-    appStore.setLoading(true);
     try {
         await Promise.all([invoiceStore.chargerFactures(), fetchEntreprise()]);
-
-        const uniqueClients = new Set(
-            invoiceStore.factures.map((f) => f.client_data?.nom).filter(Boolean)
-        );
+        const uniqueClients = new Set(invoiceStore.factures.map((f) => f.client_data?.nom).filter(Boolean));
         clients.value = Array.from(uniqueClients).sort();
-
     } catch (error) {
-        console.error("Erreur lors du chargement des données:", error);
-        showToastMessage("Erreur lors du chargement des données", "error");
-    } finally {
-        appStore.setLoading(false);
+        showToastMessage("Erreur de chargement", "error");
     }
 });
 
-watch(() => route.query.template, (newTemplateId) => {
-    if (newTemplateId) {
-        selectedTemplateId.value = newTemplateId
-        open.value = true
+watch(() => route.query.template, (newT) => {
+    if (newT) {
+        selectedTemplateId.value = newT;
+        open.value = true;
     }
-}, { immediate: true })
+}, { immediate: true });
 
-// --- Méthodes ---
-
-function creer() {
-    router.push('/NewInvoice');
-}
-
+function creer() { router.push('/NewInvoice'); }
 function clearFilters() {
     searchTerm.value = "";
     selectedClient.value = "";
@@ -157,62 +139,39 @@ function clearFilters() {
 }
 
 async function onFactureCreated() {
-    try {
-        open.value = false;
-        await invoiceStore.chargerFactures();
-        const lastInvoice = invoiceStore.factures[invoiceStore.factures.length - 1];
-        const invoiceNumber = lastInvoice?.numero || "";
-        showToastMessage(`Facture #${invoiceNumber} créée avec succès !`, "success");
-    } catch (error) {
-        showToastMessage("Erreur lors de l'actualisation des factures", "error");
-    }
+    open.value = false;
+    await invoiceStore.chargerFactures();
+    showToastMessage("Document créé avec succès !", "success");
 }
 
-function confirmerSuppression() {
-    showDeleteConfirm.value = true;
-}
-
+function confirmerSuppression() { showDeleteConfirm.value = true; }
 async function supprimerFacture() {
     try {
         isDeleting.value = true;
         await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
         showDeleteConfirm.value = false;
         invoiceStore.clearSelection();
-        showToastMessage("Facture supprimée avec succès !", "success");
+        showToastMessage("Facture supprimée.", "success");
     } catch (error) {
-        console.error("Erreur lors de la suppression:", error);
-        showToastMessage("Erreur lors de la suppression de la facture", "error");
+        showToastMessage("Erreur de suppression", "error");
     } finally {
         isDeleting.value = false;
     }
 }
 
-// --- Computed Properties ---
-
 const facturesFiltrees = computed(() => {
     return invoiceStore.factures.filter((f) => {
-        const matchClient =
-            selectedClient.value === "" || f.client_data?.nom === selectedClient.value;
-
-        const matchStatus =
-            selectedStatus.value === "" || f.statut === selectedStatus.value;
-
-        const matchSearch =
-            searchTerm.value === "" ||
-            f.client_data?.nom
-                ?.toLowerCase()
-                .includes(searchTerm.value.toLowerCase()) ||
-            f.id?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+        const matchClient = !selectedClient.value || f.client_data?.nom === selectedClient.value;
+        const matchStatus = !selectedStatus.value || f.statut === selectedStatus.value;
+        const matchSearch = !searchTerm.value ||
+            f.client_data?.nom?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
             f.numero?.toString().includes(searchTerm.value);
-
         return matchClient && matchStatus && matchSearch;
     });
 });
 
 const totalAmount = computed(() => {
-    return facturesFiltrees.value.reduce((total, facture) => {
-        return total + (parseFloat(facture.montant_total) || 0);
-    }, 0);
+    return facturesFiltrees.value.reduce((total, f) => total + (parseFloat(f.montant_total) || 0), 0);
 });
 
 const pendingCount = computed(() => {

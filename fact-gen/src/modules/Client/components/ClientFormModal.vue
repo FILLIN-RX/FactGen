@@ -1,87 +1,104 @@
 <template>
     <Teleport to="body">
-        <Transition name="modal" appear>
+        <Transition name="fade" appear>
             <div v-if="open"
-                class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+                class="fixed inset-0 bg-[#001C3B]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
                 @click="handleBackdropClick">
-                <div class="bg-white w-full sm:w-auto sm:min-w-[400px] sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl transform transition-all duration-300 ease-out max-h-[90vh] overflow-y-auto"
+                <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-outline-variant flex flex-col"
                     @click.stop>
                     <!-- Header -->
-                    <div class="flex items-center justify-between p-6 border-b border-gray-100">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                <UserPlusIcon class="w-5 h-5 text-blue-600" />
+                    <div
+                        class="px-8 py-6 border-b border-outline-variant flex items-center justify-between bg-white sticky top-0 z-10">
+                        <div class="flex items-center space-x-4">
+                            <div
+                                class="w-10 h-10 bg-[#D3E4FF] rounded-xl flex items-center justify-center border border-[#005AC1]/10">
+                                <UserPlusIcon class="w-5 h-5 text-[#005AC1]" />
                             </div>
-                            <h2 class="text-xl font-semibold text-gray-900">Nouveau client</h2>
+                            <div>
+                                <h2 class="text-xl font-bold text-[#1A1C1E]">{{ form.id ? 'Modifier le client' :
+                                    'Nouveau client' }}</h2>
+                                <p
+                                    class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest mt-0.5">
+                                    Saisie des informations</p>
+                            </div>
                         </div>
                         <button @click="$emit('close')"
-                            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
-                            aria-label="Fermer">
-                            <XMarkIcon class="w-5 h-5 text-gray-500" />
+                            class="p-2 rounded-full hover:bg-[#F8F9FA] text-surface-on-variant transition-colors">
+                            <XMarkIcon class="w-5 h-5" />
                         </button>
                     </div>
 
                     <!-- Form -->
-                    <form @submit.prevent="handleSubmit" class="p-6 space-y-5">
+                    <form @submit.prevent="handleSubmit" class="p-8 space-y-6 overflow-y-auto max-h-[70vh]">
                         <!-- Nom -->
-                        <div class="space-y-2">
-                            <label for="nom" class="block text-sm font-medium text-gray-700">
-                                Nom complet <span class="text-red-500">*</span>
+                        <div class="space-y-1.5">
+                            <label for="nom"
+                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider block">
+                                Nom complet ou Entreprise <span class="text-red-500 font-bold">*</span>
                             </label>
-                            <input id="nom" v-model="form.nom" type="text" placeholder="Jean Dupont"
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400"
-                                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.nom }"
-                                required />
-                            <p v-if="errors.nom" class="text-sm text-red-600">{{ errors.nom }}</p>
+                            <input id="nom" v-model="form.nom" type="text" placeholder="Ex: Tech Solutions SAS"
+                                class="input-outlined h-12 text-sm"
+                                :class="{ 'border-red-500 bg-red-50/10': errors.nom }" required />
+                            <p v-if="errors.nom" class="text-[10px] font-bold text-red-600 uppercase">{{ errors.nom }}
+                            </p>
                         </div>
 
-                        <!-- Email -->
-                        <div class="space-y-2">
-                            <label for="email" class="block text-sm font-medium text-gray-700">
-                                Email
-                            </label>
-                            <input id="email" v-model="form.email" type="email" placeholder="jean.dupont@example.com"
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400"
-                                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.email }" />
-                            <p v-if="errors.email" class="text-sm text-red-600">{{ errors.email }}</p>
-                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Email -->
+                            <div class="space-y-1.5">
+                                <label for="email"
+                                    class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider block">
+                                    Email de contact
+                                </label>
+                                <input id="email" v-model="form.email" type="email" placeholder="contact@client.com"
+                                    class="input-outlined h-12 text-sm"
+                                    :class="{ 'border-red-500 bg-red-50/10': errors.email }" />
+                                <p v-if="errors.email" class="text-[10px] font-bold text-red-600 uppercase">{{
+                                    errors.email }}</p>
+                            </div>
 
-                        <!-- Téléphone -->
-                        <div class="space-y-2">
-                            <label for="telephone" class="block text-sm font-medium text-gray-700">
-                                Téléphone
-                            </label>
-                            <input id="telephone" v-model="form.telephone" type="tel" placeholder="+33 6 12 34 56 78"
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400"
-                                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.telephone }" />
-                            <p v-if="errors.telephone" class="text-sm text-red-600">{{ errors.telephone }}</p>
+                            <!-- Téléphone -->
+                            <div class="space-y-1.5">
+                                <label for="telephone"
+                                    class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider block">
+                                    Téléphone
+                                </label>
+                                <input id="telephone" v-model="form.telephone" type="tel" placeholder="+33 6 ..."
+                                    class="input-outlined h-12 text-sm"
+                                    :class="{ 'border-red-500 bg-red-50/10': errors.telephone }" />
+                                <p v-if="errors.telephone" class="text-[10px] font-bold text-red-600 uppercase">{{
+                                    errors.telephone }}</p>
+                            </div>
                         </div>
 
                         <!-- Adresse -->
-                        <div class="space-y-2">
-                            <label for="adresse" class="block text-sm font-medium text-gray-700">
-                                Adresse
+                        <div class="space-y-1.5">
+                            <label for="adresse"
+                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider block">
+                                Adresse de facturation
                             </label>
                             <textarea id="adresse" v-model="form.adresse" rows="3"
-                                placeholder="123 Rue de la Paix, 75001 Paris"
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400 resize-none"
-                                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.adresse }" />
-                            <p v-if="errors.adresse" class="text-sm text-red-600">{{ errors.adresse }}</p>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
-                            <button type="button" @click="$emit('close')"
-                                class="w-full sm:w-auto px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                                Annuler
-                            </button>
-                            <button type="submit" :disabled="isSubmitting"
-                                class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2">
-                                <ArrowPathIcon v-if="isSubmitting" class="w-4 h-4 animate-spin" />
-                                {{ isSubmitting ? 'Ajout...' : 'Ajouter le client' }}
-                            </button>
+                                placeholder="Numéro, rue, code postal et ville..."
+                                class="input-outlined py-3 text-sm resize-none"
+                                :class="{ 'border-red-500 bg-red-50/10': errors.adresse }" />
+                            <p v-if="errors.adresse" class="text-[10px] font-bold text-red-600 uppercase">{{
+                                errors.adresse }}</p>
                         </div>
                     </form>
+
+                    <!-- Footer Actions -->
+                    <div
+                        class="px-8 py-5 border-t border-outline-variant bg-[#F8F9FA] flex flex-col sm:flex-row gap-3 sm:justify-end">
+                        <button type="button" @click="$emit('close')"
+                            class="btn-text px-6 py-2.5 rounded-xl border border-transparent hover:border-outline-variant transition-all font-bold text-sm text-surface-on-variant">
+                            Annuler
+                        </button>
+                        <button type="submit" @click="handleSubmit" :disabled="isSubmitting"
+                            class="btn-filled px-8 py-2.5 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2">
+                            <ArrowPathIcon v-if="isSubmitting" class="w-4 h-4 animate-spin" />
+                            {{ isSubmitting ? 'Traitement...' : (form.id ? 'Mettre à jour' : 'Enregistrer le client') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </Transition>
@@ -107,36 +124,19 @@ const errors = reactive({
     adresse: ''
 });
 
-// Validation des champs
 const validateForm = () => {
-    // Reset errors
-    Object.keys(errors).forEach(key => {
-        errors[key] = '';
-    });
-
+    Object.keys(errors).forEach(key => errors[key] = '');
     let isValid = true;
 
-    // Validation nom
     if (!props.form.nom || props.form.nom.trim().length < 2) {
-        errors.nom = 'Le nom doit contenir au moins 2 caractères';
+        errors.nom = 'Le nom est requis';
         isValid = false;
     }
 
-    // Validation email
     if (props.form.email && props.form.email.trim()) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(props.form.email)) {
-            errors.email = 'Format d\'email invalide';
-            isValid = false;
-        }
-    }
-
-    // Validation téléphone
-    if (props.form.telephone && props.form.telephone.trim()) {
-        const phoneRegex = /^(?:\+33|0)[1-9](?:[0-9]{8})$/;
-        const cleanPhone = props.form.telephone.replace(/\s/g, '');
-        if (!phoneRegex.test(cleanPhone)) {
-            errors.telephone = 'Format de téléphone invalide';
+            errors.email = 'Email invalide';
             isValid = false;
         }
     }
@@ -151,57 +151,34 @@ const handleSubmit = async () => {
         isSubmitting.value = true;
         await emit('submit');
     } catch (error) {
-        console.error('Erreur lors de l\'ajout du client:', error);
+        console.error('Erreur:', error);
     } finally {
         isSubmitting.value = false;
     }
 };
 
 const handleBackdropClick = () => {
-    if (!isSubmitting.value) {
-        emit('close');
-    }
+    if (!isSubmitting.value) emit('close');
 };
 
-// Focus sur le premier champ quand le modal s'ouvre
 watch(() => props.open, (newVal) => {
     if (newVal) {
         nextTick(() => {
             const firstInput = document.getElementById('nom');
-            if (firstInput) {
-                firstInput.focus();
-            }
+            if (firstInput) firstInput.focus();
         });
     }
 });
 </script>
 
 <style scoped>
-.modal-enter-active,
-.modal-leave-active {
-    transition: all 0.3s ease;
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s;
 }
 
-.modal-enter-from {
+.fade-enter-from,
+.fade-leave-to {
     opacity: 0;
-    transform: scale(0.95);
-}
-
-.modal-leave-to {
-    opacity: 0;
-    transform: scale(0.95);
-}
-
-/* Animation pour mobile */
-@media (max-width: 640px) {
-    .modal-enter-from {
-        opacity: 0;
-        transform: translateY(100%);
-    }
-
-    .modal-leave-to {
-        opacity: 0;
-        transform: translateY(100%);
-    }
 }
 </style>

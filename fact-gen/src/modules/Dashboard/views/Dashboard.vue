@@ -1,309 +1,212 @@
 <template>
-    <section class="min-h-screen">
-        <!-- Augmentation du padding vertical sur mobile -->
-        <div class="container mx-auto px-3 xs:px-4 sm:px-6 py-3 xs:py-4 sm:py-6">
-            <!-- Header réorganisé pour mobile -->
-            <header class="mb-6 sm:mb-8">
-                <div class="flex flex-col">
-                    <div class="mb-4">
-                        <h1 class="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
-                            Dashboard Analytics
-                        </h1>
-                        <p class="text-xs sm:text-base text-gray-600">
-                            Vue d'ensemble de vos performances
-                        </p>
-                    </div>
+    <div class="space-y-8">
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-[#1A1C1E]">Tableau de bord</h1>
+                <p class="text-sm text-surface-on-variant">Résumé financier de votre activité</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="btn-outlined px-4 py-2 text-sm shadow-sm">
+                    <ArrowDownTrayIcon class="w-4 h-4 mr-2" />
+                    Exporter
+                </button>
+                <button class="btn-filled px-5 py-2 hover:shadow-lg transition-shadow">
+                    <PlusIcon class="w-5 h-5 mr-2" />
+                    Créer une facture
+                </button>
+            </div>
+        </header>
 
-                    <!-- Boutons en colonne sur mobile -->
-                </div>
-            </header>
-            <div class="space-y-4 xs:space-y-6">
-                <!-- Statistiques avec moins d'espacement sur mobile -->
-                <div class="mb-6 sm:mb-8">
-                    <div class="p-3 sm:p-6">
-                        <Statistics />
+        <!-- Financial Overview (Cards) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div v-for="stat in quickStats" :key="stat.label"
+                class="card-outlined p-5 group hover:border-[#005AC1]/30 transition-colors">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 rounded-lg" :class="stat.bg">
+                        <component :is="stat.icon" class="w-5 h-5" :class="stat.color" />
                     </div>
-                    <div class="p-3 sm:p-6">
-                        <StatStatus />
+                </div>
+                <p class="text-xs font-medium text-surface-on-variant uppercase tracking-wider">{{ stat.label }}</p>
+                <div class="flex items-end justify-between mt-1">
+                    <h3 class="text-xl font-bold text-[#1A1C1E]">{{ stat.value }}</h3>
+                    <span v-if="stat.trend"
+                        class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-50 text-green-600 flex items-center">
+                        <ArrowUpIcon class="w-2 h-2 mr-1" /> {{ stat.trend }}%
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content: Recent Invoices -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="card-outlined p-0 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between">
+                        <h2 class="font-bold text-[#1A1C1E]">Factures récentes</h2>
+                        <router-link to="/facture" class="text-sm text-[#005AC1] hover:underline">Voir
+                            tout</router-link>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead
+                                class="bg-[#F8F9FA] text-[11px] uppercase tracking-wider text-surface-on-variant font-bold">
+                                <tr>
+                                    <th class="px-6 py-3">Client</th>
+                                    <th class="px-6 py-3">Date</th>
+                                    <th class="px-6 py-3">Montant</th>
+                                    <th class="px-6 py-3">Statut</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant">
+                                <tr v-for="invoice in recentInvoices" :key="invoice.id"
+                                    class="hover:bg-[#F8F9FA]/50 transition-colors cursor-pointer group">
+                                    <td class="px-6 py-4">
+                                        <p class="text-sm font-bold text-[#1A1C1E]">{{ invoice.client }}</p>
+                                        <p class="text-[10px] text-surface-on-variant">INV-{{ invoice.id }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-xs text-surface-on-variant">
+                                        {{ invoice.date }}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-bold text-[#1A1C1E]">
+                                        {{ formatCurrency(invoice.montant) }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span :class="getStatusClass(invoice.status)">
+                                            {{ invoice.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="p-1.5 text-surface-on-variant hover:text-[#005AC1] transition-colors">
+                                            <EllipsisVerticalIcon class="w-4 h-4" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Grille simplifiée sur mobile -->
-                <div class="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                    <!-- Graphique principal -->
-                    <div>
-                        <div class="glass-card p-3 sm:p-6">
-                            <div class="flex flex-col mb-4 sm:mb-6">
-                                <h2 class="text-base sm:text-xl font-semibold text-gray-900 mb-2">
-                                    Évolution des revenus
-                                </h2>
-                                <select class="select-custom text-xs sm:text-sm">
-                                    <option>7 derniers jours</option>
-                                    <option>30 derniers jours</option>
-                                    <option>3 derniers mois</option>
-                                </select>
-                            </div>
-                            <div class="chart-container">
-                                <BarChart />
-                            </div>
+                <!-- Financial Chart -->
+                <div class="card-outlined p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="font-bold text-[#1A1C1E]">Évolution mensuelle</h2>
+                        <select class="input-outlined w-auto py-1 h-8 text-xs">
+                            <option>Année 2024</option>
+                            <option>Année 2023</option>
+                        </select>
+                    </div>
+                    <div class="h-64 flex items-end justify-between gap-2 px-2">
+                        <div v-for="(val, i) in [40, 60, 45, 80, 55, 90, 70, 85, 60, 95, 80, 100]" :key="i"
+                            class="flex-1 bg-[#D3E4FF] rounded-t-sm hover:bg-[#005AC1] transition-colors relative group"
+                            :style="{ height: val + '%' }">
+                            <span
+                                class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                                {{ val }}k
+                            </span>
                         </div>
                     </div>
+                    <div class="flex justify-between mt-4 text-[10px] text-surface-on-variant font-bold">
+                        <span>JAN</span><span>FÉV</span><span>MAR</span><span>AVR</span><span>MAI</span><span>JUN</span>
+                        <span>JUL</span><span>AOÛ</span><span>SEP</span><span>OCT</span><span>NOV</span><span>DÉC</span>
+                    </div>
+                </div>
+            </div>
 
-                    <!-- Panneau latéral avec comptes -->
+            <!-- Sidebar Content -->
+            <aside class="space-y-6">
+                <!-- Quick Reports -->
+                <div class="card-outlined p-6 bg-[#005AC1] text-white border-none shadow-elevation-2">
+                    <h3 class="font-bold text-lg mb-2">Prêt pour les impôts ?</h3>
+                    <p class="text-xs text-blue-100 mb-4">Générez votre rapport annuel en un clic et simplifiez votre
+                        comptabilité.</p>
+                    <button
+                        class="w-full bg-white text-[#005AC1] font-bold py-2.5 rounded-lg text-sm hover:bg-blue-50 transition-colors">
+                        Générer le rapport
+                    </button>
                 </div>
 
-                <!-- Section activité récente -->
-                <div class="glass-card p-3 sm:p-6" v-if="showRecentActivity">
-                    <div class="flex items-center justify-between mb-4 sm:mb-6">
-                        <h2 class="text-base sm:text-xl font-semibold text-gray-900">
-                            Activité récente
-                        </h2>
-                        <button class="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium">
-                            Voir tout
+                <!-- Recent Clients -->
+                <div class="card-outlined p-0">
+                    <div class="px-6 py-4 border-b border-outline-variant">
+                        <h2 class="font-bold text-[#1A1C1E] text-sm">Nouveaux clients</h2>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div v-for="i in 3" :key="i" class="flex items-center justify-between group">
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-[#F8F9FA] flex items-center justify-center border border-outline-variant text-[10px] font-bold">
+                                    C{{ i }}
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-[#1A1C1E]">Client #{{ i }}</p>
+                                    <p class="text-[10px] text-surface-on-variant">Ajouté il y a 2h</p>
+                                </div>
+                            </div>
+                            <button
+                                class="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-50 hover:text-[#005AC1] rounded">
+                                <PlusIcon class="w-3 h-3" />
+                            </button>
+                        </div>
+                        <button
+                            class="w-full text-center py-2 text-xs font-bold text-[#005AC1] hover:bg-blue-50 rounded transition-colors">
+                            Voir tous les clients
                         </button>
                     </div>
-                    <RecentActivity />
                 </div>
-            </div>
-            <div>
-                <ClientFormModal :open="operationsStore.showNewClientModal" @close="operationsStore.closeNewClientModal"
-                    :form="{}" />
-            </div>
+            </aside>
         </div>
-    </section>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
-import { supabase } from "@/lib/supabase";
-import StatStatus from "../components/StatStatus.vue";
-// import FactureTemp from "../components/FactureTemp.vue"; // Unused or legacy
-import ClientFormModal from "@/modules/Client/components/ClientFormModal.vue";
-import { useOperationsStore } from "@/shared/stores/ui.store";
-import BarChart from "../components/BarChart.vue";
-import RecentActivity from "../components/RecentActivity.vue";
-import Statistics from "../components/Statistics.vue";
+import { ref } from 'vue';
+import {
+    PlusIcon,
+    ArrowDownTrayIcon,
+    BanknotesIcon,
+    ClockIcon,
+    ExclamationCircleIcon,
+    CheckCircleIcon,
+    ArrowUpIcon,
+    EllipsisVerticalIcon
+} from '@heroicons/vue/24/outline';
 
-function creer() {
-    open.value = !open.value;
-}
-const operationsStore = useOperationsStore();
-const toast = useToast();
-const router = useRouter();
+const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
+};
 
-// Données réactives
-const utilisateur = ref(null);
-const showRecentActivity = ref(false);
+const quickStats = [
+    { label: 'Revenu Total', value: '45 250 €', icon: BanknotesIcon, color: 'text-blue-600', bg: 'bg-blue-50', trend: '12' },
+    { label: 'En attente', value: '8 400 €', icon: ClockIcon, color: 'text-amber-600', bg: 'bg-amber-50', trend: '4' },
+    { label: 'En retard', value: '1 200 €', icon: ExclamationCircleIcon, color: 'text-red-600', bg: 'bg-red-50' },
+    { label: 'Encaissé', value: '35 650 €', icon: CheckCircleIcon, color: 'text-green-600', bg: 'bg-green-50', trend: '8' }
+];
 
-// Fonctions
-function formatCurrency(amount) {
-    return new Intl.NumberFormat("fr-FR", {
-        style: "currency",
-        currency: "EUR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
+const recentInvoices = [
+    { id: '2024-001', client: 'Tech Solutions SAS', date: '15 Jan 2024', montant: 2500, status: 'Payé' },
+    { id: '2024-002', client: 'Marcelle Design', date: '14 Jan 2024', montant: 450, status: 'En attente' },
+    { id: '2024-003', client: 'Boulangerie Patisson', date: '12 Jan 2024', montant: 1200, status: 'En retard' },
+    { id: '2024-004', client: 'Jean Dubois EURL', date: '10 Jan 2024', montant: 800, status: 'Payé' },
+    { id: '2024-005', client: 'Hôtel Splendid', date: '08 Jan 2024', montant: 3200, status: 'Payé' }
+];
 
-function handleExport() {
-    toast.success("Export en cours...");
-}
-
-function handleNewReport() {
-    toast.info("Nouveau rapport créé");
-}
-
-// Vérification de session
-onMounted(async () => {
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-        router.push("/");
-    } else {
-        utilisateur.value = session.user;
-        console.log("Utilisateur connecté :", session.user);
+const getStatusClass = (status) => {
+    switch (status) {
+        case 'Payé': return 'badge-paid';
+        case 'En attente': return 'badge-pending';
+        case 'En retard': return 'bg-red-100 text-red-800 px-2 py-0.5 rounded-full text-[10px] font-bold';
+        default: return 'bg-gray-100 text-gray-800 px-2 py-0.5 rounded-full text-[10px] font-bold';
     }
-});
+};
 </script>
 
 <style scoped>
-/* Glass Morphism Cards */
-.glass-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(229, 231, 235, 0.8);
-    border-radius: 1rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.glass-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-        0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
-}
-
-/* Boutons modernes */
-.btn-primary {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.625rem 1rem;
-    background-color: #3b82f6;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 0.75rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.btn-primary:hover {
-    background-color: #2563eb;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.btn-primary:active {
-    transform: scale(0.95);
-}
-
-.btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.625rem 1rem;
+/* Specific card hover effects */
+.card-outlined {
     background-color: white;
-    color: #374151;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.btn-secondary:hover {
-    background-color: #f9fafb;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.btn-secondary:active {
-    transform: scale(0.95);
-}
-
-/* Select personnalisé */
-.select-custom {
-    appearance: none;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    font-size: 0.875rem;
-    border-radius: 0.5rem;
-    padding: 0.5rem 2rem 0.5rem 0.75rem;
-    color: #374151;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.7rem center;
-    background-size: 1rem;
-}
-
-.select-custom:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Cards de comptes */
-.account-card {
-    padding: 1rem;
-    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
-    border: 1px solid #f3f4f6;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.account-card:hover {
-    transform: translateY(-2px);
-    border-color: #e5e7eb;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Container pour graphiques */
-.chart-container {
-    position: relative;
-
-}
-
-@media (min-width: 640px) {
-    .chart-container {
-        min-height: 400px;
-    }
-}
-
-/* Responsive utilities */
-@media (max-width: 640px) {
-    .glass-card {
-        border-radius: 0.75rem;
-    }
-
-    .account-card {
-        padding: 0.75rem;
-    }
-}
-
-/* Animation d'entrée */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.glass-card {
-    animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Focus states pour l'accessibilité */
-button:focus,
-select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Loading states */
-.loading-shimmer {
-    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-    border-radius: 5px;
-    background-size: 200% 100%;
-    animation: 1.5s shine linear infinite;
-}
-
-@keyframes shine {
-    to {
-        background-position-x: -200%;
-    }
-}
-
-/* Print styles */
-@media print {
-    .glass-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        box-shadow: none;
-    }
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 </style>
