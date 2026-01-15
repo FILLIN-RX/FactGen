@@ -1,513 +1,403 @@
 <template>
-    <div class="flex h-screen bg-[#F8F9FA] text-[#1A1C1E] font-sans overflow-hidden selection:bg-[#D3E4FF]">
-        <!-- Left Panel: Editor (Scrollable) -->
-        <div class="w-full lg:w-[55%] h-full flex flex-col border-r border-outline-variant bg-white">
-            <!-- Sticky Header -->
-            <header
-                class="h-16 shrink-0 bg-white/80 backdrop-blur-md border-b border-outline-variant flex items-center justify-between px-6 sticky top-0 z-20">
+    <div class="flex h-screen bg-[#F8F9FA] text-[#1A1C1E] font-sans overflow-hidden">
+        
+        <div class="w-full lg:w-[55%] h-full flex flex-col border-r border-gray-200 bg-[#F8F9FA] relative z-10">
+            
+            <header class="h-16 shrink-0 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-20 shadow-sm">
                 <div class="flex items-center gap-4">
-                    <button @click="$router.back()"
-                        class="p-2 hover:bg-[#F8F9FA] rounded-full transition-colors text-surface-on-variant hover:text-[#005AC1]">
+                    <button @click="$router.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 hover:text-[#005AC1]">
                         <ArrowLeftIcon class="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 class="text-base font-bold text-[#1A1C1E] tracking-tight">Configuration Document</h1>
-                        <div class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                            <span
-                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">Sauvegarde
-                                active</span>
-                        </div>
+                        <h1 class="text-base font-bold text-[#1A1C1E]">Éditeur de facture</h1>
+                        <p class="text-xs text-gray-500 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Brouillon automatique
+                        </p>
                     </div>
                 </div>
-
+                
                 <div class="flex items-center gap-3">
-                    <button @click="openTemplateDialog"
-                        class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#F8F9FA] hover:bg-[#D3E4FF]/30 border border-outline-variant rounded-lg transition-all group">
-                        <span
-                            class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider">Modèle</span>
-                        <div class="w-px h-3 bg-outline-variant"></div>
-                        <span class="text-xs font-bold text-[#005AC1]">{{ selectedTemplate.nom }}</span>
-                        <ChevronDownIcon class="w-4 h-4 text-surface-on-variant" />
-                    </button>
+                    <div class="hidden md:flex items-center bg-gray-100 rounded-lg p-1">
+                        <button 
+                            v-for="t in templates" :key="t.id"
+                            @click="selectedTemplate = t"
+                            :class="['px-3 py-1.5 text-xs font-medium rounded-md transition-all', selectedTemplate.id === t.id ? 'bg-white text-[#005AC1] shadow-sm' : 'text-gray-500 hover:text-gray-700']"
+                        >
+                            {{ t.name }}
+                        </button>
+                    </div>
 
-                    <div class="h-6 w-px bg-outline-variant mx-1"></div>
-
-                    <button @click="creerFacture"
-                        class="group relative flex items-center gap-2 px-6 py-2 bg-[#005AC1] hover:bg-[#004494] text-white rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md">
-                        <span>Finaliser</span>
-                        <PaperAirplaneIcon class="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </button>
-
-                    <!-- Mobile Preview Toggle -->
-                    <button @click="showPreviewMobile = true"
-                        class="lg:hidden p-2 text-[#005AC1] hover:bg-[#D3E4FF]/30 rounded-lg ml-2">
-                        <EyeIcon class="w-6 h-6" />
+                    <button @click="sauvegarderFacture" :disabled="isSaving" 
+                        class="flex items-center gap-2 bg-[#005AC1] hover:bg-[#004ba0] text-white px-5 py-2 rounded-full font-medium text-sm transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span v-if="isSaving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                        <span v-else>Enregistrer</span>
                     </button>
                 </div>
             </header>
 
-            <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 space-y-10">
-
-                <!-- Section: Client -->
-                <section class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h2
-                            class="text-sm font-bold text-surface-on-variant uppercase tracking-widest flex items-center gap-2">
-                            <span class="p-1.5 rounded-md bg-[#D3E4FF] text-[#005AC1]">
-                                <UserIcon class="w-4 h-4" />
-                            </span>
-                            Informations Client
-                        </h2>
-                        <button @click="createNewClient"
-                            class="text-xs font-bold text-[#005AC1] hover:underline transition-colors">+ Nouveau
-                            client</button>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                
+                <section class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
+                        <CalendarIcon class="w-4 h-4 text-[#005AC1]" /> Informations
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="group">
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">N° Facture</label>
+                            <input v-model="numeroFacture" type="text" 
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 focus:ring-2 focus:ring-[#005AC1] focus:bg-white focus:border-[#005AC1] transition-all outline-none" 
+                                placeholder="FAC-2024-001" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Émission</label>
+                                <input v-model="dateEmission" type="date" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#005AC1] transition-colors" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5">Échéance</label>
+                                <input v-model="dateEcheance" type="date" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#005AC1] transition-colors" />
+                            </div>
+                        </div>
                     </div>
+                </section>
 
+                <section class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-visible">
+                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
+                        <UserIcon class="w-4 h-4 text-[#005AC1]" /> Client
+                    </h3>
+                    
                     <div class="relative">
-                        <MagnifyingGlassIcon
-                            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-on-variant" />
-                        <input v-model="client.nom" placeholder="Rechercher un client existant..."
-                            class="w-full pl-12 pr-4 h-12 bg-[#F8F9FA] border border-outline-variant rounded-xl focus:ring-2 focus:ring-[#005AC1]/20 focus:border-[#005AC1] text-sm font-medium transition-all"
-                            @focus="showClientDropdown = true" @blur="handleClientBlur" />
-
-                        <!-- Auto-complete Dropdown -->
-                        <div v-if="showClientDropdown && filteredClients.length > 0"
-                            class="absolute z-20 left-0 right-0 top-full mt-2 bg-white border border-outline-variant rounded-xl shadow-xl py-2 max-h-60 overflow-y-auto">
-                            <div v-for="clientItem in filteredClients" :key="clientItem.id"
-                                @mousedown.prevent="selectClient(clientItem)"
-                                class="px-6 py-3 hover:bg-[#F8F9FA] cursor-pointer flex items-center justify-between group">
-                                <div>
-                                    <div
-                                        class="text-sm font-bold text-[#1A1C1E] group-hover:text-[#005AC1] transition-colors">
-                                        {{ clientItem.nom }}</div>
-                                    <div class="text-xs text-surface-on-variant">{{ clientItem.email }}</div>
-                                </div>
-                            </div>
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <MagnifyingGlassIcon class="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input 
+                            type="text" 
+                            v-model="clientSearch"
+                            @focus="showClientDropdown = true"
+                            placeholder="Rechercher ou ajouter un client..." 
+                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#005AC1] focus:bg-white focus:border-transparent outline-none transition-all"
+                        />
+                        
+                        <div v-if="showClientDropdown && filteredClients.length > 0" 
+                            class="absolute top-full left-0 w-full mt-2 bg-white rounded-lg shadow-xl border border-gray-100 z-50 max-h-60 overflow-y-auto">
+                            <ul>
+                                <li v-for="client in filteredClients" :key="client.id" 
+                                    @click="selectClient(client)"
+                                    class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0 flex items-center justify-between group">
+                                    <div>
+                                        <p class="font-medium text-sm text-gray-900 group-hover:text-[#005AC1]">{{ client.nom }}</p>
+                                        <p class="text-xs text-gray-500">{{ client.email }}</p>
+                                    </div>
+                                    <PlusCircleIcon class="w-5 h-5 text-gray-300 group-hover:text-[#005AC1]" />
+                                </li>
+                            </ul>
                         </div>
                     </div>
 
-                    <div v-if="client.email"
-                        class="flex gap-4 p-4 rounded-xl bg-[#F8F9FA] border border-outline-variant text-[11px] font-medium text-surface-on-variant">
-                        <div class="flex items-center gap-2">
-                            <EnvelopeIcon class="w-3.5 h-3.5" />
-                            <span>{{ client.email }}</span>
+                    <div v-if="clientSelectionne" class="mt-4 p-3 bg-blue-50/50 border border-blue-100 rounded-lg flex justify-between items-start animate-fade-in">
+                        <div>
+                            <p class="font-bold text-[#005AC1] text-sm">{{ clientSelectionne.nom }}</p>
+                            <p class="text-xs text-gray-600 mt-1">{{ clientSelectionne.adresse }}</p>
+                            <p class="text-xs text-gray-500">{{ clientSelectionne.email }}</p>
                         </div>
-                        <div class="flex items-center gap-2 ml-4">
-                            <MapPinIcon class="w-3.5 h-3.5" />
-                            <span class="truncate">{{ client.address }}</span>
-                        </div>
-                    </div>
-                </section>
-
-                <hr class="border-outline-variant/50" />
-
-                <!-- Section: Invoice Details -->
-                <section class="space-y-4">
-                    <h2
-                        class="text-sm font-bold text-surface-on-variant uppercase tracking-widest flex items-center gap-2">
-                        <span class="p-1.5 rounded-md bg-[#D3E4FF] text-[#005AC1]">
-                            <DocumentTextIcon class="w-4 h-4" />
-                        </span>
-                        Détails du document
-                    </h2>
-
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#F8F9FA] p-6 rounded-2xl border border-outline-variant">
-                        <div class="space-y-1.5">
-                            <label
-                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider ml-1">Référence
-                                document</label>
-                            <input v-model="numeroFacture" readonly
-                                class="w-full bg-white border border-outline-variant rounded-xl px-4 py-2.5 text-[#1A1C1E] font-bold text-sm focus:outline-none cursor-not-allowed" />
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <label
-                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider ml-1">Date
-                                d'émission</label>
-                            <input type="date" v-model="dateEmission"
-                                class="w-full bg-white border border-outline-variant rounded-xl px-4 py-2.5 text-[#1A1C1E] text-sm font-bold focus:ring-2 focus:ring-[#005AC1]/20 focus:border-[#005AC1] transition-all outline-none" />
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <label
-                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider ml-1">Conditions
-                                de règlement</label>
-                            <div class="relative">
-                                <select v-model="conditionsPaiement"
-                                    class="appearance-none w-full bg-white border border-outline-variant rounded-xl px-4 py-2.5 text-[#1A1C1E] text-sm font-bold focus:ring-2 focus:ring-[#005AC1]/20 focus:border-[#005AC1] transition-all outline-none cursor-pointer">
-                                    <option value="30">30 jours net</option>
-                                    <option value="15">15 jours net</option>
-                                    <option value="60">60 jours net</option>
-                                    <option value="0">À réception</option>
-                                </select>
-                                <ChevronDownIcon
-                                    class="w-4 h-4 text-surface-on-variant absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <label
-                                class="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider ml-1">Date
-                                d'échéance estimée</label>
-                            <input type="date" v-model="dateEcheance"
-                                class="w-full bg-white border border-outline-variant rounded-xl px-4 py-2.5 text-[#1A1C1E] text-sm font-bold focus:ring-2 focus:ring-[#005AC1]/20 focus:border-[#005AC1] transition-all outline-none" />
-                        </div>
+                        <button @click="clientSelectionne = null" class="text-xs text-red-500 hover:text-red-700 font-medium">Changer</button>
                     </div>
                 </section>
 
-                <hr class="border-outline-variant/50" />
-
-                <!-- Section: Products -->
-                <section class="space-y-4">
-                    <h2
-                        class="text-sm font-bold text-surface-on-variant uppercase tracking-widest flex items-center gap-2">
-                        <span class="p-1.5 rounded-md bg-[#D3E4FF] text-[#005AC1]">
-                            <CubeIcon class="w-4 h-4" />
-                        </span>
-                        Lignes de facturation
-                    </h2>
-
-                    <div class="border border-outline-variant rounded-2xl overflow-hidden bg-white shadow-sm">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr
-                                    class="bg-[#F8F9FA] border-b border-outline-variant text-[10px] text-surface-on-variant uppercase tracking-widest font-bold">
-                                    <th class="px-6 py-4 w-[45%]">Description</th>
-                                    <th class="px-2 py-4 text-center w-[10%]">Qté</th>
-                                    <th class="px-2 py-4 text-right w-[15%]">Prix Unitaire</th>
-                                    <th class="px-2 py-4 text-center w-[12%]">TVA</th>
-                                    <th class="px-6 py-4 text-right w-[18%]">Total</th>
-                                    <th class="px-2 py-4 w-[5%]"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant/30">
-                                <tr v-for="(produit, index) in produits" :key="index" class="group transition-colors">
-                                    <td class="px-6 py-3">
-                                        <input v-model="produit.nom" type="text"
-                                            placeholder="Désignation du produit ou service..."
-                                            class="w-full bg-transparent border-none p-2 text-[#1A1C1E] placeholder-surface-on-variant/50 focus:ring-0 text-sm font-bold rounded-lg focus:bg-[#F8F9FA]" />
-                                    </td>
-                                    <td class="px-2 py-3">
-                                        <input v-model.number="produit.quantite" type="number" min="1"
-                                            class="w-16 bg-[#F8F9FA] border border-outline-variant rounded-lg px-2 py-1.5 text-center text-[#1A1C1E] text-sm font-bold focus:border-[#005AC1] outline-none transition-all" />
-                                    </td>
-                                    <td class="px-2 py-3 text-right">
-                                        <input v-model.number="produit.prix" type="number" step="0.01"
-                                            class="w-24 bg-[#F8F9FA] border border-outline-variant rounded-lg px-2 py-1.5 text-right text-[#1A1C1E] text-sm font-bold focus:border-[#005AC1] outline-none transition-all" />
-                                    </td>
-                                    <td class="px-2 py-3 text-center">
-                                        <select v-model="produit.tva"
-                                            class="bg-transparent border-none text-xs font-bold text-[#005AC1] focus:ring-0 cursor-pointer text-center p-1 rounded-lg hover:bg-[#D3E4FF]/30 transition-all">
-                                            <option value="0%">0%</option>
-                                            <option value="5.5%">5.5%</option>
-                                            <option value="10%">10%</option>
-                                            <option value="20%">20%</option>
-                                        </select>
-                                    </td>
-                                    <td class="px-6 py-3 text-right text-sm font-bold text-[#1A1C1E]">
-                                        {{ formatPrix(produit.quantite * produit.prix) }}
-                                    </td>
-                                    <td class="px-2 py-3 text-center">
-                                        <button @click="supprimerLigne(index)"
-                                            class="p-2 text-surface-on-variant hover:text-red-600 hover:bg-red-50 rounded-full transition-all opacity-0 group-hover:opacity-100">
-                                            <TrashIcon class="w-4 h-4" />
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button @click="ajouterProduit"
-                            class="w-full py-4 text-[10px] uppercase tracking-widest font-bold text-[#005AC1] hover:bg-[#D3E4FF]/10 transition-all flex items-center justify-center gap-2 border-t border-outline-variant">
-                            <PlusIcon class="w-4 h-4" />
-                            Ajouter un item
-                        </button>
-                    </div>
-                </section>
-
-                <hr class="border-outline-variant/50" />
-
-                <!-- Section: Footer & Totals -->
-                <section class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="space-y-4">
-                        <h2 class="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest ml-1">Notes
-                            complémantaires</h2>
-                        <textarea v-model="notesBasPage"
-                            placeholder="Coordonnées bancaires, remerciements ou mentions légales spécifiques..."
-                            class="w-full h-32 bg-white border border-outline-variant rounded-2xl p-4 text-sm font-medium text-[#1A1C1E] focus:ring-2 focus:ring-[#005AC1]/10 focus:border-[#005AC1] transition-all outline-none resize-none placeholder-surface-on-variant/40 shadow-sm"></textarea>
+                <section class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide flex items-center gap-2">
+                            <TagIcon class="w-4 h-4 text-[#005AC1]" /> Articles & Services
+                        </h3>
                     </div>
 
-                    <div class="bg-white rounded-2xl p-8 border border-outline-variant space-y-4 shadow-sm">
-                        <div class="flex items-center justify-between">
-                            <span
-                                class="text-xs font-bold text-surface-on-variant uppercase tracking-wider">Réduction</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" v-model="utiliseReduction" true-value="oui" false-value="non"
-                                    class="sr-only peer">
-                                <div
-                                    class="w-10 h-6 bg-[#F8F9FA] border border-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-surface-on-variant after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#005AC1] peer-checked:after:bg-white">
-                                </div>
-                            </label>
-                        </div>
+                    <div class="grid grid-cols-12 gap-3 text-xs font-semibold text-gray-500 uppercase mb-2 pl-1 pr-8">
+                        <div class="col-span-6">Description</div>
+                        <div class="col-span-2 text-right">Qté</div>
+                        <div class="col-span-2 text-right">Prix</div>
+                        <div class="col-span-2 text-right">Total</div>
+                    </div>
 
-                        <div v-if="utiliseReduction === 'oui'"
-                            class="flex gap-2 animate-in slide-in-from-top-2 duration-200">
-                            <select v-model="reduction.type"
-                                class="bg-[#F8F9FA] border border-outline-variant rounded-xl text-xs font-bold text-[#1A1C1E] px-4 py-2 outline-none focus:border-[#005AC1]">
-                                <option value="montant">Fixe (EUR)</option>
-                                <option value="pourcentage">Poucentage (%)</option>
-                            </select>
-                            <input v-model.number="reduction.valeur" type="number"
-                                class="flex-1 bg-[#F8F9FA] border border-outline-variant rounded-xl px-4 py-2 text-sm font-bold text-[#1A1C1E] outline-none focus:border-[#005AC1]" />
-                        </div>
+                    <div class="space-y-3">
+                        <div v-for="(ligne, index) in lignesFacture" :key="index" 
+                            class="group relative grid grid-cols-12 gap-3 items-start p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all">
+                            
+                            <div class="col-span-6">
+                                <textarea v-model="ligne.description" rows="1" 
+                                    class="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 placeholder-gray-400 focus:ring-0 resize-none" 
+                                    placeholder="Description du produit..."></textarea>
+                            </div>
+                            
+                            <div class="col-span-2">
+                                <input v-model.number="ligne.quantite" type="number" min="1"
+                                    class="w-full bg-white border border-gray-200 rounded px-2 py-1 text-right text-sm focus:border-[#005AC1] focus:ring-1 focus:ring-[#005AC1] outline-none" />
+                            </div>
 
-                        <div class="h-px bg-outline-variant/30 my-4"></div>
+                            <div class="col-span-2">
+                                <input v-model.number="ligne.prixUnitaire" type="number" min="0"
+                                    class="w-full bg-white border border-gray-200 rounded px-2 py-1 text-right text-sm focus:border-[#005AC1] focus:ring-1 focus:ring-[#005AC1] outline-none" />
+                            </div>
 
-                        <div class="space-y-3">
-                            <div class="flex justify-between text-xs font-bold text-surface-on-variant uppercase">
-                                <span>Sous-total HT</span>
-                                <span class="text-[#1A1C1E]">{{ formatPrix(totalHT) }}</span>
+                            <div class="col-span-2 text-right pt-1 text-sm font-bold text-gray-700">
+                                {{ formatPrice(ligne.quantite * ligne.prixUnitaire) }}
                             </div>
-                            <div v-if="montantReduction > 0"
-                                class="flex justify-between text-xs font-bold text-green-600 uppercase">
-                                <span>Remise commerciale</span>
-                                <span>-{{ formatPrix(montantReduction) }}</span>
-                            </div>
-                            <div
-                                class="flex justify-between text-lg font-black text-[#1A1C1E] pt-4 border-t border-outline-variant/50">
-                                <span class="uppercase tracking-tighter">Total à régler</span>
-                                <span class="text-[#005AC1]">{{ formatPrix(totalTTC) }}</span>
-                            </div>
+
+                            <button @click="supprimerLigne(index)" class="absolute -right-2 top-2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity p-1 bg-white shadow-sm rounded-full border border-gray-100">
+                                <XMarkIcon class="w-4 h-4" />
+                            </button>
                         </div>
                     </div>
-                </section>
 
-                <div class="h-10"></div>
-            </div>
-        </div>
-
-        <!-- Right Panel: Live Preview (Sticky) -->
-        <div
-            class="hidden lg:flex lg:w-[45%] h-full bg-[#F1F3F5] relative items-center justify-center p-8 overflow-hidden">
-            <!-- Background Accent -->
-            <div
-                class="absolute inset-0 opacity-40 bg-[radial-gradient(#005AC1_0.5px,transparent_0.5px)] [background-size:24px_24px]">
-            </div>
-
-            <div
-                class="absolute top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur rounded-full px-6 py-2.5 border border-outline-variant shadow-lg flex items-center gap-4 z-20">
-                <span class="text-[10px] font-bold text-surface-on-variant uppercase tracking-[0.2em]">Aperçu en temps
-                    réel</span>
-                <div class="w-px h-3 bg-outline-variant"></div>
-                <button @click="genererPDF"
-                    class="text-[10px] font-bold text-[#005AC1] hover:underline uppercase">Télécharger PDF</button>
-            </div>
-
-            <!-- The Document Canvas -->
-            <div class="relative w-full h-full flex items-center justify-center drop-shadow-2xl">
-                <div
-                    class="scale-[0.55] xl:scale-[0.65] 2xl:scale-[0.75] transition-all duration-500 origin-center bg-white">
-                    <component v-if="selectedTemplateComponent" :is="selectedTemplateComponent" :societer="societer"
-                        :client="client" :produits="produits" :totalHT="totalHT" :totalTTC="totalTTC"
-                        :montantReduction="montantReduction" :date_emission="dateEmission" :date_echeance="dateEcheance"
-                        :factureId="numeroFacture" :suplement="notesBasPage" />
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Preview Sheet -->
-        <transition name="slide-up">
-            <div v-if="showPreviewMobile" class="lg:hidden fixed inset-0 z-50 bg-white flex flex-col">
-                <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant">
-                    <h3 class="font-bold text-[#1A1C1E]">Aperçu du document</h3>
-                    <button @click="showPreviewMobile = false"
-                        class="p-2 bg-[#F8F9FA] rounded-full text-surface-on-variant">
-                        <XMarkIcon class="w-5 h-5" />
+                    <button @click="ajouterLigne" class="mt-4 w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:text-[#005AC1] hover:border-[#005AC1] hover:bg-blue-50/30 transition-all flex items-center justify-center gap-2">
+                        <PlusIcon class="w-4 h-4" /> Ajouter une ligne
                     </button>
-                </div>
+                </section>
 
-                <div class="flex-1 overflow-auto bg-[#F1F3F5] p-4 flex justify-center">
-                    <div class="scale-[0.75] origin-top mt-8 bg-white shadow-xl">
-                        <component v-if="selectedTemplateComponent" :is="selectedTemplateComponent" :societer="societer"
-                            :client="client" :produits="produits" :totalHT="totalHT" :totalTTC="totalTTC"
-                            :montantReduction="montantReduction" :date_emission="dateEmission"
-                            :date_echeance="dateEcheance" :factureId="numeroFacture" :suplement="notesBasPage" />
+                <section class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="flex flex-col items-end gap-3 text-sm">
+                        <div class="flex justify-between w-full md:w-1/2 text-gray-600">
+                            <span>Total HT</span>
+                            <span class="font-medium">{{ formatPrice(totalHT) }}</span>
+                        </div>
+                        <div class="flex justify-between w-full md:w-1/2 text-gray-600 items-center">
+                            <span>TVA ({{ tauxTVA }}%)</span>
+                            <div class="flex items-center gap-2">
+                                <input v-model="tauxTVA" type="number" class="w-16 text-right border border-gray-200 rounded px-2 py-1 text-xs" />
+                                <span class="font-medium min-w-[80px] text-right">{{ formatPrice(montantTVA) }}</span>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 h-px bg-gray-100 my-1"></div>
+                        <div class="flex justify-between w-full md:w-1/2 text-[#1A1C1E] text-lg font-bold">
+                            <span>Total TTC</span>
+                            <span class="text-[#005AC1]">{{ formatPrice(totalTTC) }}</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="hidden lg:flex w-[45%] bg-[#E1E2EC] relative flex-col items-center justify-center p-8 overflow-hidden">
+            <div class="absolute top-6 left-6 text-xs font-bold text-gray-500 uppercase tracking-widest pointer-events-none">Aperçu du document</div>
+            
+            <div class="bg-white shadow-2xl w-full max-w-[500px] h-auto min-h-[700px] rounded-sm p-8 text-[10px] leading-relaxed relative flex flex-col transform scale-95 origin-center transition-transform duration-300">
+                
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <div class="w-12 h-12 bg-gray-100 rounded mb-2 flex items-center justify-center text-gray-400">Logo</div>
+                        <h2 class="font-bold text-lg text-gray-900">{{ settings.entrepriseName || 'Mon Entreprise' }}</h2>
+                        <p class="text-gray-500 w-40">{{ settings.adresse || 'Adresse de l\'entreprise' }}</p>
+                    </div>
+                    <div class="text-right">
+                        <h1 class="text-2xl font-light text-[#005AC1] uppercase mb-1">Facture</h1>
+                        <p class="font-bold text-gray-800">#{{ numeroFacture }}</p>
+                        <p class="text-gray-500 mt-1">Date : {{ formatDate(dateEmission) }}</p>
                     </div>
                 </div>
 
-                <div class="p-6 bg-white border-t border-outline-variant">
-                    <button @click="genererPDF" class="w-full btn-filled py-4 shadow-lg">Générer le PDF final</button>
+                <div class="flex justify-between mb-8">
+                    <div class="w-1/2 pr-4">
+                        <p class="text-gray-400 uppercase text-[8px] font-bold mb-1">Facturé à</p>
+                        <div v-if="clientSelectionne" class="text-gray-900">
+                            <p class="font-bold text-sm">{{ clientSelectionne.nom }}</p>
+                            <p>{{ clientSelectionne.adresse }}</p>
+                            <p>{{ clientSelectionne.ville }}</p>
+                        </div>
+                        <div v-else class="text-gray-300 italic border border-dashed border-gray-200 p-2 rounded">
+                            Sélectionnez un client...
+                        </div>
+                    </div>
+                </div>
+
+                <table class="w-full mb-8">
+                    <thead>
+                        <tr class="border-b-2 border-[#005AC1] text-[#005AC1]">
+                            <th class="text-left py-2 w-1/2">Description</th>
+                            <th class="text-right py-2">Qté</th>
+                            <th class="text-right py-2">Prix</th>
+                            <th class="text-right py-2">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        <tr v-for="(ligne, idx) in lignesFacture" :key="idx" class="border-b border-gray-100">
+                            <td class="py-2">{{ ligne.description || 'Article...' }}</td>
+                            <td class="text-right py-2">{{ ligne.quantite }}</td>
+                            <td class="text-right py-2">{{ formatPrice(ligne.prixUnitaire) }}</td>
+                            <td class="text-right py-2 font-medium">{{ formatPrice(ligne.quantite * ligne.prixUnitaire) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="flex justify-end mt-auto">
+                    <div class="w-1/2 space-y-1">
+                        <div class="flex justify-between text-gray-500">
+                            <span>Total HT</span>
+                            <span>{{ formatPrice(totalHT) }}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-500">
+                            <span>TVA ({{ tauxTVA }}%)</span>
+                            <span>{{ formatPrice(montantTVA) }}</span>
+                        </div>
+                        <div class="border-t border-gray-300 my-2 pt-2 flex justify-between text-base font-bold text-[#005AC1]">
+                            <span>Total TTC</span>
+                            <span>{{ formatPrice(totalTTC) }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-4 border-t border-gray-100 text-center text-gray-400 text-[8px]">
+                    <p>Merci de votre confiance. Paiement dû sous 30 jours.</p>
+                    <p>{{ settings.entrepriseName }} - SIRET: 123 456 789 00012</p>
                 </div>
             </div>
-        </transition>
-
-        <TemplateSelectorDialog />
+        </div>
     </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
-import { useTemplateSelection } from "@/composables/useTemplateSelection";
-import { useFacturesStore } from "@/modules/Invoice/stores/invoice.store";
-import { useClientsStore } from "@/modules/Client/stores/client.store";
-import { showToastMessage } from "@/composables/useToast";
-import { formatCurrency } from "@/shared/utils/format";
-import Facture from "@/models/facture";
-import {
-    ArrowLeftIcon,
-    ChevronDownIcon,
-    PaperAirplaneIcon,
-    EyeIcon,
-    UserIcon,
-    MagnifyingGlassIcon,
-    EnvelopeIcon,
-    DocumentTextIcon,
-    CubeIcon,
-    TrashIcon,
-    PlusIcon,
-    ArrowDownTrayIcon,
-    XMarkIcon,
-    MapPinIcon
+<script setup lang="ts">
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useClientsStore } from '@/modules/Clients/stores/clients.store';
+import { useFacturesStore } from '@/modules/Factures/stores/factures.store';
+import { useSettingsStore } from '@/shared/stores/setting.store';
+import { useToast } from '@/shared/composables/useToast';
+import { 
+    ArrowLeftIcon, 
+    CalendarIcon, 
+    UserIcon, 
+    TagIcon, 
+    MagnifyingGlassIcon, 
+    PlusCircleIcon, 
+    PlusIcon, 
+    XMarkIcon 
 } from '@heroicons/vue/24/outline';
 
+// Stores
 const router = useRouter();
+const clientStore = useClientsStore();
 const factureStore = useFacturesStore();
-const clientsStore = useClientsStore();
+const settings = useSettingsStore();
+const { showToastMessage } = useToast();
 
-// État
-const showPreviewMobile = ref(false);
+// State
 const isSaving = ref(false);
+const dateEmission = ref(new Date().toISOString().split('T')[0]);
+const dateEcheance = ref('');
+const numeroFacture = ref('FAC-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0'));
+const tauxTVA = ref(20);
+
+// Templates
+const templates = [
+    { id: 'moderne', name: 'Moderne' },
+    { id: 'classique', name: 'Classique' },
+    { id: 'minimaliste', name: 'Minimaliste' }
+];
+const selectedTemplate = ref(templates[0]);
+
+// Client Logic
+const clientSearch = ref('');
 const showClientDropdown = ref(false);
-const numeroFacture = ref("F-" + Date.now().toString().slice(-5));
-const dateEmission = ref(new Date().toISOString().split("T")[0]);
-const dateEcheance = ref(new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split("T")[0]);
-const conditionsPaiement = ref("30");
-const utiliseReduction = ref("non");
-const notesBasPage = ref("");
-
-const societer = ref({
-    nom: "Ma Société",
-    adresse: "123 Rue des Entrepreneurs, 75001 Paris",
-    email: "contact@masociete.com",
-    telephone: "+33 1 23 45 67 89",
-});
-
-const client = ref({ nom: "", address: "", email: "", telephone: "" });
-const produits = ref([{ nom: "", quantite: 1, prix: 0, type: "Services", unite: "u", tva: "0%" }]);
-const reduction = ref({ type: "pourcentage", valeur: 0 });
-
-import TemplateSelectorDialog from "@/modules/Invoice/components/templates/TemplateSelectorDialog.vue";
-
-const {
-    selectedTemplate,
-    selectedTemplateComponent,
-    openTemplateDialog,
-} = useTemplateSelection();
-
-onMounted(async () => {
-    await clientsStore.chargerClients();
-    const savedCompany = localStorage.getItem("companyInfo");
-    if (savedCompany) societer.value = JSON.parse(savedCompany);
-});
-
-const totalHT = computed(() => produits.value.reduce((total, p) => total + (p.prix * p.quantite), 0));
-const montantReduction = computed(() => {
-    if (utiliseReduction.value !== "oui") return 0;
-    return reduction.value.type === "pourcentage" ? totalHT.value * (reduction.value.valeur / 100) : reduction.value.valeur;
-});
-const totalTTC = computed(() => totalHT.value - montantReduction.value);
+const clientSelectionne = ref<any>(null);
 
 const filteredClients = computed(() => {
-    if (!client.value.nom) return clientsStore.paginatedClients;
-    const term = client.value.nom.toLowerCase();
-    return clientsStore.paginatedClients.filter(c => c.nom.toLowerCase().includes(term) || c.email.toLowerCase().includes(term));
+    if (!clientSearch.value) return clientStore.clients.slice(0, 5);
+    return clientStore.clients.filter(c => 
+        c.nom.toLowerCase().includes(clientSearch.value.toLowerCase()) ||
+        c.email.toLowerCase().includes(clientSearch.value.toLowerCase())
+    );
 });
 
-function formatPrix(val) { return formatCurrency(val); }
-function ajouterProduit() { produits.value.push({ nom: "", quantite: 1, prix: 0, type: "Services", unite: "u", tva: "0%" }); }
-function supprimerLigne(idx) { if (produits.value.length > 1) produits.value.splice(idx, 1); }
-
-function selectClient(item) {
-    client.value = { nom: item.nom, address: item.adresse, email: item.email, telephone: item.telephone };
+function selectClient(client: any) {
+    clientSelectionne.value = client;
+    clientSearch.value = client.nom;
     showClientDropdown.value = false;
 }
 
-function createNewClient() { showToastMessage("Ajout rapide non implémenté. Utilisez le module Client.", "info"); }
-function handleClientBlur() { setTimeout(() => showClientDropdown.value = false, 200); }
+// Lignes Facture Logic
+const lignesFacture = ref([
+    { description: 'Consultation juridique', quantite: 1, prixUnitaire: 15000 },
+    { description: 'Rédaction de contrat', quantite: 2, prixUnitaire: 25000 }
+]);
 
-async function creerFacture() {
-    if (!client.value.nom) { showToastMessage("Client requis", "warning"); return; }
-    if (produits.value.some(p => !p.nom || p.prix <= 0)) { showToastMessage("Vérifiez vos produits", "warning"); return; }
-    await envoyerFacture();
+function ajouterLigne() {
+    lignesFacture.value.push({ description: '', quantite: 1, prixUnitaire: 0 });
 }
 
-async function envoyerFacture() {
+function supprimerLigne(index: number) {
+    lignesFacture.value.splice(index, 1);
+}
+
+// Calculs
+const totalHT = computed(() => lignesFacture.value.reduce((acc, l) => acc + (l.quantite * l.prixUnitaire), 0));
+const montantTVA = computed(() => totalHT.value * (tauxTVA.value / 100));
+const totalTTC = computed(() => totalHT.value + montantTVA.value);
+
+// Helpers
+const formatPrice = (val: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XAF' }).format(val);
+const formatDate = (d: string) => new Date(d).toLocaleDateString('fr-FR');
+
+// Initialization
+onMounted(async () => {
+    await clientStore.fetchClients();
+    // Set default due date (30 days)
+    const d = new Date(dateEmission.value);
+    d.setDate(d.getDate() + 30);
+    dateEcheance.value = d.toISOString().split('T')[0];
+});
+
+// Save Function
+async function sauvegarderFacture() {
+    if (!clientSelectionne.value) return showToastMessage("Veuillez sélectionner un client", "error");
+    if (lignesFacture.value.length === 0) return showToastMessage("Ajoutez au moins un article", "error");
+
     isSaving.value = true;
     try {
         const data = {
-            client_data: client.value,
-            societer: societer.value,
-            produits: produits.value,
-            reduction: utiliseReduction.value === "oui" ? reduction.value : null,
-            suplement: notesBasPage.value,
-            date_emission: dateEmission.value,
-            date_echeance: dateEcheance.value,
-            template: selectedTemplate.value?.id || 'moderne',
-            statut: "en_attente"
+            numero: numeroFacture.value,
+            clientId: clientSelectionne.value.id,
+            clientNom: clientSelectionne.value.nom, // Snapshot
+            items: lignesFacture.value,
+            dateEmission: dateEmission.value,
+            dateEcheance: dateEcheance.value,
+            totalHT: totalHT.value,
+            totalTTC: totalTTC.value,
+            statut: "en_attente",
+            template: selectedTemplate.value.id
         };
+        
         await factureStore.creerFactureComplete(data);
-        showToastMessage("Facture éditée !", "success");
-        router.push("/factures");
+        showToastMessage("Facture enregistrée avec succès", "success");
+        router.push('/factures');
     } catch (e) {
-        showToastMessage("Échec de création", "error");
-    } finally { isSaving.value = false; }
+        showToastMessage("Erreur lors de l'enregistrement", "error");
+    } finally {
+        isSaving.value = false;
+    }
 }
-
-async function genererPDF() { showToastMessage("Génération PDF en cours...", "info"); }
-
-watch(conditionsPaiement, (val) => {
-    const days = parseInt(val);
-    const date = new Date(dateEmission.value);
-    date.setDate(date.getDate() + days);
-    dateEcheance.value = date.toISOString().split("T")[0];
-});
-
-watch(dateEmission, (val) => {
-    const days = parseInt(conditionsPaiement.value);
-    const date = new Date(val);
-    date.setDate(date.getDate() + days);
-    dateEcheance.value = date.toISOString().split("T")[0];
-});
 </script>
 
 <style scoped>
+/* Scrollbar personnalisée pour l'éditeur */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #F8F9FA;
+    background: transparent;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #DEE2E6;
-    border-radius: 10px;
+    background-color: #E1E2EC;
+    border-radius: 20px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #ADB5BD;
+    background-color: #C4C6D0;
 }
 
-.slide-up-enter-active,
-.slide-up-leave-active {
-    transition: transform 0.3s ease-out;
+/* Animation douce */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
 }
-
-.slide-up-enter-from,
-.slide-up-leave-to {
-    transform: translateY(100%);
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
