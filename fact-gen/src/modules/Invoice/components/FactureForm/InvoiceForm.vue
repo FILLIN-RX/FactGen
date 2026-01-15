@@ -257,10 +257,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useClientsStore } from '@/modules/Clients/stores/clients.store';
-import { useFacturesStore } from '@/modules/Factures/stores/factures.store';
+import { useClientsStore } from '@/modules/Client/stores/clients.store';
+import { useFacturesStore } from '@/modules/Invoice/stores/invoice.store';
 import { useSettingsStore } from '@/shared/stores/setting.store';
-import { useToast } from '@/shared/composables/useToast';
+import { useToast } from '@/composables/useToast';
 import { 
     ArrowLeftIcon, 
     CalendarIcon, 
