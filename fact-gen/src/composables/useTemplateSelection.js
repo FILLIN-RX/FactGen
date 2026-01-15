@@ -1,6 +1,6 @@
 // composables/useTemplateSelection.js
 import { ref,readonly, computed,defineAsyncComponent , watch } from 'vue'
-import { useTemplateStore } from '@/stores/template'
+import { useTemplateStore } from "@/modules/Invoice/stores/template.store";
 
 // État global réactif
 const selectedTemplateId = ref('moderne') // Template par défaut
@@ -16,11 +16,11 @@ export function useTemplateSelection() {
 
   // Composant du template sélectionné
   const selectedTemplateComponent = computed(() => {
-  const templateComponents = {
-    moderne: defineAsyncComponent(() => import('@/components/templates/FactureModerne.vue')),
-    minimaliste: defineAsyncComponent(() => import('@/components/templates/FactureMinimaliste.vue')),
-    classique: defineAsyncComponent(() => import('@/components/templates/FactureClassique.vue')),
-  }
+    const templateComponents = {
+      moderne: defineAsyncComponent(() => import('@/modules/Invoice/components/templates/FactureModerne.vue')),
+      minimaliste: defineAsyncComponent(() => import('@/modules/Invoice/components/templates/FactureMinimaliste.vue')),
+      classique: defineAsyncComponent(() => import('@/modules/Invoice/components/templates/FactureClassique.vue')),
+    }
   return templateComponents[selectedTemplateId.value] || templateComponents.moderne
 })
 

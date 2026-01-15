@@ -1,26 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import FactureView from '../components/factures/FactureView.vue';
-import Home from '../pages/HomePage.vue';
-import PrintLayout from '../components/layout/PrintLayout.vue';
-import FacTure from '../pages/FactureSauve.vue';
-import Login from '../pages/LoginPage.vue';
-import TemplatesSection from '../pages/TemplatesSection.vue';
-import clientFact from '../pages/clientFact.vue';
-import AppLayout from '../pages/AppLayout.vue';
-import RealLayout from '../pages/RealLayout.vue';
-import SignUp from '../pages/SignUp.vue';
+import Home from '@/modules/Landing/views/HomePage.vue';
+import PrintLayout from '@/shared/components/layout/PrintLayout.vue';
+import AppLayout from '@/shared/components/layout/AppLayout.vue';
 import { supabase } from '../lib/supabase';
-import { useAuthStore } from '../stores/auth'
-import SettingPage from '../pages/SettingPage.vue';
-import StatisTics from '../components/StatisTics.vue';
-import StatisticS from '../views/StatisticS.vue';
-import SupPort from '../pages/SupPort.vue';
-import FonctionaLiter from '../pages/FonctionaLiter.vue';
-import FactureForm from '../components/FactureForm.vue';
-import InvoiceForm from '../components/factures/FactureForm/InvoiceForm.vue';
-const session = supabase.auth.getSession();
-console.log(session);
 
+// Module Imports
+import Login from '@/modules/Auth/views/LoginPage.vue';
+import SignUp from '@/modules/Auth/views/SignUp.vue';
+import { useAuthStore } from '@/modules/Auth/stores/auth.store';
+
+import Dashboard from '@/modules/Dashboard/views/Dashboard.vue';
+import StatisticsPage from '@/modules/Dashboard/views/StatisticsPage.vue';
+
+import InvoiceList from '@/modules/Invoice/views/InvoiceList.vue';
+import InvoiceForm from '@/modules/Invoice/components/FactureForm/InvoiceForm.vue';
+import InvoicePdf from '@/modules/Invoice/views/InvoicePdf.vue';
+
+import ClientList from '@/modules/Client/views/ClientList.vue';
+
+// Other Pages
+import SettingPage from '@/modules/Settings/views/SettingPage.vue';
+import SupportPage from '@/modules/Landing/views/SupportPage.vue';
+import FeaturesPage from '@/modules/Landing/views/FeaturesPage.vue';
+import TemplatesPage from '@/modules/Invoice/views/TemplatesPage.vue';
 
 const routes = [
   {
@@ -29,12 +31,12 @@ const routes = [
     component: Home,
     meta: { requiresAuth: false }
   },
- {
-  path: '/facture/:id/pdf',
-  name: 'FacturePDF',
-  component: () => import('@/views/FacturePdf.vue'),
-  meta: { requiresAuth: true, showNavbarAndFooter: false } // ← très important pour laisser Puppeteer accéder
-},
+  {
+    path: '/facture/:id/pdf',
+    name: 'FacturePDF',
+    component: InvoicePdf,
+    meta: { requiresAuth: true, showNavbarAndFooter: false } 
+  },
   {
     path: '/accueil',
     name: 'accueil',
@@ -44,38 +46,37 @@ const routes = [
       {
         path: '/real',
         name: 'Real',
-        component: RealLayout,
+        component: Dashboard,
         meta: { requiresAuth: true , showNavbarAndFooter: false },
-    },
+      },
       {
         path: '/facture',
         name: 'Facture',
-        component: FacTure,
+        component: InvoiceList,
         meta: { requiresAuth: true ,showNavbarAndFooter:false},
-        
       },
       {
         path: '/clientFact',
         name: 'Client',
-        component: clientFact,
+        component: ClientList,
         meta: { requiresAuth: true , showNavbarAndFooter : false},
-      
       },
       {
         path: '/setting',
         name:'setting',
-        component:SettingPage,
+        component: SettingPage,
         meta:{requiresAuth:true}
       },
       {
         path: '/statistics',
         name: 'statistics',
-        component: StatisticS,
+        component: StatisticsPage,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
-      },{
+      },
+      {
         path: '/templates',
         name: 'Templates',
-        component: TemplatesSection,
+        component: TemplatesPage,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
       },
       {
@@ -84,25 +85,24 @@ const routes = [
         component: InvoiceForm,
         meta: { requiresAuth: true, showNavbarAndFooter: false }
       }
-      
     ]
-    },
-    {
-      path: '/signUp',
-      name: 'register',
-      component: SignUp,
+  },
+  {
+    path: '/signUp',
+    name: 'register',
+    component: SignUp,
     meta: { requiresAuth: false, showNavbarAndFooter: false }
-    },
-    {
-      path: '/features',
-      name: 'Features',
-      component: FonctionaLiter,
-    },
-    {
-      path: '/support',
-      name: 'Support',
-      component : SupPort,
-    },
+  },
+  {
+    path: '/features',
+    name: 'Features',
+    component: FeaturesPage,
+  },
+  {
+    path: '/support',
+    name: 'Support',
+    component : SupportPage,
+  },
   {
     path: '/login',
     name: 'Login',

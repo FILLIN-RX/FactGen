@@ -8,7 +8,7 @@ import { Icon } from "@iconify/vue";
 import { i18n } from "./i18n";
 import App from "./App.vue";
 import router from "./router";
-import { useAuthStore } from "./stores/auth";
+import { useAuthStore } from "@/modules/Auth/stores/auth.store";
 
 const app = createApp(App);
 const pinia = createPinia();
