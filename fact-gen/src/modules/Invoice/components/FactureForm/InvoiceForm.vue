@@ -260,7 +260,7 @@ import { useRouter } from 'vue-router';
 import { useClientsStore } from '@/modules/Client/stores/client.store';
 import { useFacturesStore } from '@/modules/Invoice/stores/invoice.store';
 import { useSettingsStore } from '@/shared/stores/setting.store';
-import { useToast } from '@/composables/useToast';
+import { showToastMessage } from '@/composables/useToast';
 import { 
     ArrowLeftIcon, 
     CalendarIcon, 
@@ -277,7 +277,7 @@ const router = useRouter();
 const clientStore = useClientsStore();
 const factureStore = useFacturesStore();
 const settings = useSettingsStore();
-const { showToastMessage } = useToast();
+
 
 // State
 const isSaving = ref(false);
