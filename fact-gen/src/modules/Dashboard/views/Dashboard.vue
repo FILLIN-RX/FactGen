@@ -23,7 +23,7 @@
         </header>
 
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="card-outlined bg-white p-5 border-l-4 border-l-[#005AC1]">
+            <div class="card-outlined bg-white p-5 border-l-4 border-l-[#005AC1] hover:shadow-md transition-shadow duration-300">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Chiffre d'Affaires</p>
@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="card-outlined bg-white p-5">
+            <div class="card-outlined bg-white p-5 hover:shadow-md transition-shadow duration-300">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Factures Émises</p>
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="card-outlined bg-white p-5">
+            <div class="card-outlined bg-white p-5 hover:shadow-md transition-shadow duration-300">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Clients Actifs</p>
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="card-outlined bg-white p-5">
+            <div class="card-outlined bg-white p-5 hover:shadow-md transition-shadow duration-300">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Conversion</p>
@@ -123,7 +123,7 @@
             </div>
 
             <div class="space-y-6">
-                <div class="card-filled bg-[#005AC1] text-white p-6 shadow-lg border-none">
+                <div class="card-filled bg-[#005AC1] text-white p-6 shadow-lg border-none hover:bg-[#004ba0] transition-colors cursor-pointer">
                     <h3 class="font-bold text-lg mb-2">Besoin d'aide ?</h3>
                     <p class="text-blue-100 text-sm mb-4">Générez un rapport comptable complet pour vos déclarations.</p>
                     <button class="w-full py-2 bg-white text-[#005AC1] text-sm font-bold rounded-lg hover:bg-blue-50 transition-colors">
@@ -155,7 +155,7 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useStatsStore } from '@/modules/Dashboard/stores/stats.store';
-import RevenueChart from '@/components/BarChart.vue'; // Assure-toi que le chemin est bon
+import RevenueChart from '@/modules/Dashboard/components/BarChart.vue'; // Assure-toi que le chemin est bon
 import { 
     BanknotesIcon, 
     DocumentTextIcon, 
@@ -191,13 +191,3 @@ const getTrendColor = (direction: string) => {
     return direction === 'up' ? 'text-emerald-600' : 'text-red-600';
 };
 </script>
-
-<style scoped>
-/* Petits ajustements spécifiques */
-.card-outlined {
-    @apply transition-shadow duration-300;
-}
-.card-outlined:hover {
-    @apply shadow-md border-gray-300;
-}
-</style>
