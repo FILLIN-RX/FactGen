@@ -4,6 +4,7 @@ import { createI18n } from 'vue-i18n'
 import { supabase } from "./lib/supabase";
 import Toast, { POSITION } from 'vue-toastification';
 import "./style.css";
+import "./styles/m3-design-system.css";
 import { Icon } from "@iconify/vue";
 import { i18n } from "./i18n";
 import App from "./App.vue";
