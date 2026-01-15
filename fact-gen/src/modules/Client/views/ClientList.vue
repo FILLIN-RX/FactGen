@@ -301,7 +301,7 @@ import ClientDetailsPopup from '../components/ClientDetailsPopup.vue';
 import { showToastMessage } from '@/composables/useToast';
 import { useFacturesStore } from '@/modules/Invoice/stores/invoice.store';
 import LoadinApp from '@/shared/components/LoadinApp.vue';
-import Toast from '@/shared/components/ToasT.vue';
+import Toast from '@/shared/components/Toast.vue';
 import {
     ArrowDownTrayIcon,
     MagnifyingGlassIcon,
