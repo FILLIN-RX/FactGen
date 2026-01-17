@@ -4,17 +4,17 @@
         <div class="header">
             <div class="company-info">
                 <div class="company-logo">
-                    <img v-if="societer.logo" :src="societer.logo" alt="Logo de l'entreprise"
+                    <img v-if="societer?.logo" :src="societer?.logo" alt="Logo de l'entreprise"
                         class="h-16 w-auto mb-2" />
                 </div>
                 <div class="company-details">
-                    <div class="company-name">{{ societer.nom }}</div>
+                    <div class="company-name">{{ societer?.nom }}</div>
                     <div class="company-address">
 
 
-                        <div>{{ societer.adresse }}</div>
-                        <div>{{ societer.ville }}</div>
-                        <div>{{ societer.telephone }}</div>
+                        <div>{{ societer?.adresse }}</div>
+                        <div>{{ societer?.ville }}</div>
+                        <div>{{ societer?.telephone }}</div>
                     </div>
                 </div>
             </div>
@@ -90,17 +90,17 @@
             <div class="footer-section">
                 <div class="footer-title">Questions?</div>
                 <div class="footer-content">
-                    <div>Email us : {{ societer.email }}</div>
-                    <div>Call us : {{ societer.telephone }}</div>
+                    <div>Email us : {{ societer?.email }}</div>
+                    <div>Call us : {{ societer?.telephone }}</div>
                 </div>
             </div>
 
             <div class="footer-section">
                 <div class="footer-title">Payment Info :</div>
                 <div class="footer-content">
-                    <div>Account : {{ societer.compte || "123 456 789" }}</div>
-                    <div>A/C Name : {{ societer.nom }}</div>
-                    <div>Bank Details : {{ societer.banque || "Bank Principal" }}</div>
+                    <div>Account : {{ societer?.compte || "123 456 789" }}</div>
+                    <div>A/C Name : {{ societer?.nom }}</div>
+                    <div>Bank Details : {{ societer?.banque || "Bank Principal" }}</div>
                 </div>
             </div>
 

@@ -73,7 +73,6 @@
 <script setup>
 import { telechargerPDF, getInfoEntreprise } from "@/shared/services/api";
 import { computed, ref, onMounted } from "vue";
-import { useToast } from "vue-toastification";
 import { showToastMessage } from "@/composables/useToast";
 import { templateComponents } from "@/modules/Invoice/components/templates";
 import { useFacturesStore } from "../stores/invoice.store.js";
@@ -136,28 +135,63 @@ const shareInvoice = async () => {
 };
 
 const downloadPDF = async () => {
+    console.log("📥 [downloadPDF] Début du téléchargement");
+
     try {
         isDownloading.value = true;
+        console.log("⏳ isDownloading = true");
+
+        console.log("🧾 Invoice reçue :", props.invoice);
+
+        console.log("🏗️ Template utilisé :", props.invoice.template);
+
+        console.log("🏢 Company info :", companyInfo.value);
+
+        // 1️⃣ Génération du HTML
         const htmlContent = genererPDFs(props.invoice.template, {
             ...props.invoice,
             client_data: props.invoice.client_data || {},
             societer: companyInfo.value,
         });
 
-        await telechargerPDF({
+        console.log("📄 HTML généré (preview 500 chars) :");
+        console.log(htmlContent?.substring(0, 500));
+
+        if (!htmlContent || htmlContent.length < 50) {
+            throw new Error("HTML généré vide ou invalide");
+        }
+
+        // 2️⃣ Préparation des données PDF
+        const payload = {
             html: htmlContent,
             id: props.invoice.id,
             invoiceDate: props.invoice.date_emission,
             clientName: props.invoice.client_data?.nom,
-        });
+        };
+
+        console.log("📦 Payload PDF :", payload);
+
+        // 3️⃣ Téléchargement PDF
+        console.log("⬇️ Appel de telechargerPDF...");
+        const result = await telechargerPDF(payload);
+
+        console.log("✅ Résultat telechargerPDF :", result);
 
         showToastMessage("Téléchargement réussi !", "success");
+
     } catch (error) {
-        showToastMessage("Erreur PDF", "error");
+        console.error("❌ Erreur dans downloadPDF :", error);
+
+        showToastMessage(
+            error?.message || "Erreur telechargement du PDF",
+            "error"
+        );
     } finally {
         isDownloading.value = false;
+        console.log("🔚 isDownloading = false");
     }
 };
+
 
 const formatDate = (date) => date ? new Date(date).toLocaleDateString("fr-FR", { day: 'numeric', month: 'long', year: 'numeric' }) : "";
 

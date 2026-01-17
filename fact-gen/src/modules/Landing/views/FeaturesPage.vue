@@ -1,94 +1,39 @@
 <template>
-    <div class="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+            
+            <div class="text-center mb-20">
+                <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Avantages</h2>
+                <p class="mt-2 text-4xl font-extrabold text-gray-900 sm:text-5xl">
                     Fonctionnalités Puissantes
-                </h1>
-                <p class="mt-5 max-w-xl mx-auto text-xl text-gray-500">
+                </p>
+                <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
                     Tout ce dont vous avez besoin pour gérer votre facturation efficacement et professionnellement.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div
-                    class="bg-white overflow-hidden shadow rounded-lg transform hover:scale-105 transition-transform duration-300">
-                    <div class="px-4 py-5 sm:p-6 text-center">
-                        <div class="text-5xl mb-4">📝</div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Éditeur Intuitif</h3>
-                        <p class="mt-2 text-base text-gray-500">
-                            Créez des factures en quelques clics avec notre interface glisser-déposer simple et rapide.
-                        </p>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 gap-y-12 gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+                <div v-for="feature in features" :key="feature.title" 
+                     class="relative group bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                     :class="{'opacity-75 border-dashed border-2': feature.comingSoon}">
+                    
+                    <div>
+                        <div class="inline-flex items-center justify-center p-3 bg-indigo-50 rounded-xl text-indigo-600 mb-5 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                            <component :is="feature.icon" class="h-8 w-8" aria-hidden="true" />
+                        </div>
 
-                <!-- Feature 2 -->
-                <div
-                    class="bg-white overflow-hidden shadow rounded-lg transform hover:scale-105 transition-transform duration-300">
-                    <div class="px-4 py-5 sm:p-6 text-center">
-                        <div class="text-5xl mb-4">🎨</div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Modèles Professionnels</h3>
-                        <p class="mt-2 text-base text-gray-500">
-                            Choisissez parmi une variété de modèles élégants et personnalisables pour votre image de
-                            marque.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Feature 3 -->
-                <div
-                    class="bg-white overflow-hidden shadow rounded-lg transform hover:scale-105 transition-transform duration-300">
-                    <div class="px-4 py-5 sm:p-6 text-center">
-                        <div class="text-5xl mb-4">📊</div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Tableau de Bord</h3>
-                        <p class="mt-2 text-base text-gray-500">
-                            Suivez vos revenus, vos factures en attente et l'évolution de votre activité en temps réel.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Feature 4 -->
-                <div
-                    class="bg-white overflow-hidden shadow rounded-lg transform hover:scale-105 transition-transform duration-300">
-                    <div class="px-4 py-5 sm:p-6 text-center">
-                        <div class="text-5xl mb-4">👥</div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Gestion Clients</h3>
-                        <p class="mt-2 text-base text-gray-500">
-                            Gérez facilement votre base de clients, sauvegardez leurs infos pour une facturation encore
-                            plus rapide.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Feature 5 (Coming Soon) -->
-                <div
-                    class="bg-white overflow-hidden shadow rounded-lg opacity-75 border-2 border-dashed border-gray-300">
-                    <div class="px-4 py-5 sm:p-6 text-center">
-                        <div class="text-5xl mb-4">📧</div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Envoi par Email</h3>
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-2">
-                            Bientôt
-                        </span>
-                        <p class="mt-2 text-base text-gray-500">
-                            Envoyez vos factures directement par email à vos clients depuis l'application.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Feature 6 (Coming Soon) -->
-                <div
-                    class="bg-white overflow-hidden shadow rounded-lg opacity-75 border-2 border-dashed border-gray-300">
-                    <div class="px-4 py-5 sm:p-6 text-center">
-                        <div class="text-5xl mb-4">💳</div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Paiement en Ligne</h3>
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-2">
-                            Bientôt
-                        </span>
-                        <p class="mt-2 text-base text-gray-500">
-                            Permettez à vos clients de payer leurs factures directement en ligne via Stripe ou PayPal.
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-xl font-bold text-gray-900 leading-6">
+                                {{ feature.title }}
+                            </h3>
+                            <span v-if="feature.comingSoon" 
+                                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                Bientôt
+                            </span>
+                        </div>
+                        
+                        <p class="text-base text-gray-500 leading-relaxed">
+                            {{ feature.description }}
                         </p>
                     </div>
                 </div>
@@ -98,5 +43,55 @@
 </template>
 
 <script setup>
-// Page de présentation des fonctionnalités
+import { 
+    PencilIcon, 
+    PaintBrushIcon, 
+    ChartBarIcon, 
+    UsersIcon, 
+    EnvelopeIcon, 
+    CreditCardIcon 
+} from '@heroicons/vue/24/outline'
+
+const features = [
+    {
+        title: 'Éditeur Intuitif',
+        description: 'Créez des factures en quelques clics avec notre interface glisser-déposer simple et rapide.',
+        icon: PencilIcon,
+        comingSoon: false
+    },
+    {
+        title: 'Modèles Professionnels',
+        description: 'Choisissez parmi une variété de modèles élégants et personnalisables pour votre image de marque.',
+        icon: PaintBrushIcon,
+        comingSoon: false
+    },
+    {
+        title: 'Tableau de Bord',
+        description: 'Suivez vos revenus, vos factures en attente et l\'évolution de votre activité en temps réel.',
+        icon: ChartBarIcon,
+        comingSoon: false
+    },
+    {
+        title: 'Gestion Clients',
+        description: 'Gérez facilement votre base de clients, sauvegardez leurs infos pour une facturation encore plus rapide.',
+        icon: UsersIcon,
+        comingSoon: false
+    },
+    {
+        title: 'Envoi par Email',
+        description: 'Envoyez vos factures directement par email à vos clients depuis l\'application.',
+        icon: EnvelopeIcon,
+        comingSoon: true
+    },
+    {
+        title: 'Paiement en Ligne',
+        description: 'Permettez à vos clients de payer leurs factures directement en ligne via Stripe ou PayPal.',
+        icon: CreditCardIcon,
+        comingSoon: true
+    }
+]
 </script>
+
+<style scoped>
+/* Optionnel : Ajout d'un effet de grain ou de dégradé subtil à l'arrière-plan */
+</style>

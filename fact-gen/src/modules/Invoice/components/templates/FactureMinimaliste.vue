@@ -4,15 +4,16 @@
         <div class="header">
             <div class="company-info">
                 <div class="company-logo">
-                    <span class="logo-text"><img v-if="societer.logo" :src="societer.logo" alt="Logo de l'entreprise"
+                    <span class="logo-text"><img v-if="societer?.logo" :src="societer.logo" alt="Logo de l'entreprise"
                             class="h-16 w-auto mb-2" />
                     </span>
                 </div>
                 <div class="company-details">
-                    <div class="company-name">{{ societer.nom }}</div>
+                    <div class="company-name">{{ societer?.nom }}</div>
                     <div class="company-address">
-                        {{ societer.adresse }}<br />
-                        {{ societer.email }}
+                        {{ societer?.adresse }}<br />
+                        {{ societer?.ville }}<br />
+                        {{ societer?.email }}
                     </div>
                 </div>
             </div>
@@ -29,14 +30,14 @@
         <!-- Client Information -->
         <div class="client-section">
             <div class="client-info">
-                <strong>{{ client.nom || "Nom du client" }}</strong><br />
-                {{ client.address }}<br />
-                {{ client.email }}
+                <strong>{{ client?.nom || "Nom du client" }}</strong><br />
+                {{ client?.address }}<br />
+                {{ client?.email }}
             </div>
 
-            <div class="client-additional" v-if="client.siret || client.tva">
-                <div v-if="client.siret">Numéro de SIRET: {{ client.siret }}</div>
-                <div v-if="client.tva">Numéro de TVA: {{ client.tva }}</div>
+            <div class="client-additional" v-if="client?.siret || client?.tva">
+                <div v-if="client.siret">Numéro de SIRET: {{ client?.siret }}</div>
+                <div v-if="client.tva">Numéro de TVA: {{ client?.tva }}</div>
             </div>
         </div>
 
@@ -115,10 +116,10 @@
         <!-- Footer -->
         <div class="footer">
             <div class="footer-company">
-                <strong>{{ societer.nom }}</strong><br />
-                {{ societer.adresse }}<br />
-                <span v-if="societer.siret">Numéro de SIRET: {{ societer.siret }}</span>
-                <span v-if="societer.tva"> - Numéro de TVA: {{ societer.tva }}</span>
+                <strong>{{ societer?.nom }}</strong><br />
+                {{ societer?.adresse }}<br />
+                <span v-if="societer?.siret">Numéro de SIRET: {{ societer?.siret }}</span>
+                <span v-if="societer?.tva"> - Numéro de TVA: {{ societer?.tva }}</span>
             </div>
         </div>
     </div>

@@ -26,8 +26,7 @@ API.interceptors.request.use(
       console.warn("Token Supabase manquant.");
     }
  // 🐛 Debug : voir les headers envoyés à l’API
-    console.log("🔐 Headers yer envoyés :", config.headers);
-    console.log("➡️ Requête vers :", config.baseURL + config.url);
+   
     return config;
   },
   (error) => Promise.reject(error)

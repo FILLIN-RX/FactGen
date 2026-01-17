@@ -58,90 +58,6 @@ export async function telechargerPDF({ html, id, invoiceDate, clientName }) {
 }
 
 
-// 🆕 Générer PDF depuis HTML
-export async function genererPDFDepuisHTML(htmlContent, filename = 'document.pdf', options = {}) {
-  try {
-    console.log('🔄 Génération PDF depuis HTML');
-    
-    const response = await API.post('/pdf/from-html', {
-      html: htmlContent,
-      filename,
-      options
-    }, {
-      responseType: "blob",
-      timeout: 60000
-    });
-
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    console.log('✅ PDF généré et téléchargé avec succès depuis HTML');
-    return true;
-  } catch (error) {
-    console.error('❌ Erreur génération PDF depuis HTML:', error);
-    throw new Error(`Erreur lors de la génération du PDF: ${error.message}`);
-  }
-}
-
-// 🆕 Générer PDF avec template
-export async function genererPDFAvecTemplate(factureData, templateName = 'default') {
-  try {
-    console.log(`🔄 Génération PDF avec template ${templateName}`);
-    
-    const response = await API.post('/pdf/from-template', {
-      factureData,
-      templateName
-    }, {
-      responseType: "blob",
-      timeout: 60000
-    });
-
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `facture-${factureData.id || 'template'}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    console.log(`✅ PDF généré avec succès avec template ${templateName}`);
-    return true;
-  } catch (error) {
-    console.error('❌ Erreur génération PDF avec template:', error);
-    throw new Error(`Erreur lors de la génération du PDF avec template: ${error.message}`);
-  }
-}
-
-// 🆕 Prévisualiser PDF (retourne l'URL blob pour affichage)
-export async function previsualiserPDF(factureId) {
-  try {
-    console.log(`🔄 Prévisualisation PDF pour facture ${factureId}`);
-    
-    const response = await API.get(`/pdf/${factureId}`, {
-      responseType: "blob",
-      timeout: 60000
-    });
-
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-
-    console.log(`✅ PDF prévisualisé avec succès pour facture ${factureId}`);
-    return url; // Retourne l'URL pour affichage dans un iframe ou viewer
-  } catch (error) {
-    console.error('❌ Erreur prévisualisation PDF:', error);
-    throw new Error(`Erreur lors de la prévisualisation du PDF: ${error.message}`);
-  }
-}
-
 // 🆕 Vérifier la disponibilité du service PDF
 export async function verifierServicePDF() {
   try {
@@ -153,36 +69,7 @@ export async function verifierServicePDF() {
   }
 }
 
-// 🆕 Génération batch de PDFs
-export async function genererPDFsBatch(factures) {
-  try {
-    console.log(`🔄 Génération batch de ${factures.length} PDFs`);
-    
-    const promises = factures.map(facture => 
-      telechargerPDF(facture.id).catch(error => ({
-        id: facture.id,
-        error: error.message
-      }))
-    );
 
-    const results = await Promise.allSettled(promises);
-    
-    const successes = results.filter(r => r.status === 'fulfilled').length;
-    const failures = results.filter(r => r.status === 'rejected').length;
-
-    console.log(`✅ Génération batch terminée: ${successes} succès, ${failures} échecs`);
-    
-    return {
-      total: factures.length,
-      successes,
-      failures,
-      results
-    };
-  } catch (error) {
-    console.error('❌ Erreur génération batch PDF:', error);
-    throw new Error(`Erreur lors de la génération batch: ${error.message}`);
-  }
-}
 // 📌 Créer une nouvelle facture
 
 

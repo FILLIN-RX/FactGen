@@ -6,14 +6,14 @@
                 <div class="company-logo">
                     <!-- Logo ici si disponible -->
                     <span style="font-weight: bold; color: #007acc">
-                        <img v-if="societer.logo" :src="societer.logo" alt="Logo de l'entreprise"
+                        <img v-if="societer?.logo" :src="societer.logo" alt="Logo de l'entreprise"
                             class="h-16 w-auto mb-2" />
                     </span>
                 </div>
-                <div class="company-name">{{ societer.nom }}</div>
+                <div class="company-name">{{ societer?.nom }}</div>
                 <div class="company-details">
-                    {{ societer.email }}<br />
-                    {{ societer.adresse }}
+                    {{ societer?.email }}<br />
+                    {{ societer?.adresse }}
                 </div>
             </div>
 
@@ -31,9 +31,9 @@
         <div class="client-section">
             <div class="client-title">FACTURÉ À:</div>
             <div class="client-info">
-                <strong>{{ client.nom || "Nom du client" }}</strong><br />
-                {{ client.email }}<br />
-                {{ client.address }}
+                <strong>{{ client?.nom || "Nom du client" }}</strong><br />
+                {{ client?.email }}<br />
+                {{ client?.address }}
             </div>
         </div>
 

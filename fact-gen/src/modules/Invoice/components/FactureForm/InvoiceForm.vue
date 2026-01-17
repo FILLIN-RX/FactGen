@@ -20,11 +20,11 @@
                 <div class="flex items-center gap-3">
                     <div class="hidden md:flex items-center bg-gray-100 rounded-lg p-1">
                         <button 
-                            v-for="t in templates" :key="t.id"
-                            @click="selectedTemplate = t"
-                            :class="['px-3 py-1.5 text-xs font-medium rounded-md transition-all', selectedTemplate.id === t.id ? 'bg-white text-[#005AC1] shadow-sm' : 'text-gray-500 hover:text-gray-700']"
+                            v-for="t in templateStore.templates" :key="t.id"
+                            @click="changerTemplate(t.id)"
+                            :class="['px-3 py-1.5 text-xs font-medium rounded-md transition-all', selectedTemplateId === t.id ? 'bg-white text-[#005AC1] shadow-sm' : 'text-gray-500 hover:text-gray-700']"
                         >
-                            {{ t.name }}
+                            {{ t.nom }}
                         </button>
                     </div>
 
@@ -178,88 +178,34 @@
         </div>
 
         <div class="hidden lg:flex w-[45%] bg-[#E1E2EC] relative flex-col items-center justify-center p-8 overflow-hidden">
-            <div class="absolute top-6 left-6 text-xs font-bold text-gray-500 uppercase tracking-widest pointer-events-none">Aperçu du document</div>
             
-            <div class="bg-white shadow-2xl w-full max-w-[500px] h-auto min-h-[700px] rounded-sm p-8 text-[10px] leading-relaxed relative flex flex-col transform scale-95 origin-center transition-transform duration-300">
-                
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <div class="w-12 h-12 bg-gray-100 rounded mb-2 flex items-center justify-center text-gray-400">Logo</div>
-                        <h2 class="font-bold text-lg text-gray-900">{{ settings.entrepriseName || 'Mon Entreprise' }}</h2>
-                        <p class="text-gray-500 w-40">{{ settings.adresse || 'Adresse de l\'entreprise' }}</p>
-                    </div>
-                    <div class="text-right">
-                        <h1 class="text-2xl font-light text-[#005AC1] uppercase mb-1">Facture</h1>
-                        <p class="font-bold text-gray-800">#{{ numeroFacture }}</p>
-                        <p class="text-gray-500 mt-1">Date : {{ formatDate(dateEmission) }}</p>
-                    </div>
-                </div>
-
-                <div class="flex justify-between mb-8">
-                    <div class="w-1/2 pr-4">
-                        <p class="text-gray-400 uppercase text-[8px] font-bold mb-1">Facturé à</p>
-                        <div v-if="clientSelectionne" class="text-gray-900">
-                            <p class="font-bold text-sm">{{ clientSelectionne.nom }}</p>
-                            <p>{{ clientSelectionne.adresse }}</p>
-                            <p>{{ clientSelectionne.ville }}</p>
-                        </div>
-                        <div v-else class="text-gray-300 italic border border-dashed border-gray-200 p-2 rounded">
-                            Sélectionnez un client...
-                        </div>
-                    </div>
-                </div>
-
-                <table class="w-full mb-8">
-                    <thead>
-                        <tr class="border-b-2 border-[#005AC1] text-[#005AC1]">
-                            <th class="text-left py-2 w-1/2">Description</th>
-                            <th class="text-right py-2">Qté</th>
-                            <th class="text-right py-2">Prix</th>
-                            <th class="text-right py-2">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-700">
-                        <tr v-for="(ligne, idx) in lignesFacture" :key="idx" class="border-b border-gray-100">
-                            <td class="py-2">{{ ligne.description || 'Article...' }}</td>
-                            <td class="text-right py-2">{{ ligne.quantite }}</td>
-                            <td class="text-right py-2">{{ formatPrice(ligne.prixUnitaire) }}</td>
-                            <td class="text-right py-2 font-medium">{{ formatPrice(ligne.quantite * ligne.prixUnitaire) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="flex justify-end mt-auto">
-                    <div class="w-1/2 space-y-1">
-                        <div class="flex justify-between text-gray-500">
-                            <span>Total HT</span>
-                            <span>{{ formatPrice(totalHT) }}</span>
-                        </div>
-                        <div class="flex justify-between text-gray-500">
-                            <span>TVA ({{ tauxTVA }}%)</span>
-                            <span>{{ formatPrice(montantTVA) }}</span>
-                        </div>
-                        <div class="border-t border-gray-300 my-2 pt-2 flex justify-between text-base font-bold text-[#005AC1]">
-                            <span>Total TTC</span>
-                            <span>{{ formatPrice(totalTTC) }}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-8 pt-4 border-t border-gray-100 text-center text-gray-400 text-[8px]">
-                    <p>Merci de votre confiance. Paiement dû sous 30 jours.</p>
-                    <p>{{ settings.entrepriseName }} - SIRET: 123 456 789 00012</p>
+            <div class="absolute top-6 left-6 text-xs font-bold text-gray-500 uppercase tracking-widest pointer-events-none">
+                Aperçu : {{ templateStore.getTemplateById(selectedTemplateId)?.nom || 'Chargement...' }}
+            </div>
+            
+            <div class="w-full max-w-[600px] shadow-2xl transition-all duration-500 transform scale-[0.85] origin-top">
+                <component 
+                    v-if="activeTemplateComponent"
+                    :is="activeTemplateComponent"
+                    :facture="previewData"
+                    :settings="settings"
+                />
+                <div v-else class="bg-white p-10 text-center text-gray-500 rounded-lg">
+                    Chargement du modèle...
                 </div>
             </div>
+
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useClientsStore } from '@/modules/Client/stores/client.store';
 import { useFacturesStore } from '@/modules/Invoice/stores/invoice.store';
 import { useSettingsStore } from '@/shared/stores/setting.store';
+import { useTemplateStore } from '@/modules/Invoice/stores/template.store'; // Assurez-vous que le chemin est correct
 import { showToastMessage } from '@/composables/useToast';
 import { 
     ArrowLeftIcon, 
@@ -277,7 +223,7 @@ const router = useRouter();
 const clientStore = useClientsStore();
 const factureStore = useFacturesStore();
 const settings = useSettingsStore();
-
+const templateStore = useTemplateStore();
 
 // State
 const isSaving = ref(false);
@@ -286,13 +232,19 @@ const dateEcheance = ref('');
 const numeroFacture = ref('FAC-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0'));
 const tauxTVA = ref(20);
 
-// Templates
-const templates = [
-    { id: 'moderne', name: 'Moderne' },
-    { id: 'classique', name: 'Classique' },
-    { id: 'minimaliste', name: 'Minimaliste' }
-];
-const selectedTemplate = ref(templates[0]);
+// --- GESTION DES TEMPLATES ---
+const selectedTemplateId = ref(templateStore.currentTemplate);
+
+// Met à jour l'ID sélectionné
+function changerTemplate(id: string) {
+    selectedTemplateId.value = id;
+}
+
+// Récupère le composant Vue (markRaw) depuis le store
+const activeTemplateComponent = computed(() => {
+    return templateStore.getComponentById(selectedTemplateId.value);
+});
+// -----------------------------
 
 // Client Logic
 const clientSearch = ref('');
@@ -315,8 +267,8 @@ function selectClient(client: any) {
 
 // Lignes Facture Logic
 const lignesFacture = ref([
-    { description: 'Consultation juridique', quantite: 1, prixUnitaire: 15000 },
-    { description: 'Rédaction de contrat', quantite: 2, prixUnitaire: 25000 }
+    { description: '', quantite: 0, prixUnitaire: 0 },
+    { description: '', quantite: 0, prixUnitaire: 0 }
 ]);
 
 function ajouterLigne() {
@@ -334,7 +286,26 @@ const totalTTC = computed(() => totalHT.value + montantTVA.value);
 
 // Helpers
 const formatPrice = (val: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XAF' }).format(val);
-const formatDate = (d: string) => new Date(d).toLocaleDateString('fr-FR');
+
+// --- DONNÉES DE L'APERÇU (PREVIEW DATA) ---
+// Crée un objet structuré à envoyer au template enfant
+const previewData = computed(() => ({
+    numero: numeroFacture.value,
+    dateEmission: dateEmission.value,
+    dateEcheance: dateEcheance.value,
+    client: clientSelectionne.value || { 
+        nom: 'Nom du Client', 
+        adresse: 'Adresse...', 
+        ville: 'Ville...', 
+        email: 'email@client.com' 
+    }, // Données fictives si pas de client sélectionné pour éviter que l'aperçu ne casse
+    lignes: lignesFacture.value,
+    totalHT: totalHT.value,
+    montantTVA: montantTVA.value,
+    totalTTC: totalTTC.value,
+    tauxTVA: tauxTVA.value
+}));
+// ------------------------------------------
 
 // Initialization
 onMounted(async () => {
@@ -355,14 +326,14 @@ async function sauvegarderFacture() {
         const data = {
             numero: numeroFacture.value,
             clientId: clientSelectionne.value.id,
-            clientNom: clientSelectionne.value.nom, // Snapshot
+            clientNom: clientSelectionne.value.nom, 
             items: lignesFacture.value,
             dateEmission: dateEmission.value,
             dateEcheance: dateEcheance.value,
             totalHT: totalHT.value,
             totalTTC: totalTTC.value,
             statut: "en_attente",
-            template: selectedTemplate.value.id
+            template: selectedTemplateId.value // Sauvegarde l'ID du template
         };
         
         await factureStore.creerFactureComplete(data);
