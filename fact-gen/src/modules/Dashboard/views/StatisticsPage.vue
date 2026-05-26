@@ -4,10 +4,9 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/modules/Auth/stores/auth.store";
 import { useStatsStore } from "@/modules/Dashboard/stores/stats.store";
 import { useSettingsStore } from "@/shared/stores/setting.store";
-import API from "@/shared/services/axios";
+import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/shared/utils/format";
 
-// Sub-components
 import DashboardHeader from '@/modules/Dashboard/components/statistics/DashboardHeader.vue';
 import DashboardQuickAnalyses from '@/modules/Dashboard/components/statistics/DashboardQuickAnalyses.vue';
 import ClientsTable from '@/modules/Dashboard/components/statistics/ClientsTable.vue';
@@ -17,11 +16,7 @@ import AnalyticsInsights from '@/modules/Dashboard/components/statistics/Analyti
 import DashboardKpiCards from '@/modules/Dashboard/components/statistics/DashboardKpiCards.vue';
 import LoadinApp from "@/shared/components/LoadinApp.vue";
 import {
-    ChartBarIcon,
-    UsersIcon,
-    DocumentTextIcon,
-    ArrowTrendingUpIcon,
-    ExclamationCircleIcon
+    ChartBarIcon, UsersIcon, DocumentTextIcon, ArrowTrendingUpIcon
 } from '@heroicons/vue/24/outline';
 
 const router = useRouter();
@@ -46,16 +41,16 @@ onMounted(async () => {
         await loadAllData();
     } catch (err) {
         error.value = "Impossible de charger les analyses financières.";
-        console.error(err);
     } finally {
         isLoading.value = false;
     }
 });
 
 const loadAllData = async () => {
+    const userId = auth.userId;
     const [clientsRes, facturesRes] = await Promise.all([
-        API.get("/clients"),
-        API.get("/factures")
+        supabase.from("clients").select("*").eq("user_id", userId),
+        supabase.from("facture").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
     ]);
     clients.value = clientsRes.data || [];
     factures.value = facturesRes.data || [];
@@ -64,16 +59,11 @@ const loadAllData = async () => {
 };
 
 const stats = computed(() => ({
-    totalClients: statsStore.totalClients,
-    totalFactures: statsStore.totalFactures,
-    totalRevenu: statsStore.totalRevenu,
-    totalProspects: statsStore.totalProspects,
-    tauxConversion: statsStore.tauxConversion,
-    moyenneRevenuParMois: statsStore.moyenneRevenuParMois,
-    moisLePlusRentable: statsStore.moisLePlusRentable,
-    clientsTrend: statsStore.clientsTrend,
-    facturesTrend: statsStore.facturesTrend,
-    revenuTrend: statsStore.revenuTrend
+    totalClients: statsStore.totalClients, totalFactures: statsStore.totalFactures,
+    totalRevenu: statsStore.totalRevenu, totalProspects: statsStore.totalProspects,
+    tauxConversion: statsStore.tauxConversion, moyenneRevenuParMois: statsStore.moyenneRevenuParMois,
+    moisLePlusRentable: statsStore.moisLePlusRentable, clientsTrend: statsStore.clientsTrend,
+    facturesTrend: statsStore.facturesTrend, revenuTrend: statsStore.revenuTrend
 }));
 
 const advancedAnalytics = computed(() => {
@@ -81,23 +71,8 @@ const advancedAnalytics = computed(() => {
         acc[f.statut] = (acc[f.statut] || 0) + 1;
         return acc;
     }, {});
-    return {
-        facturesParStatut,
-        revenuMoyen: stats.value.totalRevenu / (stats.value.totalFactures || 1),
-    };
+    return { facturesParStatut, revenuMoyen: stats.value.totalRevenu / (stats.value.totalFactures || 1) };
 });
-
-const formatDate = (date) => date ? new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : "-";
-
-const getStatusColor = (status) => {
-    const colors = {
-        'payee': 'badge-paid',
-        'paye': 'badge-paid',
-        'en_attente': 'badge-pending',
-        'en_retard': 'bg-red-50 text-red-600 border-red-100',
-    };
-    return colors[status] || 'bg-gray-50 text-gray-500 border-gray-100';
-};
 
 const tabs = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: ChartBarIcon },
@@ -109,71 +84,44 @@ const tabs = [
 const refresh = async () => {
     isLoading.value = true;
     error.value = null;
-    try { await loadAllData(); } catch (err) { error.value = "Erreur de mise à jour."; } finally { isLoading.value = false; }
+    try { await loadAllData(); } catch { error.value = "Erreur de mise à jour."; } finally { isLoading.value = false; }
 };
 </script>
 
 <template>
     <div class="min-h-screen bg-[#F8F9FA]">
-        <!-- Modern Header with Tabs -->
-        <DashboardHeader :isLoading="isLoading" :activeTab="activeTab" :tabs="tabs" @refresh="refresh"
-            @update:activeTab="activeTab = $event" @go-back="router.go(-1)" />
+        <DashboardHeader :isLoading="isLoading" :activeTab="activeTab" :tabs="tabs"
+            @refresh="refresh" @update:activeTab="activeTab = $event" @go-back="router.go(-1)" />
 
-        <div v-if="isLoading" class="flex flex-col items-center justify-center h-[60vh]">
-            <LoadinApp />
-            <p class="mt-4 text-[10px] font-bold text-surface-on-variant uppercase tracking-widest animate-pulse">
-                Analyses en cours de calcul...</p>
-        </div>
+        <n-spin v-if="isLoading" class="flex justify-center py-24">
+            <template #description>Analyses en cours de calcul...</template>
+        </n-spin>
 
-        <div v-else-if="error" class="max-w-7xl mx-auto p-8">
-            <div class="card-outlined bg-white p-12 text-center">
-                <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <ExclamationCircleIcon class="w-8 h-8 text-red-600" />
-                </div>
-                <h3 class="text-xl font-bold text-[#1A1C1E] mb-2">Erreur de chargement</h3>
-                <p class="text-sm text-surface-on-variant mb-6">{{ error }}</p>
-                <button @click="refresh" class="btn-filled px-8 py-2">Réessayer l'analyse</button>
-            </div>
-        </div>
+        <n-result v-else-if="error" status="error" title="Erreur de chargement" :description="error">
+            <template #footer><n-button @click="refresh">Réessayer</n-button></template>
+        </n-result>
 
-        <div v-else class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 animate-in fade-in duration-500">
-            <!-- Dynamic Content based on Active Tab -->
-            <transition name="fade" mode="out-in">
-                <div :key="activeTab">
-                    <div v-if="activeTab === 'overview'" class="space-y-8">
+        <div v-else class="max-w-7xl mx-auto p-6">
+            <n-tabs v-model:value="activeTab" type="line" animated>
+                <n-tab-pane v-for="tab in tabs" :key="tab.id" :name="tab.id" :tab="tab.label">
+                    <div v-if="tab.id === 'overview'" class="space-y-6">
                         <DashboardKpiCards :stats="stats" :formatCurrency="formatWithCurrency" />
                         <DashboardQuickAnalyses :advancedAnalytics="advancedAnalytics"
-                            :formatCurrency="formatWithCurrency" :getStatusColor="getStatusColor" />
+                            :formatCurrency="formatWithCurrency" />
                     </div>
-
-                    <div v-else-if="activeTab === 'clients'">
-                        <ClientsTable :clients="clients" :formatDate="formatDate" />
+                    <div v-else-if="tab.id === 'clients'">
+                        <ClientsTable :clients="clients" />
                     </div>
-
-                    <div v-else-if="activeTab === 'factures'">
-                        <FacturesTable :factures="factures" :formatCurrency="formatWithCurrency"
-                            :formatDate="formatDate" :getStatusColor="getStatusColor" />
+                    <div v-else-if="tab.id === 'factures'">
+                        <FacturesTable :factures="factures" :formatCurrency="formatWithCurrency" />
                     </div>
-
-                    <div v-else-if="activeTab === 'analytics'" class="space-y-8">
+                    <div v-else-if="tab.id === 'analytics'" class="space-y-6">
                         <AnalyticsChart :selectedPeriod="selectedPeriod" :chartData="statsStore"
                             @update:selectedPeriod="selectedPeriod = $event" />
                         <AnalyticsInsights :stats="stats" :formatCurrency="formatWithCurrency" />
                     </div>
-                </div>
-            </transition>
+                </n-tab-pane>
+            </n-tabs>
         </div>
     </div>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-</style>

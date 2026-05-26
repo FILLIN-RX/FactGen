@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import API from "@/shared/services/axios";
 import Facture from "@/models/facture";
 import { useAuthStore } from "@/modules/Auth/stores/auth.store";
 import {
@@ -7,6 +6,7 @@ import {
   deleteFactures,
   getFacturesParClient,
   upsertClient,
+  mettreAJourFacture,
 } from "@/shared/services/api";
 import { useCurrencyStore } from "@/shared/stores/currency.store";
 
@@ -207,7 +207,7 @@ export const useFacturesStore = defineStore("factures", {
       this.error = null;
 
       try {
-        const factureModifiee = await API.mettreAJour(id, donnees);
+        const factureModifiee = await mettreAJourFacture(id, donnees);
         const index = this.factures.findIndex((f) => f.id === id);
 
         if (index !== -1) {

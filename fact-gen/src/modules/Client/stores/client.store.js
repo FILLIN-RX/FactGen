@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import API  from "@/shared/services/axios";
 import { useAuthStore } from "@/modules/Auth/stores/auth.store";
 import { getClients,creerClient,deleteClient } from "@/shared/services/api";
 

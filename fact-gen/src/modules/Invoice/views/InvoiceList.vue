@@ -1,82 +1,74 @@
 <template>
-    <div class="space-y-8">
-        <!-- Header Section -->
-        <InvoiceHeader :resultCount="facturesFiltrees.length" :showFilters="showFilters"
-            :activeFiltersCount="activeFiltersCount" @toggle-filters="showFilters = !showFilters" @create="creer" />
+  <div class="space-y-6">
+    <InvoiceHeader :resultCount="facturesFiltrees.length" :showFilters="showFilters"
+      :activeFiltersCount="activeFiltersCount" @toggle-filters="showFilters = !showFilters" @create="creer" />
 
-        <!-- Main Content Area -->
-        <div class="max-w-7xl mx-auto">
-            <!-- Stats Overview -->
-            <InvoiceStats :totalCount="invoiceStore.factures.length" :totalAmount="totalAmount"
-                :pendingCount="pendingCount" />
+    <InvoiceStats :totalCount="invoiceStore.factures.length" :totalAmount="totalAmount"
+      :pendingCount="pendingCount" />
 
-            <!-- Filters Panel -->
-            <InvoiceFilters v-model:search-term="searchTerm" v-model:selected-client="selectedClient"
-                v-model:selected-status="selectedStatus" :clients="clients" :showFilters="showFilters"
-                :isMobile="isMobile" @clear-filters="clearFilters" @hide-filters="showFilters = false" />
+    <InvoiceFilters v-model:search-term="searchTerm" v-model:selected-client="selectedClient"
+      v-model:selected-status="selectedStatus" :clients="clients" :showFilters="showFilters"
+      :isMobile="isMobile" @clear-filters="clearFilters" @hide-filters="showFilters = false" />
 
-            <!-- Loading State -->
-            <div v-if="invoiceStore.loading"
-                class="card-outlined p-12 bg-white flex flex-col items-center justify-center">
-                <LoadinApp />
-                <p class="text-xs text-surface-on-variant mt-4 font-medium uppercase tracking-widest">Connexion
-                    sécurisée aux données...</p>
-            </div>
+    <n-card v-if="invoiceStore.loading">
+      <n-spin size="large" class="flex justify-center py-12" />
+    </n-card>
 
-            <!-- Empty State -->
-            <div v-else-if="facturesFiltrees.length === 0" class="card-outlined p-16 bg-white text-center">
-                <div class="w-20 h-20 mx-auto bg-[#F8F9FA] rounded-full flex items-center justify-center mb-6">
-                    <MagnifyingGlassIcon class="w-10 h-10 text-surface-on-variant" />
-                </div>
-                <h3 class="text-xl font-bold text-[#1A1C1E] mb-2">Aucun document trouvé</h3>
-                <p class="text-sm text-surface-on-variant mb-6 max-w-sm mx-auto">Ajustez vos filtres ou créez une
-                    nouvelle facture pour commencer votre suivi financier.</p>
-                <button @click="clearFilters" class="btn-outlined px-6 py-2 text-sm">Effacer tous les filtres</button>
-            </div>
+    <n-card v-else-if="facturesFiltrees.length === 0">
+      <n-empty description="Aucun document trouvé">
+        <template #extra>
+          <n-button @click="clearFilters">Effacer tous les filtres</n-button>
+        </template>
+      </n-empty>
+    </n-card>
 
-            <!-- Invoices List -->
-            <div v-else class="space-y-4">
-                <InvoiceListItem v-for="(facture, index) in facturesFiltrees" :key="facture.id" :invoice="facture"
-                    @select="invoiceStore.selectionnerFacture(facture, index)" />
-            </div>
+    <div v-else class="space-y-3">
+      <n-card v-for="facture in facturesFiltrees" :key="facture.id" size="small" hoverable
+        @click="invoiceStore.selectionnerFacture(facture, invoiceStore.factures.indexOf(facture))">
+        <div class="flex items-center justify-between">
+          <div>
+            <n-text strong>{{ facture.client_data?.nom || 'Client' }}</n-text>
+            <n-tag :type="statutType(facture.statut)" size="small" class="ml-2">{{ facture.statut }}</n-tag>
+          </div>
+          <div class="text-right">
+            <n-text strong>{{ formatPrice(facture.montant_total) }}</n-text>
+            <n-text depth="3" class="block text-xs">{{ facture.date_emission }}</n-text>
+          </div>
         </div>
-
-        <!-- Modals -->
-        <InvoiceDetailModal v-if="invoiceStore.selectedFacture" :invoice="invoiceStore.selectedFacture"
-            @close="invoiceStore.clearSelection()" @delete="confirmerSuppression" :societer="infoEntreprise"
-            :is-downloading="isDownloading" />
-
-        <transition name="fade">
-            <InvoiceDeleteModal v-if="showDeleteConfirm" :invoice-number="invoiceStore.selectedFacture?.numero"
-                :is-deleting="isDeleting" @cancel="showDeleteConfirm = false" @confirm="supprimerFacture" />
-        </transition>
-
-        <!-- Creation Form Wrapper (Slide-over / Modal) -->
-        <InvoiceFormWrapper v-if="open" @close="open = false">
-            <FactureForm :template-id="selectedTemplateId" @close="open = false" @created="onFactureCreated" />
-        </InvoiceFormWrapper>
+      </n-card>
     </div>
+
+    <invoice-detail-modal v-if="invoiceStore.selectedFacture" :invoice="invoiceStore.selectedFacture"
+      @close="invoiceStore.clearSelection()" @delete="confirmerSuppression"
+      :societer="infoEntreprise" :is-downloading="isDownloading" />
+
+    <n-modal v-model:show="showDeleteConfirm" preset="dialog" type="warning"
+      title="Confirmer la suppression" content="Cette action est irréversible."
+      positive-text="Supprimer" negative-text="Annuler"
+      @positive-click="supprimerFacture"
+      @negative-click="showDeleteConfirm = false"
+    />
+
+    <invoice-form-wrapper v-if="open" @close="open = false">
+      <facture-form :template-id="selectedTemplateId" @close="open = false" @created="onFactureCreated" />
+    </invoice-form-wrapper>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, h } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useFacturesStore } from "@/modules/Invoice/stores/invoice.store";
 import { useAppStore } from "@/shared/stores/app.store";
 import { getInfoEntreprise } from "@/shared/services/api";
-import { showToastMessage } from '@/composables/useToast';
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import { showToastMessage } from "@/composables/useToast";
 
-// Components
 import InvoiceHeader from "../components/InvoiceHeader.vue";
 import InvoiceFilters from "../components/InvoiceFilters.vue";
 import InvoiceStats from "../components/InvoiceStats.vue";
 import InvoiceFormWrapper from "../components/InvoiceFormWrapper.vue";
-import InvoiceDeleteModal from "../components/InvoiceDeleteModal.vue";
-import InvoiceListItem from "../components/InvoiceListItem.vue";
 import InvoiceDetailModal from "../components/InvoiceDetailModal.vue";
 import FactureForm from "../components/FactureForm/InvoiceForm.vue";
-import LoadinApp from "@/shared/components/LoadinApp.vue";
 
 const searchTerm = ref("");
 const selectedClient = ref("");
@@ -95,86 +87,96 @@ const invoiceStore = useFacturesStore();
 const appStore = useAppStore();
 
 const isMobile = computed(() => typeof window !== "undefined" && window.innerWidth < 1024);
-const selectedTemplateId = ref(route.query.template || 'moderne');
+const selectedTemplateId = ref(route.query.template || "moderne");
 
 const activeFiltersCount = computed(() => {
-    let count = 0;
-    if (searchTerm.value) count++;
-    if (selectedClient.value) count++;
-    if (selectedStatus.value) count++;
-    return count;
+  let count = 0;
+  if (searchTerm.value) count++;
+  if (selectedClient.value) count++;
+  if (selectedStatus.value) count++;
+  return count;
 });
 
+function statutType(statut) {
+  return { payee: "success", paye: "success", en_attente: "warning", en_retard: "error" }[statut] || "default";
+}
+
+function formatPrice(val) {
+  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(val || 0);
+}
+
 async function fetchEntreprise() {
-    try {
-        const data = await getInfoEntreprise();
-        infoEntreprise.value = data;
-    } catch (error) {
-        console.error("Erreur entreprise", error);
-    }
+  try {
+    const data = await getInfoEntreprise();
+    infoEntreprise.value = data;
+  } catch (error) {
+    console.error("Erreur entreprise", error);
+  }
 }
 
 onMounted(async () => {
-    try {
-        await Promise.all([invoiceStore.chargerFactures(), fetchEntreprise()]);
-        const uniqueClients = new Set(invoiceStore.factures.map((f) => f.client_data?.nom).filter(Boolean));
-        clients.value = Array.from(uniqueClients).sort();
-    } catch (error) {
-        showToastMessage("Erreur de chargement", "error");
-    }
+  try {
+    await Promise.all([invoiceStore.chargerFactures(), fetchEntreprise()]);
+    const uniqueClients = new Set(invoiceStore.factures.map((f) => f.client_data?.nom).filter(Boolean));
+    clients.value = Array.from(uniqueClients).sort();
+  } catch (error) {
+    showToastMessage("Erreur de chargement", "error");
+  }
 });
 
 watch(() => route.query.template, (newT) => {
-    if (newT) {
-        selectedTemplateId.value = newT;
-        open.value = true;
-    }
+  if (newT) {
+    selectedTemplateId.value = newT;
+    open.value = true;
+  }
 }, { immediate: true });
 
-function creer() { router.push('/NewInvoice'); }
+function creer() { router.push("/NewInvoice"); }
+
 function clearFilters() {
-    searchTerm.value = "";
-    selectedClient.value = "";
-    selectedStatus.value = "";
+  searchTerm.value = "";
+  selectedClient.value = "";
+  selectedStatus.value = "";
 }
 
 async function onFactureCreated() {
-    open.value = false;
-    await invoiceStore.chargerFactures();
-    showToastMessage("Document créé avec succès !", "success");
+  open.value = false;
+  await invoiceStore.chargerFactures();
+  showToastMessage("Document créé avec succès !", "success");
 }
 
 function confirmerSuppression() { showDeleteConfirm.value = true; }
+
 async function supprimerFacture() {
-    try {
-        isDeleting.value = true;
-        await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
-        showDeleteConfirm.value = false;
-        invoiceStore.clearSelection();
-        showToastMessage("Facture supprimée.", "success");
-    } catch (error) {
-        showToastMessage("Erreur de suppression", "error");
-    } finally {
-        isDeleting.value = false;
-    }
+  try {
+    isDeleting.value = true;
+    await invoiceStore.supprimerFacture(invoiceStore.selectedIndex);
+    showDeleteConfirm.value = false;
+    invoiceStore.clearSelection();
+    showToastMessage("Facture supprimée.", "success");
+  } catch (error) {
+    showToastMessage("Erreur de suppression", "error");
+  } finally {
+    isDeleting.value = false;
+  }
 }
 
 const facturesFiltrees = computed(() => {
-    return invoiceStore.factures.filter((f) => {
-        const matchClient = !selectedClient.value || f.client_data?.nom === selectedClient.value;
-        const matchStatus = !selectedStatus.value || f.statut === selectedStatus.value;
-        const matchSearch = !searchTerm.value ||
-            f.client_data?.nom?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-            f.numero?.toString().includes(searchTerm.value);
-        return matchClient && matchStatus && matchSearch;
-    });
+  return invoiceStore.factures.filter((f) => {
+    const matchClient = !selectedClient.value || f.client_data?.nom === selectedClient.value;
+    const matchStatus = !selectedStatus.value || f.statut === selectedStatus.value;
+    const matchSearch = !searchTerm.value ||
+      f.client_data?.nom?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      f.numero?.toString().includes(searchTerm.value);
+    return matchClient && matchStatus && matchSearch;
+  });
 });
 
 const totalAmount = computed(() => {
-    return facturesFiltrees.value.reduce((total, f) => total + (parseFloat(f.montant_total) || 0), 0);
+  return facturesFiltrees.value.reduce((total, f) => total + (parseFloat(f.montant_total) || 0), 0);
 });
 
 const pendingCount = computed(() => {
-    return invoiceStore.factures.filter((f) => f.statut === "en_attente").length;
+  return invoiceStore.factures.filter((f) => f.statut === "en_attente").length;
 });
 </script>

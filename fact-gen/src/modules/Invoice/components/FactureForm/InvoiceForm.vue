@@ -309,7 +309,7 @@ const previewData = computed(() => ({
 
 // Initialization
 onMounted(async () => {
-    await clientStore.fetchClients();
+    await clientStore.chargerClients();
     // Set default due date (30 days)
     const d = new Date(dateEmission.value);
     d.setDate(d.getDate() + 30);

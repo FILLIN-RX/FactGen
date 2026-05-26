@@ -80,9 +80,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, defineProps, defineEmits } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import API from "@/shared/services/axios";
+import { supabase } from "@/lib/supabase";
 
 const route = useRoute();
 const facture = ref(null);
@@ -145,9 +145,14 @@ onMounted(async () => {
     if (route.params.id) {
         try {
             loading.value = true;
-            const response = await API.get(`factures/${route.params.id}`);
-            facture.value = response.data;
-            console.log("Facture reçue :", response.data);
+            const { data, error } = await supabase
+                .from("facture")
+                .select("*")
+                .eq("id", route.params.id)
+                .single();
+            if (error) throw error;
+            facture.value = data;
+            console.log("Facture reçue :", data);
         } catch (err) {
             console.error("Erreur lors du chargement de la facture:", err);
             error.value = "Erreur lors du chargement de la facture";

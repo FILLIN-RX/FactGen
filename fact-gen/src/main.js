@@ -1,8 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { createI18n } from 'vue-i18n'
+import naive from "naive-ui";
 import { supabase } from "./lib/supabase";
-import Toast, { POSITION } from 'vue-toastification';
 import "./style.css";
 import "./styles/m3-design-system.css";
 import { Icon } from "@iconify/vue";
@@ -16,13 +15,12 @@ const pinia = createPinia();
 app.use(i18n);
 app.use(pinia);
 app.use(router);
+app.use(naive);
 app.component("Icon", Icon);
 
-// 💡 Initialisation du store AVANT le mount
 const authStore = useAuthStore();
 
-// ⚠️ On attend que l’utilisateur soit chargé avant de monter l’app
 authStore.initialize().then(() => {
   app.mount("#app");
-  authStore.setupAuthListener(); // Ecoute des événements après le mount
+  authStore.setupAuthListener();
 });

@@ -1,157 +1,180 @@
+import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/modules/Auth/stores/auth.store";
-import API from "./axios";
-import Facture from "@/models/facture";
 
-const API_BASE_URL = "http://localhost:4000/api";
+function getUserId() {
+  const auth = useAuthStore();
+  return auth.userId;
+}
 
 export async function upsertClient(clientData) {
-  const { data } = await API.post("/clients/upsert", clientData);
+  const { data, error } = await supabase
+    .from("clients")
+    .upsert({ ...clientData, user_id: getUserId() }, { onConflict: ["email"] })
+    .select()
+    .single();
+  if (error) throw error;
   return data;
 }
 
-// ✅ Facture : Télécharger PDF
-
-// ✅ Facture : Télécharger PDF (méthode existante améliorée)
 export async function telechargerPDF({ html, id, invoiceDate, clientName }) {
-   console.log("Début de la génération du PDF...");
-  console.log("ID Facture:", id);
-  console.log("Date facture:", invoiceDate);
-  console.log("Client:", clientName);
-  
-  try {
-    const res = await API.post("/pdf/from-python", { html, id }, {
-      responseType: "blob",
-    });
-    console.log("Réponse PDF reçue, création du blob...");
-    const blob = new Blob([res.data], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-
-    let filename;
-    
-    if (invoiceDate && clientName) {
-      // Nettoyer le nom du client
-      const cleanClientName = clientName
-        .replace(/[^a-zA-Z0-9]/g, '_')
-        .substring(0, 15);
-      
-      const date = new Date(invoiceDate).toISOString().split('T')[0];
-      filename = `facture_${cleanClientName}_${date}.pdf`;
-    } else {
-      // Fallback simple
-      const today = new Date().toISOString().split('T')[0];
-      const shortId = id.substring(0, 8);
-      filename = `facture_${today}_${shortId}.pdf`;
-    }
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    console.log("PDF généré et téléchargé avec succès");
-  } catch (err) {
-    console.error("❌ Erreur génération PDF Flask :", err.message);
-    throw err;
+  const res = await fetch("https://invoiceapi-lfca.onrender.com/pdf/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ html }),
+  });
+  if (!res.ok) throw new Error("Erreur génération PDF");
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  let filename;
+  if (invoiceDate && clientName) {
+    const cleanClientName = clientName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 15);
+    const date = new Date(invoiceDate).toISOString().split('T')[0];
+    filename = `facture_${cleanClientName}_${date}.pdf`;
+  } else {
+    const today = new Date().toISOString().split('T')[0];
+    const shortId = id ? id.substring(0, 8) : 'document';
+    filename = `facture_${today}_${shortId}.pdf`;
   }
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
-
-// 🆕 Vérifier la disponibilité du service PDF
 export async function verifierServicePDF() {
   try {
-    const response = await API.get('/pdf/health');
-    return response.data;
-  } catch (error) {
-    console.error('❌ Service PDF indisponible:', error);
-    throw new Error('Service PDF indisponible');
+    const res = await fetch("https://invoiceapi-lfca.onrender.com/pdf/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ html: "<p>test</p>" }),
+    });
+    return { status: res.ok ? "OK" : "ERROR" };
+  } catch {
+    throw new Error("Service PDF indisponible");
   }
 }
-
-
-// 📌 Créer une nouvelle facture
-
 
 export async function creerFacture(factureData) {
-  const { data } = await API.post("/factures", factureData);
+  const { data, error } = await supabase
+    .from("facture")
+    .insert([{ ...factureData, user_id: getUserId() }])
+    .select()
+    .single();
+  if (error) throw error;
   return data;
 }
 
-
-// ✅ Factures : récupérer celles de l’utilisateur
 export async function getFacturesParClient() {
-  const { data } = await API.get("/factures");
-  console.log("🔍 Données reçues depuis /factures:", data); // ← ← ← ICI
-  return data;
+  const { data, error } = await supabase
+    .from("facture")
+    .select("*")
+    .eq("user_id", getUserId())
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data || [];
 }
 
-//supprime toute les factures
-
-// ✅ Facture : Supprimer une facture
 export async function deleteFactures(factureId) {
-  const { data } = await API.delete(`/factures/${factureId}`);
+  const { data, error } = await supabase
+    .from("facture")
+    .delete()
+    .eq("id", factureId)
+    .eq("user_id", getUserId())
+    .select()
+    .single();
+  if (error) throw error;
   return data;
 }
 
-// ✅ Clients : Créer un client
+export async function mettreAJourFacture(id, donnees) {
+  const { data, error } = await supabase
+    .from("facture")
+    .update(donnees)
+    .eq("id", id)
+    .eq("user_id", getUserId())
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function creerClient(clientData) {
-  const { data } = await API.post("/clients", clientData);
+  const { data, error } = await supabase
+    .from("clients")
+    .insert([{ ...clientData, user_id: getUserId() }])
+    .select()
+    .single();
+  if (error) throw error;
   return data;
 }
-// ✅ Clients : Récupérer tous les clients
-export async function getClients() {
-  const { data } = await API.get("/clients");
-  return data;
-}
-// ✅ Clients : Supprimer un client
-export async function deleteClient(clientId) {
-  const { data } = await API.delete(`/clients/${clientId}`);
-  return data;
-}
-// services/api.js
 
+export async function getClients() {
+  const { data, error } = await supabase
+    .from("clients")
+    .select("*")
+    .eq("user_id", getUserId());
+  if (error) throw error;
+  return data || [];
+}
+
+export async function deleteClient(clientId) {
+  const { data, error } = await supabase
+    .from("clients")
+    .delete()
+    .eq("id", clientId)
+    .eq("user_id", getUserId())
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
 
 export async function getFactureById(id) {
-  const { data } = await API.get(`/factures/${id}`);
+  const { data, error } = await supabase
+    .from("facture")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", getUserId())
+    .single();
+  if (error) throw error;
   return data;
 }
-// ... votre code existant ...
 
-// 🆕 Entreprise : Récupérer les informations de l'entreprise
 export async function getInfoEntreprise() {
-  try {
-    const { data } = await API.get("/info");
-    return data;
-  } catch (error) {
-    console.error("Erreur lors de la récupération des infos entreprise:", error);
-    throw error;
-  }
+  const { data, error } = await supabase
+    .from("entreprises")
+    .select("*")
+    .eq("user_id", getUserId())
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }
 
-// 🆕 Entreprise : Créer ou mettre à jour les informations de l'entreprise
 export async function sauvegarderInfoEntreprise(infoData) {
-  try {
-    const { data } = await API.post("/info", infoData);
-    return data;
-  } catch (error) {
-    console.error("Erreur lors de la sauvegarde des infos entreprise:", error);
-    throw error;
-  }
+  const { data, error } = await supabase
+    .from("entreprises")
+    .insert([{ ...infoData, user_id: getUserId() }])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
-// 🆕 Entreprise : Mettre à jour les informations de l'entreprise par ID
 export async function mettreAJourInfoEntreprise(id, infoData) {
-  try {
-    const { data } = await API.put(`/info/${id}`, infoData);
-    return data;
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour des infos entreprise:", error);
-    throw error;
-  }
+  const { data, error } = await supabase
+    .from("entreprises")
+    .update(infoData)
+    .eq("id", id)
+    .eq("user_id", getUserId())
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
-// 🆕 Utilitaire : Convertir un fichier en base64
 export function convertirFichierEnBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
