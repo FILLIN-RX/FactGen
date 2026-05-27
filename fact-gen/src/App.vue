@@ -1,6 +1,7 @@
 <template>
   <n-config-provider :locale="frFR" :date-locale="dateFrFR">
     <n-message-provider>
+      <MessageInit />
       <n-dialog-provider>
         <n-notification-provider>
           <div id="app">
@@ -19,17 +20,14 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { frFR, dateFrFR, useMessage } from "naive-ui";
+import { frFR, dateFrFR } from "naive-ui";
 import NavBar from "@/shared/components/layout/NavBar.vue";
 import FooTer from "@/shared/components/layout/Footer.vue";
+import MessageInit from "@/shared/components/MessageInit.vue";
 import { useThemeStore } from "@/shared/stores/theme.store";
-
-import { initMessage } from "@/composables/useToast";
 
 const route = useRoute();
 const themeStore = useThemeStore();
-const message = useMessage();
-initMessage(message);
 
 onMounted(() => {
   themeStore.initTheme();
