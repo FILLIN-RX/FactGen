@@ -1,36 +1,30 @@
 <template>
-    <div class="bg-white p-4 rounded-lg border border-gray-200">
+    <n-card>
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-900">Analyses avancées</h3>
+            <n-h3 class="text-lg font-semibold text-gray-900">Analyses avancées</n-h3>
             <div class="flex space-x-2">
-                <button @click="$emit('update:selectedPeriod', 'daily')" :class="[
-                    selectedPeriod === 'daily'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-                    'px-3 py-1 rounded-md text-sm font-medium transition-colors'
-                ]">
+                <n-button @click="$emit('update:selectedPeriod', 'daily')"
+                    :type="selectedPeriod === 'daily' ? 'primary' : 'default'"
+                    size="small" ghost>
                     Journalier
-                </button>
-                <button @click="$emit('update:selectedPeriod', 'monthly')" :class="[
-                    selectedPeriod === 'monthly'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-                    'px-3 py-1 rounded-md text-sm font-medium transition-colors'
-                ]">
+                </n-button>
+                <n-button @click="$emit('update:selectedPeriod', 'monthly')"
+                    :type="selectedPeriod === 'monthly' ? 'primary' : 'default'"
+                    size="small" ghost>
                     Mensuel
-                </button>
+                </n-button>
             </div>
         </div>
 
         <div class="h-80 w-full">
             <canvas ref="chartCanvas" class="w-full h-full" :key="selectedPeriod"></canvas>
         </div>
-    </div>
+    </n-card>
 </template>
 
 <script setup>
 import { onMounted, watch, ref } from 'vue';
-import Chart from 'chart.js/auto'; // Assuming Chart.js for example
+import Chart from 'chart.js/auto';
 
 const props = defineProps({
     selectedPeriod: {
@@ -46,25 +40,25 @@ const props = defineProps({
 const emit = defineEmits(['update:selectedPeriod']);
 
 const chartCanvas = ref(null);
-let myChart = null; // To hold the Chart.js instance
+let myChart = null;
 
 const renderChart = () => {
     if (myChart) {
-        myChart.destroy(); // Destroy previous chart instance
+        myChart.destroy();
     }
 
     const dataToUse = props.chartData[props.selectedPeriod];
 
     if (chartCanvas.value && dataToUse && dataToUse.labels.length > 0) {
         myChart = new Chart(chartCanvas.value, {
-            type: 'line', // Or 'bar', depending on preference
+            type: 'line',
             data: dataToUse,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true // Show legend for the dataset
+                        display: true
                     }
                 },
                 scales: {
@@ -93,5 +87,5 @@ onMounted(() => {
 
 watch([() => props.selectedPeriod, () => props.chartData], () => {
     renderChart();
-}, { deep: true }); // Deep watch for chartData changes
+}, { deep: true });
 </script>

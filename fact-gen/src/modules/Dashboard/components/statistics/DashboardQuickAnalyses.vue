@@ -1,45 +1,42 @@
 <template>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Performances</h3>
+        <n-card>
+            <n-h3 class="text-lg font-semibold text-gray-900 mb-4">Performances</n-h3>
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Revenu moyen par facture</span>
-                    <span class="font-medium">{{ formatCurrency(advancedAnalytics.revenuMoyen) }}</span>
+                    <n-text class="text-sm text-gray-600">Revenu moyen par facture</n-text>
+                    <n-text class="font-medium">{{ formatCurrency(advancedAnalytics.revenuMoyen) }}</n-text>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Croissance clients</span>
-                    <span :class="advancedAnalytics.tauxCroissanceClients >= 0 ? 'text-green-600' : 'text-red-600'"
+                    <n-text class="text-sm text-gray-600">Croissance clients</n-text>
+                    <n-text :class="advancedAnalytics.tauxCroissanceClients >= 0 ? 'text-green-600' : 'text-red-600'"
                         class="font-medium">
                         {{ advancedAnalytics.tauxCroissanceClients.toFixed(1) }}%
-                    </span>
+                    </n-text>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Nouveaux clients (30j)</span>
-                    <span class="font-medium">{{ advancedAnalytics.clientsRecents }}</span>
+                    <n-text class="text-sm text-gray-600">Nouveaux clients (30j)</n-text>
+                    <n-text class="font-medium">{{ advancedAnalytics.clientsRecents }}</n-text>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Factures récentes (30j)</span>
-                    <span class="font-medium">{{ advancedAnalytics.facturesPeriod }}</span>
+                    <n-text class="text-sm text-gray-600">Factures récentes (30j)</n-text>
+                    <n-text class="font-medium">{{ advancedAnalytics.facturesPeriod }}</n-text>
                 </div>
             </div>
-        </div>
+        </n-card>
 
-        <div class="bg-white p-6 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Répartition des factures</h3>
+        <n-card>
+            <n-h3 class="text-lg font-semibold text-gray-900 mb-4">Répartition des factures</n-h3>
             <div class="space-y-3">
                 <div v-for="(count, status) in advancedAnalytics.facturesParStatut" :key="status"
                     class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <div class="w-3 h-3 rounded-full mr-3"
-                            :class="getStatusColor(status).replace('text-', 'bg-').replace('-800', '-500')">
-                        </div>
-                        <span class="text-sm text-gray-600 capitalize">{{ status }}</span>
+                        <n-tag size="small" round :class="getStatusColor(status)" class="mr-3">{{ status }}</n-tag>
                     </div>
-                    <span class="font-medium">{{ count }}</span>
+                    <n-text class="font-medium">{{ count }}</n-text>
                 </div>
             </div>
-        </div>
+        </n-card>
     </div>
 </template>
 

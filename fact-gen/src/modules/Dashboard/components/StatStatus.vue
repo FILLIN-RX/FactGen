@@ -3,21 +3,20 @@
         class="w-full bg-gradient-to-br from-white to-gray-50 min-h-screen lg:min-h-0 lg:max-w-8xl lg:mx-auto lg:my-4 lg:rounded-3xl lg:shadow-xl lg:p p-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4">
             <div class="flex-1">
-                <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 tracking-tight">
+                <n-h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 tracking-tight">
                     Répartition des factures
-                </h2>
-                <p class="text-sm text-gray-600 font-medium">
+                </n-h2>
+                <n-p class="text-sm text-gray-600 font-medium">
                     Vue d'ensemble de vos factures
-                </p>
+                </n-p>
             </div>
-
         </div>
 
         <!-- État de chargement -->
         <div v-if="facturesStore.loading" class="flex items-center justify-center min-h-[300px] p-8">
             <div class="flex flex-col items-center gap-4">
-                <div class="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
-                <p class="text-sm text-gray-600 font-medium">Chargement des données...</p>
+                <n-spin size="large" />
+                <n-p class="text-sm text-gray-600 font-medium">Chargement des données...</n-p>
             </div>
         </div>
 
@@ -31,21 +30,19 @@
                         </path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Aucune facture</h3>
-                <p class="text-sm text-gray-600 mb-6 leading-relaxed">
+                <n-h3 class="text-lg font-semibold text-gray-900 mb-2">Aucune facture</n-h3>
+                <n-p class="text-sm text-gray-600 mb-6 leading-relaxed">
                     Commencez par créer votre première facture
-                </p>
-                <button
-                    class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                </n-p>
+                <n-button type="primary" size="large" class="rounded-xl font-semibold shadow-lg">
                     Créer une facture
-                </button>
+                </n-button>
             </div>
         </div>
 
         <!-- Graphique et légende -->
         <div v-else class="flex flex-col lg:flex-row gap-6 lg:gap-8">
-            <!-- Section graphique -->
-            <div class="bg-white p-6 lg:p-8 rounded-2xl shadow-md lg:flex-1">
+            <n-card class="flex-1">
                 <div class="relative h-72 lg:h-80">
                     <Doughnut :data="chartData" :options="chartOptions" />
                     <div
@@ -54,11 +51,10 @@
                         <div class="text-xs text-gray-600 uppercase tracking-wider font-semibold mt-1">Total</div>
                     </div>
                 </div>
-            </div>
+            </n-card>
 
-            <!-- Section légende -->
-            <div class="bg-white  p-6 lg:p-8 rounded-2xl shadow-md lg:flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Détails par statut</h3>
+            <n-card class="flex-1">
+                <n-h3 class="text-lg font-semibold text-gray-900 mb-4">Détails par statut</n-h3>
                 <div class="grid grid-cols-2 gap-3">
                     <div v-for="(item, index) in legendItems" :key="item.label"
                         class="flex  items-center justify-between p-4 rounded-xl bg-gray-50 border-2 border-transparent hover:bg-gray-100 hover:border-gray-200 transition-all duration-200 cursor-pointer transform hover:-translate-y-0.5"
@@ -70,15 +66,15 @@
                                 <div class="w-2 h-2 rounded-full bg-current opacity-60" :style="{ color: item.color }">
                                 </div>
                             </div>
-                            <span class="font-medium text-gray-700 text-sm">{{ item.label }}</span>
+                            <n-text class="font-medium text-gray-700 text-sm">{{ item.label }}</n-text>
                         </div>
                         <div class="flex flex-col items-end">
-                            <span class="font-bold text-gray-900 text-lg">{{ item.count }}</span>
-                            <span class="text-xs text-gray-500 font-medium">{{ item.percentage }}%</span>
+                            <n-text class="font-bold text-gray-900 text-lg">{{ item.count }}</n-text>
+                            <n-text class="text-xs text-gray-500 font-medium">{{ item.percentage }}%</n-text>
                         </div>
                     </div>
                 </div>
-            </div>
+            </n-card>
         </div>
     </div>
 </template>
@@ -99,12 +95,10 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 const facturesStore = useFacturesStore();
 
-// État pour les notifications
 const showToast = ref(false);
 const toastMessage = ref("");
 const toastType = ref("info");
 
-// Configuration des statuts
 const statutConfig = {
     paye: { label: "Payée", color: "#10b981" },
     impayée: { label: "Impayée", color: "#ef4444" },
@@ -118,7 +112,6 @@ const statutKeys = Object.keys(statutConfig);
 const labels = Object.values(statutConfig).map(s => s.label);
 const colors = Object.values(statutConfig).map(s => s.color);
 
-// Charger les données
 onMounted(async () => {
     try {
         await facturesStore.chargerFactures();
@@ -131,26 +124,22 @@ onMounted(async () => {
     }
 });
 
-// Fonction pour afficher les notifications
 const showNotification = (message, type) => {
     toastMessage.value = message;
     toastType.value = type;
     showToast.value = true;
 };
 
-// Computed pour vérifier s'il y a des données
 const hasData = computed(() => {
     const counts = facturesStore.facturesParStatutCount || {};
     return Object.values(counts).some(count => count > 0);
 });
 
-// Total des factures
 const totalFactures = computed(() => {
     const counts = facturesStore.facturesParStatutCount || {};
     return Object.values(counts).reduce((total, count) => total + count, 0);
 });
 
-// Données du graphique
 const chartData = computed(() => {
     const counts = facturesStore.facturesParStatutCount || {};
 
@@ -170,7 +159,6 @@ const chartData = computed(() => {
     };
 });
 
-// Options du graphique
 const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -211,7 +199,6 @@ const chartOptions = {
     }
 };
 
-// Items pour la légende personnalisée
 const legendItems = computed(() => {
     const counts = facturesStore.facturesParStatutCount || {};
     const total = Object.values(counts).reduce((sum, count) => sum + count, 0);

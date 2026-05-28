@@ -11,6 +11,14 @@
       class="hidden lg:flex"
       native-scrollbar
     >
+      <template #header>
+        <div class="flex items-center gap-3 px-4 py-4 border-b border-gray-100" :class="{ 'justify-center': collapsed }">
+          <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+            <n-icon size="20" color="white"><DocumentTextIcon /></n-icon>
+          </div>
+          <span v-if="!collapsed" class="text-lg font-semibold text-gray-900">FactGen</span>
+        </div>
+      </template>
       <n-menu
         :value="activeKey"
         :collapsed="collapsed"
@@ -102,7 +110,6 @@ import {
   RectangleGroupIcon,
   Cog6ToothIcon,
 } from '@heroicons/vue/24/outline';
-
 // Use heroicons directly in NIcon for menu icons
 function icon(component) {
   return () => h(NIcon, null, { default: () => h(component) });

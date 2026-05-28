@@ -7,7 +7,6 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 const activeTab = ref('all');
 
-// Data for the three donut charts
 const marketingData = {
     labels: ['Marketing'],
     datasets: [{
@@ -47,7 +46,6 @@ const licensingData = {
     }]
 };
 
-// Common options for all donut charts
 const chartOptions = {
     responsive: true,
     maintainAspectRatio: true,
@@ -61,7 +59,6 @@ const chartOptions = {
     }
 };
 
-// Additional metrics
 const metrics = [
     { label: 'Total', value: '435K', trend: '+29%', color: 'text-neutral-800' },
     { label: 'Earmark', value: '31%', trend: '+9%', color: 'text-neutral-800' },
@@ -70,69 +67,61 @@ const metrics = [
 </script>
 
 <template>
-    <div class="card h-full w-screen p-5  bg-white mb-5 rounded-2xl">
-        <div class="card-title mb-6">Expense Monitoring</div>
+    <n-card class="h-full w-screen mb-5 rounded-2xl" :bordered="true">
+        <n-text class="card-title mb-6 font-semibold text-lg block">Expense Monitoring</n-text>
 
-        <!-- Tabs -->
         <div class="flex space-x-4 mb-6 text-sm">
-            <button @click="activeTab = 'all'" :class="['px-3 py-1 rounded transition-colors',
-                activeTab === 'all' ? 'bg-primary-100 text-primary-700' : 'text-neutral-600 hover:bg-neutral-100']">
+            <n-button @click="activeTab = 'all'" :type="activeTab === 'all' ? 'primary' : 'default'" size="small" ghost>
                 Marketing
-            </button>
-            <button @click="activeTab = 'operations'"
-                :class="['px-3 py-1 rounded transition-colors',
-                    activeTab === 'operations' ? 'bg-primary-100 text-primary-700' : 'text-neutral-600 hover:bg-neutral-100']">
+            </n-button>
+            <n-button @click="activeTab = 'operations'" :type="activeTab === 'operations' ? 'primary' : 'default'" size="small" ghost>
                 Operations
-            </button>
-            <button @click="activeTab = 'expenses'"
-                :class="['px-3 py-1 rounded transition-colors',
-                    activeTab === 'expenses' ? 'bg-primary-100 text-primary-700' : 'text-neutral-600 hover:bg-neutral-100']">
+            </n-button>
+            <n-button @click="activeTab = 'expenses'" :type="activeTab === 'expenses' ? 'primary' : 'default'" size="small" ghost>
                 Operations Expenses
-            </button>
+            </n-button>
         </div>
 
-        <!-- Charts -->
         <div class="grid grid-cols-3 gap-4">
             <div class="flex flex-col items-center">
                 <div class="relative w-28 h-28">
                     <Doughnut :data="marketingData" :options="chartOptions" />
                     <div class="absolute inset-0 flex items-center justify-center">
-                        <span class="text-lg font-semibold">45%</span>
+                        <n-text class="text-lg font-semibold">45%</n-text>
                     </div>
                 </div>
-                <span class="mt-4 text-sm text-neutral-600">Marketing</span>
+                <n-text class="mt-4 text-sm text-neutral-600">Marketing</n-text>
             </div>
 
             <div class="flex flex-col items-center">
                 <div class="relative w-28 h-28">
                     <Doughnut :data="operationsData" :options="chartOptions" />
                     <div class="absolute inset-0 flex items-center justify-center">
-                        <span class="text-lg font-semibold">25%</span>
+                        <n-text class="text-lg font-semibold">25%</n-text>
                     </div>
                 </div>
-                <span class="mt-4 text-sm text-neutral-600">Operations</span>
+                <n-text class="mt-4 text-sm text-neutral-600">Operations</n-text>
             </div>
 
             <div class="flex flex-col items-center">
                 <div class="relative w-28 h-28">
                     <Doughnut :data="licensingData" :options="chartOptions" />
                     <div class="absolute inset-0 flex items-center justify-center">
-                        <span class="text-lg font-semibold">23%</span>
+                        <n-text class="text-lg font-semibold">23%</n-text>
                     </div>
                 </div>
-                <span class="mt-4 text-sm text-neutral-600">Licensing</span>
+                <n-text class="mt-4 text-sm text-neutral-600">Licensing</n-text>
             </div>
         </div>
 
-        <!-- Metrics -->
         <div class="mt-6 grid grid-cols-3 gap-4">
             <div v-for="(metric, index) in metrics" :key="index" class="text-right">
                 <div :class="['text-2xl font-semibold', metric.color]">{{ metric.value }}</div>
                 <div class="flex items-center justify-end space-x-1">
-                    <span class="text-sm text-neutral-600">{{ metric.label }}</span>
-                    <span class="text-xs text-green-500">{{ metric.trend }}</span>
+                    <n-text class="text-sm text-neutral-600">{{ metric.label }}</n-text>
+                    <n-text class="text-xs text-green-500">{{ metric.trend }}</n-text>
                 </div>
             </div>
         </div>
-    </div>
+    </n-card>
 </template>

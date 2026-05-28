@@ -12,21 +12,21 @@
                     <SparklesIcon class="w-3.5 h-3.5" />
                     Solution 100% Gratuite
                 </div>
-                <h1 class="text-2xl sm:text-5xl lg:text-5xl font-extrabold leading-snug">
+                <n-h1 class="text-2xl sm:text-5xl lg:text-5xl font-extrabold leading-snug">
                     Générateur de facture
-                    <span class="block text-pink-200 mt-2">professionnel</span>
-                </h1>
+                    <n-text class="block text-pink-200 mt-2">professionnel</n-text>
+                </n-h1>
 
-                <p class="text-sm sm:text-xl text-white leading-relaxed">
+                <n-p class="text-sm sm:text-xl text-white leading-relaxed">
                     Créez des factures et devis professionnels en toute simplicité.
                     Solution complète avec CRM intégré pour une gestion optimale de votre activité.
-                </p>
+                </n-p>
 
                 <router-link to="/facture">
-                    <button
+                    <n-button
                         class="bg-white text-blue-700 px-12 py-4 rounded-2xl font-bold text-lg shadow-lg hover:scale-[1.05] transform transition-all duration-300">
                         Créer ma facture gratuitement
-                    </button>
+                    </n-button>
                 </router-link>
             </div>
 
@@ -88,6 +88,7 @@
 import TrustIndicator from "./TrustIndicator.vue";
 import heroIllustration from '@/assets/hand_drawn.png';
 import { ref, onMounted, computed } from "vue";
+import { NH1, NP, NButton, NText } from "naive-ui";
 
 const invoices = ref(0);
 const satisfaction = ref(0);

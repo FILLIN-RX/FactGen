@@ -59,35 +59,33 @@ const statsCards = [
 
 <template>
     <div class="p-4 space-y-6">
-        <!-- Header -->
         <div class="flex justify-between items-center">
             <div>
-                <h1 class="text-xl font-bold">Statistiques</h1>
-                <p class="text-sm text-gray-500">Vue d'ensemble</p>
+                <n-h1 class="text-xl font-bold">Statistiques</n-h1>
+                <n-p class="text-sm text-gray-500">Vue d'ensemble</n-p>
             </div>
-            <button @click="loadStats" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200" :disabled="isLoading">
-                <span v-if="isLoading">🔄</span>
-                <span v-else>↻</span>
-            </button>
+            <n-button @click="loadStats" :disabled="isLoading" quaternary circle>
+                <template #icon>
+                    <span v-if="isLoading">🔄</span>
+                    <span v-else>↻</span>
+                </template>
+            </n-button>
         </div>
 
-        <!-- Stats Grid -->
         <div class="grid grid-cols-2 gap-3">
-            <div v-for="card in statsCards" :key="card.id"
-                class="p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+            <n-card v-for="card in statsCards" :key="card.id" :bordered="true" size="small">
                 <div class="flex items-center justify-between">
                     <div :class="`p-2 rounded-lg ${card.color}`">
                         <span class="text-xl">{{ card.icon }}</span>
                     </div>
                 </div>
-                <h3 class="mt-2 text-sm text-gray-500">{{ card.title }}</h3>
-                <p class="mt-1 text-lg font-bold">
+                <n-h3 class="mt-2 text-sm text-gray-500">{{ card.title }}</n-h3>
+                <n-p class="mt-1 text-lg font-bold">
                     {{ isLoading ? '...' : card.value() }}
-                </p>
-            </div>
+                </n-p>
+            </n-card>
         </div>
 
-        <!-- Quick Actions -->
         <div class="space-y-3">
             <router-link to="/statistics"
                 class="block p-3 bg-white rounded-xl shadow-sm border border-gray-100 text-center font-medium">
@@ -95,16 +93,14 @@ const statsCards = [
             </router-link>
         </div>
 
-        <!-- Error Message -->
         <div v-if="statsStore.error" class="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
             {{ statsStore.error }}
-            <button @click="loadStats" class="ml-2 font-medium">Réessayer</button>
+            <n-button @click="loadStats" text type="primary" size="small" class="ml-2 font-medium">Réessayer</n-button>
         </div>
     </div>
 </template>
 
 <style scoped>
-/* Mobile-first responsive design */
 @media (min-width: 640px) {
     .grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));

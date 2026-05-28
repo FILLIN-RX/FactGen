@@ -8,8 +8,8 @@
       <div class="p-8 sm:p-12">
         <div class="text-center mb-8">
           <n-icon size="48" color="#005AC1"><UserPlusIcon /></n-icon>
-          <h1 class="text-2xl font-bold text-[#1A1C1E] mt-4">Ouvrir un compte</h1>
-          <p class="text-sm text-gray-500 mt-1">Rejoignez la solution de facturation intelligente</p>
+          <n-h1 class="text-2xl font-bold text-[#1A1C1E] mt-4">Ouvrir un compte</n-h1>
+          <n-p class="text-sm text-gray-500 mt-1">Rejoignez la solution de facturation intelligente</n-p>
         </div>
 
         <n-form @submit.prevent="handleSubmit" :model="form">
@@ -78,10 +78,10 @@
         </n-form>
 
         <div class="mt-8 text-center border-t pt-6">
-          <p class="text-sm text-gray-500">
+          <n-p class="text-sm text-gray-500">
             Déjà utilisateur ?
             <router-link to="/login" class="font-bold text-[#005AC1] ml-1">Se connecter ici</router-link>
-          </p>
+          </n-p>
         </div>
       </div>
     </div>
@@ -93,6 +93,7 @@ import { reactive, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth.store";
 import { UserPlusIcon } from '@heroicons/vue/24/outline';
+import { NH1, NP } from "naive-ui";
 
 const router = useRouter();
 const authStore = useAuthStore();

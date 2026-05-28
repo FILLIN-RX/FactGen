@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-[#1A1C1E]">Tableau de bord</h1>
-        <p class="text-sm text-gray-500">Aperçu de votre activité pour {{ currentMonth }}</p>
+        <n-h1 class="text-2xl font-bold text-[#1A1C1E]">Tableau de bord</n-h1>
+        <n-p class="text-sm text-gray-500">Aperçu de votre activité pour {{ currentMonth }}</n-p>
       </div>
       <n-button-group>
         <n-button quaternary circle @click="refreshData">
@@ -120,8 +120,8 @@
 
       <n-grid-item :span="1">
         <n-card style="background: #005AC1; color: white; border: none; margin-bottom: 16px;">
-          <h3 class="font-bold text-lg mb-2">Besoin d'aide ?</h3>
-          <p class="text-blue-100 text-sm mb-4">Générez un rapport comptable complet pour vos déclarations.</p>
+          <n-h3 class="font-bold text-lg mb-2">Besoin d'aide ?</n-h3>
+          <n-p class="text-blue-100 text-sm mb-4">Générez un rapport comptable complet pour vos déclarations.</n-p>
           <n-button ghost style="color: white; border-color: white;">Générer un rapport</n-button>
         </n-card>
 
@@ -130,7 +130,7 @@
             <span class="text-sm capitalize">{{ statsStore.moisLePlusRentable.mois }}</span>
             <span class="font-bold text-emerald-600">+{{ formatPrice(statsStore.moisLePlusRentable.revenu) }}</span>
           </div>
-          <p v-else class="text-sm text-gray-400">Pas assez de données</p>
+          <n-p v-else class="text-sm text-gray-400">Pas assez de données</n-p>
           <n-divider />
           <div class="flex items-center justify-between">
             <span class="text-sm text-gray-600">Moyenne mensuelle</span>

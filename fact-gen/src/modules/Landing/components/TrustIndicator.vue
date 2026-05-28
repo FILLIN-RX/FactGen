@@ -3,11 +3,13 @@
         <span class="material-symbols-outlined text-base" :style="{ color: color }">
             {{ icon }}
         </span>
-        <span :style="{ color: color }">{{ text }}</span>
+        <n-text :style="{ color: color }">{{ text }}</n-text>
     </div>
 </template>
 
 <script setup>
+import { NText } from "naive-ui";
+
 defineProps({
     icon: String,
     text: String,

@@ -3,12 +3,12 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
             <!-- Header -->
             <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+                <n-h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
                     Pourquoi choisir Factgen ?
-                </h2>
-                <p class="text-xl text-gray-600">
+                </n-h2>
+                <n-p class="text-xl text-gray-600">
                     La solution de facturation qui s'adapte à vos besoins
-                </p>
+                </n-p>
             </div>
 
             <!-- Avantages -->
@@ -32,4 +32,5 @@
 
 <script setup>
 import AdvantageItem from './AdvantageItem.vue';
+import { NH2, NP } from "naive-ui";
 </script>

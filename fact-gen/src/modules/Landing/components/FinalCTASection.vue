@@ -10,24 +10,24 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center text-white relative z-10">
 
             <!-- TITRE -->
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight whitespace-nowrap">
+            <n-h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight whitespace-nowrap">
                 Prêt à transformer votre facturation ?
-            </h2>
+            </n-h2>
 
             <!-- DESCRIPTION -->
-            <p class="text-lg sm:text-xl opacity-90 max-w-2xl mx-auto mb-8">
+            <n-p class="text-lg sm:text-xl opacity-90 max-w-2xl mx-auto mb-8">
                 Rejoignez des milliers de professionnels qui font confiance à Factgen pour leur facturation. Gratuit,
                 sans engagement.
-            </p>
+            </n-p>
 
             <!-- BOUTON PRINCIPAL -->
             <router-link to="/facture">
-                <button
+                <n-button
                     class="md-btn-filled relative inline-flex items-center justify-center
                  px-10 py-4 rounded-xl font-semibold text-lg shadow-md
                  hover:shadow-lg hover:scale-[1.02] transform transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2">
                     Commencer maintenant
-                </button>
+                </n-button>
             </router-link>
 
             <!-- TRUST INDICATORS -->
@@ -43,6 +43,7 @@
 
 <script setup>
 import TrustIndicator from './TrustIndicator.vue';
+import { NH2, NP, NButton } from "naive-ui";
 </script>
 
 <style scoped>

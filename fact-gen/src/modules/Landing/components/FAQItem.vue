@@ -1,25 +1,26 @@
 <template>
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100  transition-shadow duration-300">
-        <button @click="$emit('toggle')" :aria-expanded="isOpen"
-            class="w-full px-6 py-3 flex justify-between items-center text-left hover:bg-gray-50  transition-colors duration-200">
-            <span class="font-semibold text-md text-gray-900 ">{{ item.title }}</span>
+    <n-card class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 transition-shadow duration-300">
+        <n-button @click="$emit('toggle')" :aria-expanded="isOpen"
+            class="w-full px-6 py-3 flex justify-between items-center text-left hover:bg-gray-50 transition-colors duration-200">
+            <n-text class="font-semibold text-md text-gray-900">{{ item.title }}</n-text>
             <div :class="{ 'rotate-180': isOpen }" class="transition-transform duration-300 ml-4">
                 <span class="material-symbols-outlined text-gray-500 dark:text-gray-300">
                     expand_more
                 </span>
             </div>
-        </button>
+        </n-button>
 
         <Transition name="collapse">
-            <div v-if="isOpen" class="px-6 pb-6 text-gray-600  text-sm leading-relaxed">
+            <div v-if="isOpen" class="px-6 pb-6 text-gray-600 text-sm leading-relaxed">
                 {{ item.content }}
             </div>
         </Transition>
-    </div>
+    </n-card>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
+import { NCard, NButton, NText } from "naive-ui";
 
 defineProps({
     item: Object,

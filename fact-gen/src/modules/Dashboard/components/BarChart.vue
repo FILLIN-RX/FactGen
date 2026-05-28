@@ -10,26 +10,23 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
-import { useStatsStore } from '@/modules/Dashboard/stores/stats.store'; // Adapte le chemin si nécessaire
+import { useStatsStore } from '@/modules/Dashboard/stores/stats.store';
 
-// Enregistrement des composants Chart.js
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 const statsStore = useStatsStore();
 
-// Configuration des données du graphique
 const chartData = computed(() => ({
   labels: statsStore.mois.length > 0 ? statsStore.mois : ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
   datasets: [{
     label: 'Revenus (HT)',
     data: statsStore.revenusParMois.length > 0 ? statsStore.revenusParMois : [0, 0, 0, 0, 0, 0],
-    backgroundColor: '#005AC1', // Ton Bleu Primaire
+    backgroundColor: '#005AC1',
     borderRadius: 4,
-    barThickness: 24, // Barres plus fines et élégantes
+    barThickness: 24,
   }]
 }));
 
-// Options "Clean & Pro"
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -43,7 +40,7 @@ const chartOptions = {
       cornerRadius: 8,
       displayColors: false,
       callbacks: {
-        label: (context: any) => `${context.raw.toLocaleString('fr-FR')} FCFA` // Adapte la devise
+        label: (context: any) => `${context.raw.toLocaleString('fr-FR')} FCFA`
       }
     }
   },
@@ -78,11 +75,9 @@ const chartOptions = {
 <template>
   <div class="w-full h-full">
     <div v-if="statsStore.isLoading" class="flex items-center justify-center h-full">
-       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <n-spin size="large" />
     </div>
-    <div v-else-if="statsStore.revenusParMois.length === 0" class="flex flex-col items-center justify-center h-full text-gray-400">
-        <p>Aucune donnée financière disponible</p>
-    </div>
+    <n-empty v-else-if="statsStore.revenusParMois.length === 0" description="Aucune donnée financière disponible" class="flex flex-col items-center justify-center h-full" />
     <Bar v-else :data="chartData" :options="chartOptions" />
   </div>
 </template>

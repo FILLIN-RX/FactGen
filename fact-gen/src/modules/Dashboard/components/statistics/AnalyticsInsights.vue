@@ -1,8 +1,8 @@
 <template>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <n-card>
             <div class="flex items-center justify-between mb-4">
-                <h4 class="text-sm font-medium text-gray-600">Meilleur mois</h4>
+                <n-p class="text-sm font-medium text-gray-600">Meilleur mois</n-p>
                 <div class="p-2 bg-green-50 rounded-full">
                     <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -10,13 +10,13 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-lg font-semibold text-gray-900">{{ stats.moisLePlusRentable.mois }}</p>
-            <p class="text-sm text-gray-500">{{ formatCurrency(stats.moisLePlusRentable.revenu) }}</p>
-        </div>
+            <n-p class="text-lg font-semibold text-gray-900">{{ stats.moisLePlusRentable.mois }}</n-p>
+            <n-p class="text-sm text-gray-500">{{ formatCurrency(stats.moisLePlusRentable.revenu) }}</n-p>
+        </n-card>
 
-        <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <n-card>
             <div class="flex items-center justify-between mb-4">
-                <h4 class="text-sm font-medium text-gray-600">Moyenne mensuelle</h4>
+                <n-p class="text-sm font-medium text-gray-600">Moyenne mensuelle</n-p>
                 <div class="p-2 bg-blue-50 rounded-full">
                     <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -25,14 +25,13 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-lg font-semibold text-gray-900">{{ formatCurrency(stats.moyenneRevenuParMois) }}
-            </p>
-            <p class="text-sm text-gray-500">Sur {{ statsStoreMoisLength }} mois</p>
-        </div>
+            <n-p class="text-lg font-semibold text-gray-900">{{ formatCurrency(stats.moyenneRevenuParMois) }}</n-p>
+            <n-p class="text-sm text-gray-500">Sur {{ statsStoreMoisLength }} mois</n-p>
+        </n-card>
 
-        <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <n-card>
             <div class="flex items-center justify-between mb-4">
-                <h4 class="text-sm font-medium text-gray-600">Évolution</h4>
+                <n-p class="text-sm font-medium text-gray-600">Évolution</n-p>
                 <div class="p-2 bg-purple-50 rounded-full">
                     <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -41,9 +40,9 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-lg font-semibold text-gray-900">À définir</p>
-            <p class="text-sm text-gray-500">Donnée à compléter</p>
-        </div>
+            <n-p class="text-lg font-semibold text-gray-900">À définir</n-p>
+            <n-p class="text-sm text-gray-500">Donnée à compléter</n-p>
+        </n-card>
     </div>
 </template>
 

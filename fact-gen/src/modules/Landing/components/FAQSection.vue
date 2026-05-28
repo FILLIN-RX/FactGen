@@ -13,12 +13,12 @@
                 container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
 
             <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+                <n-h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
                     Questions fréquentes
-                </h2>
-                <p class="text-xl text-gray-600">
+                </n-h2>
+                <n-p class="text-xl text-gray-600">
                     Tout ce que vous devez savoir sur Factgen
-                </p>
+                </n-p>
             </div>
 
             <div class="space-y-4">
@@ -40,6 +40,7 @@
 <script setup>
 import { reactive, defineProps } from 'vue'
 import FAQItem from './FAQItem.vue'
+import { NH2, NP } from "naive-ui";
 
 defineProps({
     sections: {

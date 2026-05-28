@@ -1,28 +1,31 @@
 <template>
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-[#1A1C1E]">Factures</h1>
-            <p class="text-sm text-surface-on-variant">Suivez vos paiements et créez de nouveaux documents</p>
+            <n-h1>Factures</n-h1>
+            <n-p class="text-sm text-surface-on-variant">Suivez vos paiements et créez de nouveaux documents</n-p>
         </div>
         <div class="flex items-center gap-3">
-            <button @click="$emit('toggle-filters')" class="btn-outlined px-4 py-2 text-sm relative"
-                :class="{ 'bg-blue-50 border-[#005AC1]/30': showFilters }">
-                <FunnelIcon class="w-4 h-4 mr-2" />
-                Filtres
-                <span v-if="activeFiltersCount > 0"
-                    class="absolute -top-1 -right-1 w-4 h-4 bg-[#005AC1] text-white text-[10px] rounded-full flex items-center justify-center font-bold">
-                    {{ activeFiltersCount }}
-                </span>
-            </button>
-            <button @click="$emit('create')" class="btn-filled px-5 py-2">
-                <PlusIcon class="w-5 h-5 mr-2" />
+            <n-badge :value="activeFiltersCount" :show="activeFiltersCount > 0">
+                <n-button @click="$emit('toggle-filters')" secondary
+                    :class="{ 'bg-blue-50 border-[#005AC1]/30': showFilters }">
+                    <template #icon>
+                        <FunnelIcon class="w-4 h-4" />
+                    </template>
+                    Filtres
+                </n-button>
+            </n-badge>
+            <n-button @click="$emit('create')" type="primary">
+                <template #icon>
+                    <PlusIcon class="w-5 h-5" />
+                </template>
                 Créer une facture
-            </button>
+            </n-button>
         </div>
     </div>
 </template>
 
 <script setup>
+import { NH1, NP, NButton, NBadge } from "naive-ui";
 import { FunnelIcon, PlusIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({

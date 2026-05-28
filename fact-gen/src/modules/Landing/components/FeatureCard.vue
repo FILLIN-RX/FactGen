@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-xl border border-gray-100
+    <n-card class="bg-white rounded-xl border border-gray-100
            shadow-sm hover:shadow-md
            transition-all duration-300
            lg:p-6 p-3 flex flex-col gap-4">
@@ -13,19 +13,21 @@
         </div>
 
         <!-- TITLE -->
-        <h3 class="text-lg font-semibold text-gray-900">
+        <n-h3 class="text-lg font-semibold text-gray-900">
             {{ feature.title }}
-        </h3>
+        </n-h3>
 
         <!-- DESCRIPTION -->
-        <p class="text-sm text-gray-600 leading-relaxed">
+        <n-p class="text-sm text-gray-600 leading-relaxed">
             {{ feature.description }}
-        </p>
+        </n-p>
 
-    </div>
+    </n-card>
 </template>
 
 <script setup>
+import { NCard, NH3, NP } from "naive-ui";
+
 defineProps({
     feature: {
         type: Object,

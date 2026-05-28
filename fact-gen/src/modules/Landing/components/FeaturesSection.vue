@@ -4,13 +4,13 @@
 
             <!-- HEADER -->
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl sm:text-2xl font-semibold text-gray-900 tracking-tight">
+                <n-h2 class="text-3xl sm:text-2xl font-semibold text-gray-900 tracking-tight">
                     Solution complète de facturation
-                </h2>
-                <p class="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed">
+                </n-h2>
+                <n-p class="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed">
                     Tous les outils nécessaires pour gérer votre facturation de manière professionnelle,
                     simple et rapide.
-                </p>
+                </n-p>
             </div>
 
             <!-- FEATURES GRID -->
@@ -23,6 +23,7 @@
 </template>
 <script setup>
 import FeatureCard from './FeatureCard.vue'
+import { NH2, NP } from "naive-ui";
 
 defineProps({
     features: {

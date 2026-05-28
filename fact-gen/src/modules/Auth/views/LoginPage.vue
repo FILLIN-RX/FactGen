@@ -12,8 +12,8 @@
               <n-icon size="48" color="#1E40AF">
                 <ClipboardDocumentListIcon />
               </n-icon>
-              <h2 class="text-2xl font-bold text-[#1A1C1E] mt-4">Connexion</h2>
-              <p class="text-sm text-gray-500 mt-1">Accédez à votre espace de gestion FactGen</p>
+              <n-h2 class="text-2xl font-bold text-[#1A1C1E] mt-4">Connexion</n-h2>
+              <n-p class="text-sm text-gray-500 mt-1">Accédez à votre espace de gestion FactGen</n-p>
             </div>
 
             <n-form @submit.prevent="onSubmit" :model="form">
@@ -62,10 +62,10 @@
             </n-button>
 
             <div class="mt-8 text-center">
-              <p class="text-sm text-gray-500">
+              <n-p class="text-sm text-gray-500">
                 Pas encore de compte ?
                 <router-link to="/signUp" class="font-bold text-primary ml-1">Créer un compte</router-link>
-              </p>
+              </n-p>
             </div>
 
             <n-alert v-if="errorMessage" type="error" :title="errorMessage" closable class="mt-6" />
@@ -82,6 +82,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth.store";
 import { showToastMessage } from "@/composables/useToast";
 import { ClipboardDocumentListIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+import { NH2, NP } from "naive-ui";
 
 const router = useRouter();
 const authStore = useAuthStore();
